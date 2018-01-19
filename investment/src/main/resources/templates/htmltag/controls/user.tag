@@ -35,7 +35,7 @@ function showUserDlg(id) {
 				},
 				href : '${contextPath!}/selectDialog/user.html',
 				modal : true,
-				shadow:true
+				shadow : true
 			});
 }
 

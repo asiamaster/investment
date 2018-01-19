@@ -1,5 +1,6 @@
 package com.artist.investment.domain;
 
+import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
@@ -14,7 +15,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-01-19 09:40:57.
+ * This file was generated on 2018-01-19 14:15:47.
  */
 @Table(name = "`bank_card`")
 public interface BankCard extends IBaseDomain {
@@ -43,6 +44,7 @@ public interface BankCard extends IBaseDomain {
 
     @Column(name = "`account_name`")
     @FieldDef(label="开户名", maxLength = 20)
+    @Like(Like.BOTH)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getAccountName();
 
@@ -51,6 +53,7 @@ public interface BankCard extends IBaseDomain {
     @Column(name = "`id_number`")
     @FieldDef(label="身份证号", maxLength = 40)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getIdNumber();
 
     void setIdNumber(String idNumber);
@@ -58,12 +61,14 @@ public interface BankCard extends IBaseDomain {
     @Column(name = "`subbranch`")
     @FieldDef(label="所属支行", maxLength = 40)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getSubbranch();
 
     void setSubbranch(String subbranch);
 
     @Column(name = "`card_number`")
     @FieldDef(label="银行卡号", maxLength = 30)
+    @Like(Like.BOTH)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getCardNumber();
 

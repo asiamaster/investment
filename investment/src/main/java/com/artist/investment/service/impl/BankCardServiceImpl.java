@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-01-19 09:40:57.
+ * This file was generated on 2018-01-19 14:15:47.
  */
 @Service
 public class BankCardServiceImpl extends BaseServiceImpl<BankCard, Long> implements BankCardService {

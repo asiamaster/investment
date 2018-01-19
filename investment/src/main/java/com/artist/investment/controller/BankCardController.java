@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-01-19 09:40:57.
+ * This file was generated on 2018-01-19 14:15:47.
  */
 @Api("/bankCard")
 @Controller
