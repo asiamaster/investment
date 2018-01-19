@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.artist.investment.dao.InvestmentPlatformMapper">
+  <resultMap id="BaseResultMap" type="com.artist.investment.domain.InvestmentPlatform">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="supervision_bank" jdbcType="VARCHAR" property="supervisionBank" />
+    <result column="is_record" jdbcType="INTEGER" property="isRecord" />
+    <result column="registry_place" jdbcType="VARCHAR" property="registryPlace" />
+    <result column="business_place" jdbcType="VARCHAR" property="businessPlace" />
+    <result column="platform_background" jdbcType="VARCHAR" property="platformBackground" />
+    <result column="business_mode" jdbcType="VARCHAR" property="businessMode" />
+    <result column="insurance_company" jdbcType="VARCHAR" property="insuranceCompany" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="uptime" jdbcType="TIMESTAMP" property="uptime" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, name, supervision_bank, is_record, registry_place, business_place, platform_background, 
+    business_mode, insurance_company, introduction, uptime, notes, created, modified
+  </sql>
+  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from investment_platform
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="updateBy" parameterType="com.artist.investment.domain.InvestmentPlatform">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    update investment_platform
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionBank != null">
+        supervision_bank = #{supervisionBank,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecord != null">
+        is_record = #{isRecord,jdbcType=INTEGER},
+      </if>
+      <if test="registryPlace != null">
+        registry_place = #{registryPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="businessPlace != null">
+        business_place = #{businessPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="platformBackground != null">
+        platform_background = #{platformBackground,jdbcType=VARCHAR},
+      </if>
+      <if test="businessMode != null">
+        business_mode = #{businessMode,jdbcType=VARCHAR},
+      </if>
+      <if test="insuranceCompany != null">
+        insurance_company = #{insuranceCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null">
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="uptime != null">
+        uptime = #{uptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modified != null">
+        modified = #{modified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,67 @@
+/*
+* @Author: Teaism
+* @Date:   2017-12-06 18:54:20
+* @Last Modified by:   Teaism
+* @Last Modified time: 2017-12-25 15:51:13
+*/
+
+#main {
+    height: 482px;
+    height: auto;
+}
+.ivu-table-wrapper {
+    margin-top: -27px;
+    margin-bottom: 0;
+    border: none;
+}
+.ap_data_table .ivu-table-body {
+    height: 438px!important;
+}
+.ivu-table {
+    font-size: 15px;
+    text-align: center;
+}
+.ivu-table:before,
+.ivu-table:after {
+    width: 0;
+    height: 0;
+    background: #fff;
+}
+.ivu-table  tr:first-child {
+    height: 22px;
+}
+.ivu-table th {
+    background: none;
+    border: none;
+    height: 22px;
+    text-align: center;
+}
+.ivu-table td {
+    border-bottom: 1px dashed #ddd;
+    height: 43px;
+    vertical-align: middle;
+    /*line-height: 43px;*/
+}
+.ivu-table-header table tr:first-child th {
+    color: #bbb;
+}
+
+
+.ivu-table-stripe .ivu-table-body tr.ivu-table-row-hover td,.ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-hover td,tr.ivu-table-row-hover td {
+    background-color: #fff;
+}
+
+colgroup col:first-child {
+    min-width: 80px;
+}
+colgroup col:nth-child(5) {
+    min-width: 90px;
+}
+colgroup col:last-child {
+    width: 140px;
+}
+.ivu-table-cell {
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+}

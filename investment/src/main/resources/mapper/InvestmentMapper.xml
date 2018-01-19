@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.artist.investment.dao.InvestmentMapper">
+  <resultMap id="BaseResultMap" type="com.artist.investment.domain.Investment">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="investor_id" jdbcType="BIGINT" property="investorId" />
+    <result column="platform_id" jdbcType="BIGINT" property="platformId" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="project_duration" jdbcType="INTEGER" property="projectDuration" />
+    <result column="project_duration_unit" jdbcType="INTEGER" property="projectDurationUnit" />
+    <result column="profit_ratio" jdbcType="INTEGER" property="profitRatio" />
+    <result column="voucher" jdbcType="BIGINT" property="voucher" />
+    <result column="Interest_coupon" jdbcType="INTEGER" property="interestCoupon" />
+    <result column="cash_coupon" jdbcType="BIGINT" property="cashCoupon" />
+    <result column="actual_expenditure" jdbcType="BIGINT" property="actualExpenditure" />
+    <result column="investment" jdbcType="BIGINT" property="investment" />
+    <result column="is_remind" jdbcType="INTEGER" property="isRemind" />
+    <result column="yn" jdbcType="INTEGER" property="yn" />
+    <result column="bank_card_id" jdbcType="BIGINT" property="bankCardId" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="created_id" jdbcType="BIGINT" property="createdId" />
+    <result column="modified_id" jdbcType="BIGINT" property="modifiedId" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, investor_id, platform_id, project_name, start_time, end_time, project_duration, 
+    project_duration_unit, profit_ratio, voucher, Interest_coupon, cash_coupon, actual_expenditure, 
+    investment, is_remind, yn, bank_card_id, notes, created_id, modified_id, created, 
+    modified
+  </sql>
+  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from investment
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="updateBy" parameterType="com.artist.investment.domain.Investment">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    update investment
+    <set>
+      <if test="investorId != null">
+        investor_id = #{investorId,jdbcType=BIGINT},
+      </if>
+      <if test="platformId != null">
+        platform_id = #{platformId,jdbcType=BIGINT},
+      </if>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="projectDuration != null">
+        project_duration = #{projectDuration,jdbcType=INTEGER},
+      </if>
+      <if test="projectDurationUnit != null">
+        project_duration_unit = #{projectDurationUnit,jdbcType=INTEGER},
+      </if>
+      <if test="profitRatio != null">
+        profit_ratio = #{profitRatio,jdbcType=INTEGER},
+      </if>
+      <if test="voucher != null">
+        voucher = #{voucher,jdbcType=BIGINT},
+      </if>
+      <if test="interestCoupon != null">
+        Interest_coupon = #{interestCoupon,jdbcType=INTEGER},
+      </if>
+      <if test="cashCoupon != null">
+        cash_coupon = #{cashCoupon,jdbcType=BIGINT},
+      </if>
+      <if test="actualExpenditure != null">
+        actual_expenditure = #{actualExpenditure,jdbcType=BIGINT},
+      </if>
+      <if test="investment != null">
+        investment = #{investment,jdbcType=BIGINT},
+      </if>
+      <if test="isRemind != null">
+        is_remind = #{isRemind,jdbcType=INTEGER},
+      </if>
+      <if test="yn != null">
+        yn = #{yn,jdbcType=INTEGER},
+      </if>
+      <if test="bankCardId != null">
+        bank_card_id = #{bankCardId,jdbcType=BIGINT},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createdId != null">
+        created_id = #{createdId,jdbcType=BIGINT},
+      </if>
+      <if test="modifiedId != null">
+        modified_id = #{modifiedId,jdbcType=BIGINT},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modified != null">
+        modified = #{modified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
