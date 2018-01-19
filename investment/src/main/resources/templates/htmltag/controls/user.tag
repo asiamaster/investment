@@ -1,3 +1,4 @@
+<script type="text/javascript">
 // 打开选择用户弹出框
 function _selectUser(callback, args) {
 	if (callback) {
@@ -41,3 +42,4 @@ function showUserDlg(id) {
 $(function() {
 	$('#${controlId}').textbox('addClearBtn', 'icon-clear');
 })
+</script>

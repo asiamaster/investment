@@ -1,5 +1,6 @@
 package com.artist.sysadmin.sdk.boot;
 
+import com.artist.sysadmin.sdk.exception.NotLoginException;
 import com.dili.ss.util.SystemConfigUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,15 +25,15 @@ public class AdminConfig {
 	public SimpleMappingExceptionResolver simpleMappingExceptionResolver(){
 		SimpleMappingExceptionResolver simpleMappingExceptionResolver = new SimpleMappingExceptionResolver();
 //		定义默认的异常处理页面
-		simpleMappingExceptionResolver.setDefaultErrorView("error/default");
+		simpleMappingExceptionResolver.setDefaultErrorView("error");
 //		定义异常处理页面用来获取异常信息的变量名，如果不添加exceptionAttribute属性，则默认为exception
 		simpleMappingExceptionResolver.setExceptionAttribute("exception");
 //		定义需要特殊处理的异常，用类名或完全路径名作为key，异常页面名作为值
 		Properties mappings = new Properties();
-		mappings.put("java.lang.RuntimeException", SystemConfigUtils.getProperty("error.page.default", "error/default"));
-		mappings.put("java.lang.Exception", SystemConfigUtils.getProperty("error.page.default", "error/default"));
-		mappings.put("java.lang.Throwable", SystemConfigUtils.getProperty("error.page.default", "error/default"));
-		mappings.put("NotLoginException", SystemConfigUtils.getProperty("error.page.default", "error/default"));
+		mappings.put("java.lang.RuntimeException", SystemConfigUtils.getProperty("error.page.default", "error"));
+		mappings.put("java.lang.Exception", SystemConfigUtils.getProperty("error.page.default", "error"));
+		mappings.put("java.lang.Throwable", SystemConfigUtils.getProperty("error.page.default", "error"));
+		mappings.put(NotLoginException.class.getName(), SystemConfigUtils.getProperty("error.page.default", "error"));
 		simpleMappingExceptionResolver.setExceptionMappings(mappings);
 		return simpleMappingExceptionResolver;
 	}
