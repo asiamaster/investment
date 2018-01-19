@@ -1,5 +1,6 @@
 package com.artist.investment.domain;
 
+import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
@@ -30,6 +31,7 @@ public interface InvestmentPlatform extends IBaseDomain {
     @Column(name = "`name`")
     @FieldDef(label="名称", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getName();
 
     void setName(String name);
@@ -51,6 +53,7 @@ public interface InvestmentPlatform extends IBaseDomain {
     @Column(name = "`registry_place`")
     @FieldDef(label="注册地", maxLength = 10)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getRegistryPlace();
 
     void setRegistryPlace(String registryPlace);
@@ -58,6 +61,7 @@ public interface InvestmentPlatform extends IBaseDomain {
     @Column(name = "`business_place`")
     @FieldDef(label="经营地", maxLength = 10)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getBusinessPlace();
 
     void setBusinessPlace(String businessPlace);
@@ -72,6 +76,7 @@ public interface InvestmentPlatform extends IBaseDomain {
     @Column(name = "`business_mode`")
     @FieldDef(label="业务模式", maxLength = 120)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getBusinessMode();
 
     void setBusinessMode(String businessMode);
@@ -79,6 +84,7 @@ public interface InvestmentPlatform extends IBaseDomain {
     @Column(name = "`insurance_company`")
     @FieldDef(label="保险公司", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getInsuranceCompany();
 
     void setInsuranceCompany(String insuranceCompany);
@@ -100,6 +106,7 @@ public interface InvestmentPlatform extends IBaseDomain {
     @Column(name = "`notes`")
     @FieldDef(label="备注信息", maxLength = 250)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getNotes();
 
     void setNotes(String notes);

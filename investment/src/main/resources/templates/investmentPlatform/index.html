@@ -10,67 +10,18 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="name" id="name" style="width:100%" data-options="label:'名称:', validType:'length[0,20]'" />
-
+                                <input class="easyui-textbox" name="name" id="name" style="width:100%" labelWidth="40" data-options="labelAlign:'right', label:'名称:', validType:'length[0,20]'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="supervisionBank" id="supervisionBank" style="width:100%" data-options="label:'资金监管银行:', validType:'length[0,20]'" />
-
+                                <input class="easyui-textbox" name="supervisionBank" id="supervisionBank" style="width:100%" labelWidth="100" data-options="labelAlign:'right', label:'资金监管银行:', validType:'length[0,20]'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="isRecord" id="isRecord" style="width:100%" data-options="label:'是否备案:', validType:'length[0,10]'" />
-
+                                <input class="easyui-numberbox" name="isRecord" id="isRecord" style="width:100%" data-options="labelAlign:'right', label:'是否备案:', validType:'length[0,10]'" />
                             </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="registryPlace" id="registryPlace" style="width:100%" data-options="label:'注册地:', validType:'length[0,10]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="businessPlace" id="businessPlace" style="width:100%" data-options="label:'经营地:', validType:'length[0,10]'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="platformBackground" id="platformBackground" style="width:100%" data-options="label:'平台背景:', validType:'length[0,120]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="businessMode" id="businessMode" style="width:100%" data-options="label:'业务模式:', validType:'length[0,120]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="insuranceCompany" id="insuranceCompany" style="width:100%" data-options="label:'保险公司:', validType:'length[0,20]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="introduction" id="introduction" style="width:100%" data-options="label:'平台介绍:', validType:'length[0,40]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="uptime" id="uptime" style="width:100%" data-options="label:'上线时间:'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="notes" id="notes" style="width:100%" data-options="label:'备注信息:', validType:'length[0,250]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="created" id="created" style="width:100%" data-options="label:'创建时间:'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="modified" id="modified" style="width:100%" data-options="label:'修改时间:'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
+                            <td style="padding-left:28px;padding-top: 10px; padding-bottom: 10px;">
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
-                                   onclick="queryGrid()">查询</a>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">清除</a>
+                                   onclick="queryGrid()">查询</a>&nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
                             </td>
                         </tr>
                     </table>
@@ -83,83 +34,70 @@
         <!-- 表格 -->
         <div region="center" style="width:100%;" height="auto">
             <!-- =========================================================表格========================================================= -->
-            <table class="easyui-datagrid" title="InvestmentPlatform列表" id="grid" fitColumns="true"
-                   pagination="true" pageSize="30" pageNumber="1" pagePosition="both" rownumbers="true" remoteSort="false"
+            <table class="easyui-datagrid" title="投资平台" id="grid" fitColumns="true" noheader="true"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="name"
-                   align="center" fit="true" striped="true" toolbar="#toolbar" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
+                   align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
                     <tr>
-                        <th data-options="field:'name',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="6%" data-options="field:'name', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             名称
                         </th>
-                        <th data-options="field:'supervisionBank',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="7%" data-options="field:'supervisionBank', _escapeFileds:{supervisionBank:'code'}, _relationTablePkField:'value', _relationTable:'data_dictionary_value',
+_fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_id':'4', 'yn':'1'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             资金监管银行
                         </th>
-                        <th data-options="field:'isRecord',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="5%" data-options="field:'isRecord', _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否备案
                         </th>
-                        <th data-options="field:'registryPlace',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="4%" data-options="field:'registryPlace', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             注册地
                         </th>
-                        <th data-options="field:'businessPlace',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="4%" data-options="field:'businessPlace', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             经营地
                         </th>
-                        <th data-options="field:'platformBackground',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="6%" data-options="field:'platformBackground', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             平台背景
                         </th>
-                        <th data-options="field:'businessMode',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="10%" data-options="field:'businessMode', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             业务模式
                         </th>
-                        <th data-options="field:'insuranceCompany',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="6%" data-options="field:'insuranceCompany', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             保险公司
                         </th>
-                        <th data-options="field:'introduction',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            平台介绍
-                        </th>
-                        <th data-options="field:'uptime',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="8%" data-options="field:'uptime', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             上线时间
                         </th>
-                        <th data-options="field:'notes',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="15%" data-options="field:'introduction', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            平台介绍
+                        </th>
+                        <th width="15%" data-options="field:'notes', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             备注信息
                         </th>
-                        <th data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="8%" data-options="field:'created', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建时间
                         </th>
-                        <th data-options="field:'modified',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="8%" data-options="field:'modified', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             修改时间
                         </th>
                     </tr>
                 </thead>
             </table>
-            <!-- datagrid工具栏 -->
-            <div id="toolbar" style="padding:2px 5px;">
-                <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-export" onclick="doExport('grid')" plain="true"></a>
-                <div style="float:right">
-                边框显示:<select onchange="changeBorder('grid',this.value)">
-                    <option value="lines-both">全边框</option>
-                    <option value="lines-no">无边框</option>
-                    <option value="lines-right">右边框</option>
-                    <option value="lines-bottom">下边框</option>
-                </select>
-                行条纹:<input type="checkbox" checked="checked" onclick="$('#grid').datagrid({striped:$(this).is(':checked')})">
-                </div>
-            </div>
+
         </div>
     </div>
     <!-- 隐藏编辑框 -->
-    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="InvestmentPlatform信息" style="padding:20px" modal="true" border="thin" closed="true"
+    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="投资平台" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 480,
+				height: 630,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
 					handler:saveOrUpdate
 				},{
 					text:'取消',
+					iconCls:'icon-cancel',
 					handler:function(){
 						$('#dlg').dialog('close');
 					}
@@ -175,12 +113,14 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_supervisionBank" id="_supervisionBank" style="width:100%" data-options="label:'资金监管银行:', validType:'length[0,20]'" />
+                    <input name="_supervisionBank" id="_supervisionBank" editable="false" style="width:100%" data-options="labelWidth:100, label:'资金监管银行:', validType:'length[0,20]'" />
+                    <#comboProvider _id="_supervisionBank" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"4"}'/>
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_isRecord" id="_isRecord" style="width:100%" data-options="label:'是否备案:'" />
+                    <input name="_isRecord" id="_isRecord" style="width:100%" panelWidth="auto" panelHeight="auto" editable="false" data-options="label:'是否备案:'" />
+                    <#comboProvider _id="_isRecord" _provider='yesOrNoProvider'/>
                 </td>
             </tr>
             <tr>
@@ -210,27 +150,17 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_introduction" id="_introduction" style="width:100%" data-options="label:'平台介绍:', validType:'length[0,40]'" />
+                    <input class="easyui-datetimebox" name="_uptime" id="_uptime" style="width:100%" editable="false" data-options="label:'上线时间:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_uptime" id="_uptime" style="width:100%" data-options="label:'上线时间:'" />
+                    <input class="easyui-textbox" name="_introduction" id="_introduction" multiline="true" style="width:100%;height:80px;" data-options="label:'平台介绍:', validType:'length[0,250]'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_notes" id="_notes" style="width:100%" data-options="label:'备注信息:', validType:'length[0,250]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_created" id="_created" style="width:100%" data-options="label:'创建时间:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_modified" id="_modified" style="width:100%" data-options="label:'修改时间:'" />
+                    <input class="easyui-textbox" multiline="true" name="_notes" id="_notes" style="width:100%;height:80px;" data-options="label:'备注信息:', validType:'length[0,250]'" />
                 </td>
             </tr>
         </table>
@@ -400,6 +330,44 @@
             } else {
                 document.onkeyup = getKey;
             }
+
+            var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
+            pager.pagination({
+                <#controls_paginationOpts/>,
+                buttons:[
+                {
+                    iconCls:'icon-add',
+                    text:'新增',
+                    handler:function(){
+                        openInsert();
+                    }
+                },
+                {
+                    iconCls:'icon-edit',
+                    text:'修改',
+                    handler:function(){
+                        openUpdate();
+                    }
+                },
+                {
+                    iconCls:'icon-remove',
+                    text:'删除',
+                    handler:function(){
+                        del();
+                    }
+                },
+                {
+                    iconCls:'icon-export',
+                    text:'导出',
+                    handler:function(){
+                        doExport('grid');
+                    }
+                }
+            ]
+        });
+            //表格仅显示下边框
+            $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+            queryGrid();
         })
     </script>
 </#body>

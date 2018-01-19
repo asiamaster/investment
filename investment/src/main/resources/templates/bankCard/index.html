@@ -12,23 +12,23 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="accountName" id="accountName" style="width:100%" data-options="label:'开户名:', validType:'length[0,20]'" />
+                                <input class="easyui-textbox" name="accountName" id="accountName" style="width:100%" labelWidth="60" data-options="labelAlign:'right', label:'开户名:', validType:'length[0,20]'" />
 
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="cardNumber" id="cardNumber" style="width:100%" data-options="label:'银行卡号:', validType:'length[0,30]'" />
+                                <input class="easyui-textbox" name="cardNumber" id="cardNumber" style="width:100%" data-options="labelAlign:'right', label:'银行卡号:', validType:'length[0,30]'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="bank" id="bank" style="width:100%" data-options="label:'开户行:', validType:'length[0,50]'" />
+                                <input class="easyui-textbox" name="bank" id="bank" style="width:100%" data-options="labelAlign:'right', label:'开户行:', validType:'length[0,50]'" />
 
                             </td>
                             <td style="padding:5px;">
-                                    <input name="isDefault" id="isDefault" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否默认:"/>
+                                    <input name="isDefault" id="isDefault" style="width:100%;" editable="false" panelWidth="auto" labelAlign="right" panelHeight="auto" label="是否默认:"/>
                                     <#comboProvider _id="isDefault" _provider='yesOrNoProvider'/>
 
                             </td>
                             <td style="padding:5px;">
-                                    <input name="isDepository" id="isDepository" style="width:100%;" editable="false" labelWidth="100" panelWidth="auto" panelHeight="auto" label="是否存管帐户:"/>
+                                    <input name="isDepository" id="isDepository" style="width:100%;" editable="false" labelWidth="100" labelAlign="right" panelWidth="auto" panelHeight="auto" label="是否存管帐户:"/>
                                     <#comboProvider _id="isDepository" _provider='yesOrNoProvider'/>
 
                             </td>
@@ -178,6 +178,7 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
             $('#dlg').dialog('center');
             $('#_form').form('clear');
             formFocus("_form", "_userId");
+            //默认选中储蓄卡
             $("#_cardType").combobox("setValue", "1");
         }
 
@@ -338,40 +339,38 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
 
             var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
             pager.pagination({
-                <#controls_paginationOpts/>,
-                buttons:[
-                {
-                    iconCls:'icon-add',
-                    text:'新增',
-                    handler:function(){
-                        openInsert();
+                    <#controls_paginationOpts/>,
+                    buttons:[
+                    {
+                        iconCls:'icon-add',
+                        text:'新增',
+                        handler:function(){
+                            openInsert();
+                        }
+                    },
+                    {
+                        iconCls:'icon-edit',
+                        text:'修改',
+                        handler:function(){
+                            openUpdate();
+                        }
+                    },
+                    {
+                        iconCls:'icon-remove',
+                        text:'删除',
+                        handler:function(){
+                            del();
+                        }
+                    },
+                    {
+                        iconCls:'icon-export',
+                        text:'导出',
+                        handler:function(){
+                            doExport('grid');
+                        }
                     }
-                },
-                {
-                    iconCls:'icon-edit',
-                    text:'修改',
-                    handler:function(){
-                        openUpdate();
-                    }
-                },
-                {
-                    iconCls:'icon-remove',
-                    text:'删除',
-                    handler:function(){
-                        del();
-                    }
-                },
-                {
-                    iconCls:'icon-export',
-                    text:'导出',
-                    handler:function(){
-                        doExport('grid');
-                    }
-                }
-
-
-            ]
-        });
+                ]
+            });
             //表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
             queryGrid();
