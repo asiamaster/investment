@@ -2,11 +2,17 @@ package com.artist.investment.controller;
 
 import com.artist.investment.domain.Investment;
 import com.artist.investment.service.InvestmentService;
+import com.artist.sysadmin.sdk.domain.UserTicket;
+import com.artist.sysadmin.sdk.exception.NotLoginException;
+import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-01-19 09:36:32.
+ * This file was generated on 2018-01-22 10:24:59.
  */
 @Api("/investment")
 @Controller
@@ -56,6 +62,12 @@ public class InvestmentController {
 	})
     @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(Investment investment) {
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+        investment.setCreatedId(userTicket.getId());
+        investment.setModifiedId(userTicket.getId());
         investmentService.insertSelective(investment);
         return BaseOutput.success("新增成功");
     }
@@ -66,7 +78,15 @@ public class InvestmentController {
 	})
     @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(Investment investment) {
-        investmentService.updateSelective(investment);
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+        investment.setModifiedId(userTicket.getId());
+        investment.setModified(new Date());
+        //这里是为了解决投资人或银行卡为空的时候，只能从数据库获取旧值，然后用新值覆盖后强制更新
+        investment = DTOUtils.link(investment, investmentService.get(investment.getId()), Investment.class);
+        investmentService.update(investment);
         return BaseOutput.success("修改成功");
     }
 

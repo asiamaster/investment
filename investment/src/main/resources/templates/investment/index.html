@@ -1,4 +1,6 @@
  <#body>
+     <#controls_user dlgId="userSelectDialog" controlId="_investorId"/>
+     <#controls_bankCard dlgId="bankCardSelectDialog" controlId="_bankCardId"/>
     <div class="easyui-layout" fit="true">
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
@@ -10,106 +12,23 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="investorId" id="investorId" style="width:100%" data-options="label:'投资人id:', validType:'length[0,19]'" />
+                                <input class="easyui-numberbox" name="investorId" id="investorId" style="width:100%" labelAlign="right" data-options="label:'投资人:', validType:'length[0,19]'" />
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-numberbox" name="platformId" id="platformId" style="width:100%" labelAlign="right" data-options="label:'投资平台:', validType:'length[0,19]'" />
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="projectName" id="projectName" style="width:100%" labelAlign="right" data-options="label:'项目名称:', validType:'length[0,50]'" />
 
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="platformId" id="platformId" style="width:100%" data-options="label:'投资平台id:', validType:'length[0,19]'" />
-
+                                <input name="isProgressing" id="isProgressing" style="width:100%;" editable="false" labelAlign="right" panelWidth="auto" panelHeight="auto" label="是否投资中:"/>
+                                <#comboProvider _id="isProgressing" _provider='yesOrNoProvider'/>
                             </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="projectName" id="projectName" style="width:100%" data-options="label:'项目名称:', validType:'length[0,50]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="startTime" id="startTime" style="width:100%" data-options="label:'起始时间:'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="endTime" id="endTime" style="width:100%" data-options="label:'结束时间:'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="projectDuration" id="projectDuration" style="width:100%" data-options="label:'项目期限:', validType:'length[0,10]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                    <input name="projectDurationUnit" id="projectDurationUnit" style="width:100%;" panelWidth="auto" panelHeight="auto" label="项目期限单位:"/>
-                                    <#comboProvider _id="projectDurationUnit" _provider='projectDurationUnitProvider'/>
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="profitRatio" id="profitRatio" style="width:100%" data-options="label:'年化收益率:', validType:'length[0,10]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="voucher" id="voucher" style="width:100%" data-options="label:'满减券:', validType:'length[0,19]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="interestCoupon" id="interestCoupon" style="width:100%" data-options="label:'加息券:', validType:'length[0,10]'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="cashCoupon" id="cashCoupon" style="width:100%" data-options="label:'现金券:', validType:'length[0,19]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="actualExpenditure" id="actualExpenditure" style="width:100%" data-options="label:'扣除满减券的支付额:', validType:'length[0,19]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="investment" id="investment" style="width:100%" data-options="label:'投资额:', validType:'length[0,19]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                    <input name="isRemind" id="isRemind" style="width:100%;" panelWidth="auto" panelHeight="auto" label="是否到期提醒:"/>
-                                    <#comboProvider _id="isRemind" _provider='yesOrNoProvider'/>
-
-                            </td>
-                            <td style="padding:5px;">
-                                    <input name="yn" id="yn" style="width:100%;" panelWidth="auto" panelHeight="auto" label="是否投资中:"/>
-                                    <#comboProvider _id="yn" _provider='ynProvider'/>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="bankCardId" id="bankCardId" style="width:100%" data-options="label:'投资卡:', validType:'length[0,19]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="notes" id="notes" style="width:100%" data-options="label:'备注信息:', validType:'length[0,250]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="createdId" id="createdId" style="width:100%" data-options="label:'创建人:', validType:'length[0,19]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="modifiedId" id="modifiedId" style="width:100%" data-options="label:'修改人:', validType:'length[0,19]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="created" id="created" style="width:100%" data-options="label:'创建时间:'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="modified" id="modified" style="width:100%" data-options="label:'修改时间:'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
+                            <td style="padding-left:28px;padding-top: 10px; padding-bottom: 10px;">
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
-                                   onclick="queryGrid()">查询</a>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">清除</a>
+                                   onclick="queryGrid()">查询</a>&nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
                             </td>
                         </tr>
                     </table>
@@ -122,31 +41,31 @@
         <!-- 表格 -->
         <div region="center" style="width:100%;" height="auto">
             <!-- =========================================================表格========================================================= -->
-            <table class="easyui-datagrid" title="Investment列表" id="grid" fitColumns="true"
-                   pagination="true" pageSize="30" pageNumber="1" pagePosition="both" rownumbers="true" remoteSort="false"
+            <table class="easyui-datagrid" title="投资记录" id="grid" fitColumns="true" noheader="true"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="investorId"
-                   align="center" fit="true" striped="true" toolbar="#toolbar" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
+                   align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
                     <tr>
-                        <th data-options="field:'investorId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            投资人id
+                        <th data-options="field:'investorId',  _provider:'userProvider', _escapeFileds:{investorId:'realName', createdId:'realName', modifiedId:'realName'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            投资人
                         </th>
-                        <th data-options="field:'platformId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            投资平台id
+                        <th data-options="field:'platformName', _provider:'platformProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            投资平台
                         </th>
                         <th data-options="field:'projectName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             项目名称
                         </th>
-                        <th data-options="field:'startTime',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'startTime',  _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             起始时间
                         </th>
-                        <th data-options="field:'endTime',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'endTime',  _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             结束时间
                         </th>
-                        <th data-options="field:'projectDuration',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'projectDuration', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             项目期限
                         </th>
-                        <th data-options="field:'projectDurationUnit',  _provider:'projectDurationUnitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'projectDurationUnit', _provider:'projectDurationUnitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             项目期限单位
                         </th>
                         <th data-options="field:'profitRatio',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -170,16 +89,16 @@
                         <th data-options="field:'isRemind',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否到期提醒
                         </th>
-                        <th data-options="field:'yn',  _provider:'ynProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'isProgressing',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否投资中
                         </th>
-                        <th data-options="field:'bankCardId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            投资卡
+                        <th data-options="field:'bankCardId', _provider:'bankCardProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            银行卡
                         </th>
-                        <th data-options="field:'notes',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            备注信息
+                        <th data-options="field:'notes', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            备注
                         </th>
-                        <th data-options="field:'createdId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'createdId',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建人
                         </th>
                         <th data-options="field:'modifiedId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -194,35 +113,22 @@
                     </tr>
                 </thead>
             </table>
-            <!-- datagrid工具栏 -->
-            <div id="toolbar" style="padding:2px 5px;">
-                <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-export" onclick="doExport('grid')" plain="true"></a>
-                <div style="float:right">
-                边框显示:<select onchange="changeBorder('grid',this.value)">
-                    <option value="lines-both">全边框</option>
-                    <option value="lines-no">无边框</option>
-                    <option value="lines-right">右边框</option>
-                    <option value="lines-bottom">下边框</option>
-                </select>
-                行条纹:<input type="checkbox" checked="checked" onclick="$('#grid').datagrid({striped:$(this).is(':checked')})">
-                </div>
-            </div>
+
         </div>
     </div>
     <!-- 隐藏编辑框 -->
-    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="Investment信息" style="padding:20px" modal="true" border="thin" closed="true"
+    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="投资记录" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 480,
+				height: 500,
+				width: 800,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
 					handler:saveOrUpdate
 				},{
 					text:'取消',
+					iconCls:'icon-cancel',
 					handler:function(){
 						$('#dlg').dialog('close');
 					}
@@ -230,50 +136,55 @@
 			">
     <form id="_form" class="easyui-form" method="post" fit="true">
         <input name="_id" id="_id" type="hidden">
-        <table width="360px">
+        <table width="750px">
             <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_investorId" id="_investorId" style="width:100%" data-options="label:'投资人id:'" />
+                <td style="padding:5px;" width="350">
+                    <input class="easyui-textbox" name="_investorId" id="_investorId"  panelHeight="auto" label="投资人:" style="width: 100%;"
+                           data-options="editable:false,buttonText:'选择',onClickButton:_selectUser,onChange:_changeTextboxShowClear" />
                 </td>
-            </tr>
-            <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_platformId" id="_platformId" style="width:100%" data-options="label:'投资平台id:'" />
+                    <input name="_platformId" id="_platformId" style="width:100%" editable="false" panelWidth="auto" panelHeight="auto" data-options="label:'投资平台:'" />
+                    <#comboProvider _id="_platformId" _provider='platformProvider'/>
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
                     <input class="easyui-textbox" name="_projectName" id="_projectName" style="width:100%" data-options="label:'项目名称:', validType:'length[0,50]'" />
                 </td>
-            </tr>
-            <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_startTime" id="_startTime" style="width:100%" data-options="label:'起始时间:'" />
+                    <input class="easyui-numberbox" name="_profitRatio" id="_profitRatio" style="width:100%" data-options="label:'年化收益率:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_endTime" id="_endTime" style="width:100%" data-options="label:'结束时间:'" />
+                    <input class="easyui-datebox" name="_startTime" id="_startTime" style="width:100%" editable="false" data-options="label:'起始时间:'" />
+                </td>
+                <td style="padding:5px;">
+                    <input class="easyui-datebox" name="_endTime" id="_endTime" style="width:100%" editable="false" data-options="label:'结束时间:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
                     <input class="easyui-numberbox" name="_projectDuration" id="_projectDuration" style="width:100%" data-options="label:'项目期限:'" />
                 </td>
-            </tr>
-            <tr>
                 <td style="padding:5px;">
-                       <input name="_projectDurationUnit" id="_projectDurationUnit" style="width:100%;" panelWidth="auto" panelHeight="auto" label="项目期限单位:" />
+                       <input name="_projectDurationUnit" id="_projectDurationUnit" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="期限单位:" />
                        <#comboProvider _id="_projectDurationUnit" _provider='projectDurationUnitProvider'/>
-
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_profitRatio" id="_profitRatio" style="width:100%" data-options="label:'年化收益率:'" />
+                    <input class="easyui-numberbox" name="_actualExpenditure" id="_actualExpenditure" style="width:100%" data-options="label:'实际支付额:'" />
+                </td>
+                <td style="padding:5px;">
+                    <input class="easyui-numberbox" name="_investment" id="_investment" style="width:100%" data-options="label:'投资额:'" />
                 </td>
             </tr>
             <tr>
+                <td style="padding:5px;">
+                    <input class="easyui-textbox" name="_bankCardId" id="_bankCardId"  panelHeight="auto" label="银行卡:" style="width: 100%;"
+                           data-options="editable:false,buttonText:'选择',onClickButton:_selectBankCard,onChange:_changeTextboxShowClear" />
+                </td>
                 <td style="padding:5px;">
                     <input class="easyui-numberbox" name="_voucher" id="_voucher" style="width:100%" data-options="label:'满减券:'" />
                 </td>
@@ -282,64 +193,23 @@
                 <td style="padding:5px;">
                     <input class="easyui-numberbox" name="_interestCoupon" id="_interestCoupon" style="width:100%" data-options="label:'加息券:'" />
                 </td>
-            </tr>
-            <tr>
                 <td style="padding:5px;">
                     <input class="easyui-numberbox" name="_cashCoupon" id="_cashCoupon" style="width:100%" data-options="label:'现金券:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_actualExpenditure" id="_actualExpenditure" style="width:100%" data-options="label:'扣除满减券的支付额:'" />
+                    <input name="_isProgressing" id="_isProgressing" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否投资中:" />
+                    <#comboProvider _id="_isProgressing" _provider='yesOrNoProvider'/>
                 </td>
-            </tr>
-            <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_investment" id="_investment" style="width:100%" data-options="label:'投资额:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                       <input name="_isRemind" id="_isRemind" style="width:100%;" panelWidth="auto" panelHeight="auto" label="是否到期提醒:" />
+                       <input name="_isRemind" id="_isRemind" style="width:100%;" labelWidth="100" editable="false" panelWidth="auto" panelHeight="auto" label="是否到期提醒:" />
                        <#comboProvider _id="_isRemind" _provider='yesOrNoProvider'/>
-
                 </td>
             </tr>
             <tr>
-                <td style="padding:5px;">
-                       <input name="_yn" id="_yn" style="width:100%;" panelWidth="auto" panelHeight="auto" label="是否投资中:" />
-                       <#comboProvider _id="_yn" _provider='ynProvider'/>
-
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_bankCardId" id="_bankCardId" style="width:100%" data-options="label:'投资卡:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_notes" id="_notes" style="width:100%" data-options="label:'备注信息:', validType:'length[0,250]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_createdId" id="_createdId" style="width:100%" data-options="label:'创建人:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_modifiedId" id="_modifiedId" style="width:100%" data-options="label:'修改人:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_created" id="_created" style="width:100%" data-options="label:'创建时间:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_modified" id="_modified" style="width:100%" data-options="label:'修改时间:'" />
+                <td style="padding:5px;" colspan="2">
+                    <input class="easyui-textbox" name="_notes"  id="_notes" multiline="true" style="width:100%;height:80px;"  data-options="label:'备注:', validType:'length[0,250]'" />
                 </td>
             </tr>
         </table>
@@ -356,6 +226,13 @@
             $('#dlg').dialog('center');
             $('#_form').form('clear');
             formFocus("_form", "_investorId");
+            //默认投资中
+            $("#_isProgressing").combobox("setValue", "1");
+            //默认到期不提醒
+            $("#_isRemind").combobox("setValue", "0");
+            //单独加载所属用户
+            $("#_investorId").textbox("initValue", '<#userTicket field="id"/>');
+            $("#_investorId").textbox("setText", '<#userTicket field="realName"/>');
         }
 
         //打开修改窗口
@@ -371,13 +248,20 @@
             var formData = $.extend({},selected);
             formData = addKeyStartWith(getOriginalData(formData),"_");
             $('#_form').form('load', formData);
+            //加载所属用户
+            $("#_investorId").textbox("initValue", selected["$_investorId"]);
+            $("#_investorId").textbox("setText", selected["investorId"]);
+            //加载银行卡
+            $("#_bankCardId").textbox("initValue", selected["$_bankCardId"]);
+            $("#_bankCardId").textbox("setText", selected["bankCardId"]);
         }
 
         function saveOrUpdate(){
             if(!$('#_form').form("validate")){
                 return;
             }
-            var _formData = removeKeyStartWith($("#_form").serializeObject(),"_");
+            var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
+//            alert(JSON.stringify(_formData));return;
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){
@@ -509,6 +393,43 @@
             } else {
                 document.onkeyup = getKey;
             }
+            var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
+                pager.pagination({
+                    <#controls_paginationOpts/>,
+                    buttons:[
+                    {
+                        iconCls:'icon-add',
+                        text:'新增',
+                        handler:function(){
+                            openInsert();
+                        }
+                    },
+                    {
+                        iconCls:'icon-edit',
+                        text:'修改',
+                        handler:function(){
+                            openUpdate();
+                        }
+                    },
+                    {
+                        iconCls:'icon-remove',
+                        text:'删除',
+                        handler:function(){
+                            del();
+                        }
+                    },
+                    {
+                        iconCls:'icon-export',
+                        text:'导出',
+                        handler:function(){
+                            doExport('grid');
+                        }
+                    }
+                ]
+            });
+            //表格仅显示下边框
+            $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+            queryGrid();
         })
     </script>
 </#body>

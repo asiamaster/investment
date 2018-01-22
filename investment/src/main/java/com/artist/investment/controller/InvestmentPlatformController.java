@@ -2,6 +2,9 @@ package com.artist.investment.controller;
 
 import com.artist.investment.domain.InvestmentPlatform;
 import com.artist.investment.service.InvestmentPlatformService;
+import com.artist.sysadmin.sdk.domain.UserTicket;
+import com.artist.sysadmin.sdk.exception.NotLoginException;
+import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-01-18 17:11:11.
+ * This file was generated on 2018-01-22 09:19:12.
  */
 @Api("/investmentPlatform")
 @Controller

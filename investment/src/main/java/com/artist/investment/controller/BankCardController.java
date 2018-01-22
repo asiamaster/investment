@@ -2,6 +2,9 @@ package com.artist.investment.controller;
 
 import com.artist.investment.domain.BankCard;
 import com.artist.investment.service.BankCardService;
+import com.artist.sysadmin.sdk.domain.UserTicket;
+import com.artist.sysadmin.sdk.exception.NotLoginException;
+import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

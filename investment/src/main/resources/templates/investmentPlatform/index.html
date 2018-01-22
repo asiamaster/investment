@@ -13,10 +13,14 @@
                                 <input class="easyui-textbox" name="name" id="name" style="width:100%" labelWidth="40" data-options="labelAlign:'right', label:'名称:', validType:'length[0,20]'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="supervisionBank" id="supervisionBank" style="width:100%" labelWidth="100" data-options="labelAlign:'right', label:'资金监管银行:', validType:'length[0,20]'" />
+                                <input class="easyui-textbox" name="supervisionBank" id="supervisionBank" style="width:100%" labelWidth="100" data-options="labelAlign:'right', label:'资金监管银行:'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="isRecord" id="isRecord" style="width:100%" data-options="labelAlign:'right', label:'是否备案:', validType:'length[0,10]'" />
+                                <input class="easyui-numberbox" name="isRecord" id="isRecord" style="width:100%" data-options="labelAlign:'right', label:'是否备案:'" />
+                            </td>
+                            <td style="padding:5px;">
+                                <input name="securityLevel" id="securityLevel" editable="false" panelHeight="auto" style="width:100%" data-options="labelAlign:'right', label:'安全级别:'" />
+                                <#comboProvider _id="securityLevel" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"5"}'/>
                             </td>
                             <td style="padding-left:28px;padding-top: 10px; padding-bottom: 10px;">
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
@@ -43,6 +47,13 @@
                         <th width="6%" data-options="field:'name', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             名称
                         </th>
+                        <th width="6%" data-options="field:'securityLevelName', _escapeFileds:{securityLevelName:'code'}, _relationTablePkField:'value', _relationTable:'data_dictionary_value',
+_fkField:'securityLevel', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_id':'5', 'yn':'1'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            安全级别
+                        </th>
+                        <th width="7%" data-options="field:'avgProfitRatio', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            平均收益(%)
+                        </th>
                         <th width="7%" data-options="field:'supervisionBank', _escapeFileds:{supervisionBank:'code'}, _relationTablePkField:'value', _relationTable:'data_dictionary_value',
 _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_id':'4', 'yn':'1'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             资金监管银行
@@ -59,13 +70,16 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
                         <th width="6%" data-options="field:'platformBackground', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             平台背景
                         </th>
+                        <th width="8%" data-options="field:'flexible', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            灵活性
+                        </th>
                         <th width="10%" data-options="field:'businessMode', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             业务模式
                         </th>
-                        <th width="6%" data-options="field:'insuranceCompany', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            保险公司
+                        <th width="8%" data-options="field:'guarantee', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            保障
                         </th>
-                        <th width="8%" data-options="field:'uptime', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="8%" data-options="field:'uptime', _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             上线时间
                         </th>
                         <th width="15%" data-options="field:'introduction', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -90,7 +104,8 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
     <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="投资平台" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 630,
+				height: 486,
+				width: 800,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
@@ -105,10 +120,30 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
 			">
     <form id="_form" class="easyui-form" method="post" fit="true">
         <input name="_id" id="_id" type="hidden">
-        <table width="360px">
+        <table width="750px">
+            <tr>
+                <td style="padding:5px;" width="350">
+                    <input class="easyui-textbox" name="_name" id="_name" style="width:100%" data-options="label:'名称:',required:true, validType:'length[0,20]'" />
+                </td>
+                <td style="padding:5px;">
+                    <input class="easyui-textbox" name="_platformBackground" id="_platformBackground" style="width:100%" data-options="label:'平台背景:', validType:'length[0,120]'" />
+                </td>
+            </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_name" id="_name" style="width:100%" data-options="label:'名称:', validType:'length[0,20]'" />
+                    <input class="easyui-numberbox" name="_avgProfitRatio" id="_avgProfitRatio" style="width:100%" labelWidth="90" data-options="label:'平均收益(%):', validType:'length[0,3]'" />
+                </td>
+                <td style="padding:5px;">
+                    <input name="_securityLevel" id="_securityLevel" editable="false" panelHeight="auto" style="width:100%" data-options="label:'安全级别:', validType:'length[0,8]'" />
+                    <#comboProvider _id="_securityLevel" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"5"}'/>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:5px;">
+                    <input class="easyui-textbox" name="_registryPlace" id="_registryPlace" style="width:100%" data-options="label:'注册地:', validType:'length[0,10]'" />
+                </td>
+                <td style="padding:5px;">
+                    <input class="easyui-textbox" name="_businessPlace" id="_businessPlace" style="width:100%" data-options="label:'经营地:', validType:'length[0,10]'" />
                 </td>
             </tr>
             <tr>
@@ -116,51 +151,33 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
                     <input name="_supervisionBank" id="_supervisionBank" editable="false" style="width:100%" data-options="labelWidth:100, label:'资金监管银行:', validType:'length[0,20]'" />
                     <#comboProvider _id="_supervisionBank" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"4"}'/>
                 </td>
+                <td style="padding:5px;">
+                    <input class="easyui-datebox" name="_uptime" id="_uptime" style="width:100%" editable="false" data-options="label:'上线时间:'" />
+                </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
                     <input name="_isRecord" id="_isRecord" style="width:100%" panelWidth="auto" panelHeight="auto" editable="false" data-options="label:'是否备案:'" />
                     <#comboProvider _id="_isRecord" _provider='yesOrNoProvider'/>
                 </td>
-            </tr>
-            <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_registryPlace" id="_registryPlace" style="width:100%" data-options="label:'注册地:', validType:'length[0,10]'" />
+                    <input class="easyui-textbox" name="_guarantee" id="_guarantee" style="width:100%;" data-options="label:'保障:', validType:'length[0,60]'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_businessPlace" id="_businessPlace" style="width:100%" data-options="label:'经营地:', validType:'length[0,10]'" />
+                    <input class="easyui-textbox" name="_businessMode" id="_businessMode" multiline="true" style="width:100%;height:80px;" data-options="label:'业务模式:', validType:'length[0,120]'" />
                 </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_platformBackground" id="_platformBackground" style="width:100%" data-options="label:'平台背景:', validType:'length[0,120]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_businessMode" id="_businessMode" style="width:100%" data-options="label:'业务模式:', validType:'length[0,120]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_insuranceCompany" id="_insuranceCompany" style="width:100%" data-options="label:'保险公司:', validType:'length[0,20]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_uptime" id="_uptime" style="width:100%" editable="false" data-options="label:'上线时间:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_introduction" id="_introduction" multiline="true" style="width:100%;height:80px;" data-options="label:'平台介绍:', validType:'length[0,250]'" />
-                </td>
-            </tr>
-            <tr>
                 <td style="padding:5px;">
                     <input class="easyui-textbox" multiline="true" name="_notes" id="_notes" style="width:100%;height:80px;" data-options="label:'备注信息:', validType:'length[0,250]'" />
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:5px;">
+                    <input class="easyui-textbox" name="_flexible" id="_flexible" multiline="true" style="width:100%;height:80px;" data-options="label:'灵活性:', validType:'length[0,120]'" />
+                </td>
+                <td style="padding:5px;">
+                    <input class="easyui-textbox" name="_introduction" id="_introduction" multiline="true" style="width:100%;height:80px;" data-options="label:'平台介绍:', validType:'length[0,250]'" />
                 </td>
             </tr>
         </table>
@@ -198,7 +215,7 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
             if(!$('#_form').form("validate")){
                 return;
             }
-            var _formData = removeKeyStartWith($("#_form").serializeObject(),"_");
+            var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){

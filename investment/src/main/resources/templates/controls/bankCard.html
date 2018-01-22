@@ -1,0 +1,59 @@
+<div class="easyui-layout" fit="true">
+	<div region="north" height="40" align="left" border="false">
+		<div style="margin: 5px 5px;">
+			<form class="easyui-form" id="searchBankCardForm">
+				<input id="searchBankCardTextbox" label="帐户名:" labelAlign="right" name="searchBankCardTextbox" class="easyui-textbox" style="width: 300px">
+				&nbsp;&nbsp;
+				<a class="easyui-linkbutton"  data-options="width:80" iconCls="icon-search" onclick="searchBankCard();">查询</a>
+				&nbsp;&nbsp;
+				<a class="easyui-linkbutton"  data-options="width:80" iconCls="icon-ok" onclick="javascript:confirmBankCardBtn('${textboxId}');">确认</a>
+			</form>
+		</div>
+	</div>
+	<div region="center" align="center" border="false">
+		<table class="easyui-datagrid" id="selectBankCardGrid" sortName="accountName" sortOrder="asc" fitColumns="true" remoteSort="false" loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="true"
+			align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:dbClickBankCard" >
+			<thead>
+				<tr>
+					<th width="12%" data-options="field:'userId', _provider:'userProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+						所属用户
+					</th>
+					<th width="9%" data-options="field:'accountName'">帐户名</th>
+					<th width="20%" data-options="field:'cardNumber'">卡号</th>
+					<th width="14%" data-options="field:'bankName', _escapeFileds:{bankName:'code'}, _relationTablePkField:'value', _relationTable:'data_dictionary_value',
+_fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_id':'4', 'yn':'1'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+						开户行
+					</th>
+					<th width="20%" data-options="field:'subbranch', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+						所属支行</th>
+					<th width="12%" data-options="field:'isDefault',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+						是否默认
+					</th>
+					<th width="15%" data-options="field:'isDepository',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+						是否存管帐户
+					</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+	function dbClickBankCard(index, row) {
+		confirmBankCardBtn("${textboxId}");
+	}
+	function searchBankCard() {
+		var opts = $("#selectBankCardGrid").datagrid("options");
+        if (null == opts.url || "" == opts.url) {
+            opts.url = '${contextPath!}/selectDialog/listBankCard';
+        }
+		var text = $('#searchBankCardTextbox').textbox('getText');
+		$('#selectBankCardGrid').datagrid('load', bindGridMeta2Data("selectBankCardGrid",{accountName : text}));
+	}
+
+	$(function() {
+//		$('#searchBankCardTextbox').textbox('addClearBtn', 'icon-clear');
+		$('#searchBankCardTextbox').textbox('textbox').focus();
+        bindFormEvent("searchBankCardForm", "searchBankCardTextbox", searchBankCard, closeBankCardSelectDlg);
+        searchBankCard();
+	})
+</script>

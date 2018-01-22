@@ -111,7 +111,7 @@
         <div region="center" style="width:100%;" height="auto">
             <!-- =========================================================表格========================================================= -->
             <table class="easyui-datagrid" title="${className}列表" id="grid" fitColumns="true" noheader="true"
-                   pagination="true" pageSize="30" pageNumber="1" pagePosition="both" rownumbers="true" remoteSort="false"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="${firstField.javaProperty}"
                    align="center" fit="true" striped="true" toolbar="#toolbar" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
@@ -189,6 +189,7 @@
 					handler:saveOrUpdate
 				},{
 					text:'取消',
+					iconCls:'icon-cancel',
 					handler:function(){
 						$('#dlg').dialog('close');
 					}
@@ -249,10 +250,10 @@
                     }else{ //没有JSON参数则直接按字段类型来显示控件
                         if(field.jdbcTypeName=="TIMESTAMP"){
                         %>
-                    <input class="easyui-datetimebox" name="_${field.javaProperty}" id="_${field.javaProperty}" style="width:100%" data-options="label:'${fieldName!}:'" <% if(field.nullable == false){ %>
+                    <input class="easyui-datetimebox" name="_${field.javaProperty}" id="_${field.javaProperty}" style="width:100%" editable="false" data-options="label:'${fieldName!}:'" <% if(field.nullable == false){ %>
                         required="true" <%}%>/>
                         <%}else if(field.jdbcTypeName=="DATE"){%>
-                    <input class="easyui-datebox" name="_${field.javaProperty}" id="_${field.javaProperty}" style="width:100%" data-options="label:'${fieldName!}:'" <% if(field.nullable == false){ %>
+                    <input class="easyui-datebox" name="_${field.javaProperty}" id="_${field.javaProperty}" style="width:100%" editable="false" data-options="label:'${fieldName!}:'" <% if(field.nullable == false){ %>
                         required="true" <%}%>/>
                         <%}else if(field.jdbcTypeName=="INTEGER" || field.jdbcTypeName=="BIGINT"){%>
                     <input class="easyui-numberbox" name="_${field.javaProperty}" id="_${field.javaProperty}" style="width:100%" data-options="label:'${fieldName!}:'" <% if(field.nullable == false){ %>
@@ -441,7 +442,40 @@
             } else {
                 document.onkeyup = getKey;
             }
-
+            var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
+                pager.pagination({
+                    ${"<#"}controls_paginationOpts/>,
+                    buttons:[
+                    {
+                        iconCls:'icon-add',
+                        text:'新增',
+                        handler:function(){
+                            openInsert();
+                        }
+                    },
+                    {
+                        iconCls:'icon-edit',
+                        text:'修改',
+                        handler:function(){
+                            openUpdate();
+                        }
+                    },
+                    {
+                        iconCls:'icon-remove',
+                        text:'删除',
+                        handler:function(){
+                            del();
+                        }
+                    },
+                    {
+                        iconCls:'icon-export',
+                        text:'导出',
+                        handler:function(){
+                            doExport('grid');
+                        }
+                    }
+                ]
+            });
             //表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
             queryGrid();

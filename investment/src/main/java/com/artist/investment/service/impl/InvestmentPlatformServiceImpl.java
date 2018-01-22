@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-01-18 17:11:11.
+ * This file was generated on 2018-01-22 09:19:12.
  */
 @Service
 public class InvestmentPlatformServiceImpl extends BaseServiceImpl<InvestmentPlatform, Long> implements InvestmentPlatformService {

@@ -20,7 +20,7 @@
     <result column="actual_expenditure" jdbcType="BIGINT" property="actualExpenditure" />
     <result column="investment" jdbcType="BIGINT" property="investment" />
     <result column="is_remind" jdbcType="INTEGER" property="isRemind" />
-    <result column="yn" jdbcType="INTEGER" property="yn" />
+    <result column="is_progressing" jdbcType="INTEGER" property="isProgressing" />
     <result column="bank_card_id" jdbcType="BIGINT" property="bankCardId" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
     <result column="created_id" jdbcType="BIGINT" property="createdId" />
@@ -34,8 +34,8 @@
     -->
     id, investor_id, platform_id, project_name, start_time, end_time, project_duration, 
     project_duration_unit, profit_ratio, voucher, Interest_coupon, cash_coupon, actual_expenditure, 
-    investment, is_remind, yn, bank_card_id, notes, created_id, modified_id, created, 
-    modified
+    investment, is_remind, is_progressing, bank_card_id, notes, created_id, modified_id, 
+    created, modified
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
@@ -94,8 +94,8 @@
       <if test="isRemind != null">
         is_remind = #{isRemind,jdbcType=INTEGER},
       </if>
-      <if test="yn != null">
-        yn = #{yn,jdbcType=INTEGER},
+      <if test="isProgressing != null">
+        is_progressing = #{isProgressing,jdbcType=INTEGER},
       </if>
       <if test="bankCardId != null">
         bank_card_id = #{bankCardId,jdbcType=BIGINT},

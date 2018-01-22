@@ -180,6 +180,10 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
             formFocus("_form", "_userId");
             //默认选中储蓄卡
             $("#_cardType").combobox("setValue", "1");
+            //默认为非默认卡
+            $("#_isDefault").combobox("setValue", "0");
+            //默认为非存管帐户
+            $("#_isDepository").combobox("setValue", "0");
         }
 
         //打开修改窗口
@@ -195,6 +199,7 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
             var formData = $.extend({},selected);
             formData = addKeyStartWith(getOriginalData(formData),"_");
             $('#_form').form('load', formData);
+            //单独加载所属用户
             $("#userId").textbox("initValue", selected["$_userId"]);
             $("#userId").textbox("setText", selected["userId"]);
         }
@@ -203,7 +208,7 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
             if(!$('#_form').form("validate")){
                 return;
             }
-            var _formData = removeKeyStartWith($("#_form").serializeObject(),"_");
+            var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){

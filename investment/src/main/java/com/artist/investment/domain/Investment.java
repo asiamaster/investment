@@ -1,5 +1,7 @@
 package com.artist.investment.domain;
 
+import com.dili.ss.domain.annotation.Like;
+import com.dili.ss.domain.annotation.Operator;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
@@ -14,7 +16,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-01-19 09:36:32.
+ * This file was generated on 2018-01-22 10:24:59.
  */
 @Table(name = "`investment`")
 public interface Investment extends IBaseDomain {
@@ -44,6 +46,7 @@ public interface Investment extends IBaseDomain {
     @Column(name = "`project_name`")
     @FieldDef(label="项目名称", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getProjectName();
 
     void setProjectName(String projectName);
@@ -125,12 +128,12 @@ public interface Investment extends IBaseDomain {
 
     void setIsRemind(Integer isRemind);
 
-    @Column(name = "`yn`")
+    @Column(name = "`is_progressing`")
     @FieldDef(label="是否投资中")
-    @EditMode(editor = FieldEditor.Combo, required = false, params="{\"data\":[{\"text\":\"不可用\",\"value\":\"0\"},{\"text\":\"可用\",\"value\":\"1\"}],\"provider\":\"YnProvider\"}")
-    Integer getYn();
+    @EditMode(editor = FieldEditor.Combo, required = false, params="{\"provider\":\"YesOrNoProvider\"}")
+    Integer getIsProgressing();
 
-    void setYn(Integer yn);
+    void setIsProgressing(Integer isProgressing);
 
     @Column(name = "`bank_card_id`")
     @FieldDef(label="投资卡")

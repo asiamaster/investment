@@ -12,8 +12,11 @@
     <result column="registry_place" jdbcType="VARCHAR" property="registryPlace" />
     <result column="business_place" jdbcType="VARCHAR" property="businessPlace" />
     <result column="platform_background" jdbcType="VARCHAR" property="platformBackground" />
+    <result column="security_level" jdbcType="INTEGER" property="securityLevel" />
+    <result column="avg_profit_ratio" jdbcType="INTEGER" property="avgProfitRatio" />
     <result column="business_mode" jdbcType="VARCHAR" property="businessMode" />
-    <result column="insurance_company" jdbcType="VARCHAR" property="insuranceCompany" />
+    <result column="flexible" jdbcType="VARCHAR" property="flexible" />
+    <result column="guarantee" jdbcType="VARCHAR" property="guarantee" />
     <result column="introduction" jdbcType="VARCHAR" property="introduction" />
     <result column="uptime" jdbcType="TIMESTAMP" property="uptime" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
@@ -25,7 +28,8 @@
       WARNING - @mbg.generated
     -->
     id, name, supervision_bank, is_record, registry_place, business_place, platform_background, 
-    business_mode, insurance_company, introduction, uptime, notes, created, modified
+    security_level, avg_profit_ratio, business_mode, flexible, guarantee, introduction, 
+    uptime, notes, created, modified
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
@@ -60,11 +64,20 @@
       <if test="platformBackground != null">
         platform_background = #{platformBackground,jdbcType=VARCHAR},
       </if>
+      <if test="securityLevel != null">
+        security_level = #{securityLevel,jdbcType=INTEGER},
+      </if>
+      <if test="avgProfitRatio != null">
+        avg_profit_ratio = #{avgProfitRatio,jdbcType=INTEGER},
+      </if>
       <if test="businessMode != null">
         business_mode = #{businessMode,jdbcType=VARCHAR},
       </if>
-      <if test="insuranceCompany != null">
-        insurance_company = #{insuranceCompany,jdbcType=VARCHAR},
+      <if test="flexible != null">
+        flexible = #{flexible,jdbcType=VARCHAR},
+      </if>
+      <if test="guarantee != null">
+        guarantee = #{guarantee,jdbcType=VARCHAR},
       </if>
       <if test="introduction != null">
         introduction = #{introduction,jdbcType=VARCHAR},

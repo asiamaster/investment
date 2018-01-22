@@ -2,6 +2,7 @@ package com.artist.sysadmin.api;
 
 import com.artist.sysadmin.domain.Department;
 import com.artist.sysadmin.domain.User;
+import com.artist.sysadmin.domain.dto.UserDto;
 import com.dili.ss.domain.BaseOutput;
 import com.artist.sysadmin.service.UserService;
 import io.swagger.annotations.Api;
@@ -51,5 +52,13 @@ public class UserApi {
 	@RequestMapping(value = "/listUserDepartmentByUserId", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<Department>> listUserDepartmentByUserId(@RequestBody Long userId) {
 		return BaseOutput.success().setData(this.userService.listUserDepartmentByUserId(userId));
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/listUserByIds", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<User>> listUserByIds(@RequestBody List<Long> ids){
+		UserDto user = new UserDto();
+		user.setIds(ids);
+		return BaseOutput.success().setData(userService.listByExample(user));
 	}
 }
