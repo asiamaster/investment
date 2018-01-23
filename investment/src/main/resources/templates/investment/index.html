@@ -41,6 +41,8 @@
              if (isNaN(y) || isNaN(m) || isNaN(d)){
                  return;
              }
+             //减一天
+             d-=1;
              //计算天
              if(projectDurationUnit == 1){
                  d+=parseInt(projectDuration);
@@ -68,6 +70,8 @@
              if (isNaN(y) || isNaN(m) || isNaN(d)){
                  return;
              }
+             //减一天
+             d+=1;
              //计算天
              if(projectDurationUnit == 1){
                  d-=parseInt(projectDuration);
@@ -101,7 +105,8 @@
                                 <input class="easyui-numberbox" name="investorId" id="investorId" style="width:100%" labelAlign="right" data-options="label:'投资人:', validType:'length[0,19]'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="platformId" id="platformId" style="width:100%" labelAlign="right" data-options="label:'投资平台:', validType:'length[0,19]'" />
+                                <input name="platformId" id="platformId" style="width:100%" editable="false" labelAlign="right" panelWidth="auto" panelHeight="auto" data-options="label:'投资平台:'" />
+                                <#comboProvider _id="platformId" _provider='platformProvider'/>
                             </td>
                             <td style="padding:5px;">
                                 <input class="easyui-textbox" name="projectName" id="projectName" style="width:100%" labelAlign="right" data-options="label:'项目名称:', validType:'length[0,50]'" />
@@ -148,20 +153,20 @@
                         <th data-options="field:'endDate', _index:18,  _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             结束日期
                         </th>
-                        <th data-options="field:'projectDuration', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'projectDuration', _provider:'projectDurationProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             项目期限
                         </th>
-                        <th data-options="field:'projectDurationUnit', _provider:'projectDurationUnitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            项目期限单位
-                        </th>
+                        <!--<th data-options="field:'projectDurationUnit', _provider:'projectDurationUnitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">-->
+                            <!--项目期限单位-->
+                        <!--</th>-->
                         <th data-options="field:'profitRatio',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            年化收益率
+                            年化利率(%)
                         </th>
                         <th data-options="field:'deducted', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             已抵扣
                         </th>
                         <th data-options="field:'interestCoupon',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            加息券
+                            利率券(%)
                         </th>
                         <th data-options="field:'cashCoupon', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             优惠券
@@ -241,7 +246,7 @@
                     <input class="easyui-textbox" name="_projectName" id="_projectName" style="width:100%" data-options="label:'项目名称:', validType:'length[0,50]'" />
                 </td>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_profitRatio" id="_profitRatio" style="width:100%" data-options="label:'年化收益率:'" />
+                    <input class="easyui-numberbox" name="_profitRatio" id="_profitRatio" labelWidth="90" style="width:100%" data-options="label:'年化利率(%):'" />
                 </td>
             </tr>
             <tr>

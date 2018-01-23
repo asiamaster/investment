@@ -9,6 +9,7 @@ import com.dili.ss.util.DateUtils;
 import com.dili.ss.util.MoneyUtils;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,19 @@ public class ExpectProfitProvider implements ValueProvider {
         //获取投资额，因为这里已经被批量提供者转换过了，所以要取原始值
         Long investment1 = Long.parseLong(investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "investment").toString());
         Long cashCoupon = Long.parseLong(investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "cashCoupon").toString());
-        //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) / 100(分)
-        Long profit = (investment1+cashCoupon) * (investment.getProfitRatio()+ investment.getInterestCoupon()) / 100;
+        Date startDate = investment.getStartDate();
+        Date endDate = investment.getEndDate();
+        if(startDate == null || endDate == null){
+            return null;
+        }
+        //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100(分)
+        BigDecimal bigDecimal = new BigDecimal((investment1+cashCoupon) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(startDate, endDate));
+        BigDecimal bigDecimal365 = new BigDecimal(365);
+        BigDecimal bigDecimal100 = new BigDecimal(100);
+        //下面的方式不精确
+//        Long profit = (investment1+cashCoupon) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(startDate, endDate) / 365 / 100;
+        //精确计算两位小数，并且四舍五入
+        Long profit = bigDecimal.divide(bigDecimal365, 0, BigDecimal.ROUND_HALF_DOWN).divide(bigDecimal100, 0, BigDecimal.ROUND_HALF_DOWN).longValue();
         return MoneyUtils.centToYuan(profit);
     }
 }

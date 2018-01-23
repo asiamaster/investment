@@ -28,6 +28,7 @@ public class PlatformProvider extends BatchSqlDisplayTextProviderAdaptor {
     public List<ValuePair<?>> getLookupList(Object obj, Map metaMap, FieldMeta fieldMeta) {
         List<InvestmentPlatform> investmentPlatforms = investmentPlatformService.list(null);
         List<ValuePair<?>> buffer = new ArrayList<ValuePair<?>>(investmentPlatforms.size());
+        buffer.add(new ValuePairImpl<>(EMPTY_ITEM_TEXT, null));
         for(InvestmentPlatform investmentPlatform : investmentPlatforms){
             buffer.add(new ValuePairImpl(investmentPlatform.getName(), investmentPlatform.getId()));
         }
