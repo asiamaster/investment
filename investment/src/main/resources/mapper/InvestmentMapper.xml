@@ -9,15 +9,14 @@
     <result column="investor_id" jdbcType="BIGINT" property="investorId" />
     <result column="platform_id" jdbcType="BIGINT" property="platformId" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
-    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="start_time" jdbcType="DATE" property="startDate" />
+    <result column="end_time" jdbcType="DATE" property="endDate" />
     <result column="project_duration" jdbcType="INTEGER" property="projectDuration" />
     <result column="project_duration_unit" jdbcType="INTEGER" property="projectDurationUnit" />
     <result column="profit_ratio" jdbcType="INTEGER" property="profitRatio" />
-    <result column="voucher" jdbcType="BIGINT" property="voucher" />
+    <result column="deducted" jdbcType="BIGINT" property="deducted" />
     <result column="Interest_coupon" jdbcType="INTEGER" property="interestCoupon" />
     <result column="cash_coupon" jdbcType="BIGINT" property="cashCoupon" />
-    <result column="actual_expenditure" jdbcType="BIGINT" property="actualExpenditure" />
     <result column="investment" jdbcType="BIGINT" property="investment" />
     <result column="is_remind" jdbcType="INTEGER" property="isRemind" />
     <result column="is_progressing" jdbcType="INTEGER" property="isProgressing" />
@@ -33,7 +32,7 @@
       WARNING - @mbg.generated
     -->
     id, investor_id, platform_id, project_name, start_time, end_time, project_duration, 
-    project_duration_unit, profit_ratio, voucher, Interest_coupon, cash_coupon, actual_expenditure, 
+    project_duration_unit, profit_ratio, deducted, Interest_coupon, cash_coupon,
     investment, is_remind, is_progressing, bank_card_id, notes, created_id, modified_id, 
     created, modified
   </sql>
@@ -61,11 +60,11 @@
       <if test="projectName != null">
         project_name = #{projectName,jdbcType=VARCHAR},
       </if>
-      <if test="startTime != null">
-        start_time = #{startTime,jdbcType=TIMESTAMP},
+      <if test="startDate != null">
+        start_time = #{startDate,jdbcType=DATE},
       </if>
-      <if test="endTime != null">
-        end_time = #{endTime,jdbcType=TIMESTAMP},
+      <if test="endDate != null">
+        end_time = #{endDate,jdbcType=DATE},
       </if>
       <if test="projectDuration != null">
         project_duration = #{projectDuration,jdbcType=INTEGER},
@@ -76,17 +75,14 @@
       <if test="profitRatio != null">
         profit_ratio = #{profitRatio,jdbcType=INTEGER},
       </if>
-      <if test="voucher != null">
-        voucher = #{voucher,jdbcType=BIGINT},
+      <if test="deducted != null">
+        deducted = #{deducted,jdbcType=BIGINT},
       </if>
       <if test="interestCoupon != null">
         Interest_coupon = #{interestCoupon,jdbcType=INTEGER},
       </if>
       <if test="cashCoupon != null">
         cash_coupon = #{cashCoupon,jdbcType=BIGINT},
-      </if>
-      <if test="actualExpenditure != null">
-        actual_expenditure = #{actualExpenditure,jdbcType=BIGINT},
       </if>
       <if test="investment != null">
         investment = #{investment,jdbcType=BIGINT},

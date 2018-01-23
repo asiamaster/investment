@@ -35,7 +35,7 @@ public class SelectDialogController {
 
 	@RequestMapping(value = "/user.html", method = RequestMethod.GET)
 	public String user(ModelMap modelMap, @RequestParam("textboxId") String textboxId) {
-		modelMap.put("textboxId", textboxId);
+		modelMap.put("userTextboxId", textboxId);
 		return "controls/user";
 	}
 
@@ -53,7 +53,7 @@ public class SelectDialogController {
 
 	@RequestMapping(value = "/bankCard.html", method = RequestMethod.GET)
 	public String bankCard(ModelMap modelMap, @RequestParam("textboxId") String textboxId) {
-		modelMap.put("textboxId", textboxId);
+		modelMap.put("bankCardTextboxId", textboxId);
 		return "controls/bankCard";
 	}
 

@@ -1,6 +1,92 @@
  <#body>
      <#controls_user dlgId="userSelectDialog" controlId="_investorId"/>
      <#controls_bankCard dlgId="bankCardSelectDialog" controlId="_bankCardId"/>
+     <script>
+         //根据项目期限和期限单位计算结束日期
+         function computeEndDate(newValue, oldValue) {
+             //没有项目期限不计算
+             var projectDuration = $("#_projectDuration").textbox("getValue");
+             if(projectDuration == ""){
+                 return;
+             }
+             //没有项目期限单位不计算
+             var projectDurationUnit = $("#_projectDurationUnit").combobox("getValue");
+             if(projectDurationUnit == ""){
+                 return;
+             }
+             var startDate = $("#_startDate").datebox("getValue");
+             var endDate = $("#_endDate").datebox("getValue");
+
+             //开始结束时间都没有，则不计算
+             if(startDate == "" && endDate == ""){
+                 return;
+             }
+             //只有开始时间，则计算结束时间
+             if(endDate == ""){
+                 setEndDate(projectDuration, projectDurationUnit, startDate);
+             }//只有结束时间，则计算开始时间
+             else if(startDate == ""){
+                 setStartDate(projectDuration, projectDurationUnit, endDate);
+             }//开始结束都有还是要重新计算结束时间
+             else{
+                 setEndDate(projectDuration, projectDurationUnit, startDate);
+             }
+         }
+         //设置结束日期
+         function setEndDate(projectDuration, projectDurationUnit, startDate){
+             var ss = startDate.split('-');
+             var y = parseInt(ss[0],10);
+             var m = parseInt(ss[1],10);
+             var d = parseInt(ss[2],10);
+             if (isNaN(y) || isNaN(m) || isNaN(d)){
+                 return;
+             }
+             //计算天
+             if(projectDurationUnit == 1){
+                 d+=parseInt(projectDuration);
+             }//计算周
+             else if(projectDurationUnit == 2){
+                 d+=parseInt(projectDuration)*7;
+             }//计算月
+             else if(projectDurationUnit == 3){
+                 m+=parseInt(projectDuration);
+             }//计算季
+             else if(projectDurationUnit == 4){
+                 m+=parseInt(projectDuration)*3;
+             }//计算年
+             else if(projectDurationUnit == 5){
+                 y+=parseInt(projectDuration);
+             }
+             $("#_endDate").datebox("setValue", y+"-"+m+"-"+d);
+         }
+         //设置开始日期
+         function setStartDate(projectDuration, projectDurationUnit, endDate){
+             var ss = endDate.split('-');
+             var y = parseInt(ss[0],10);
+             var m = parseInt(ss[1],10);
+             var d = parseInt(ss[2],10);
+             if (isNaN(y) || isNaN(m) || isNaN(d)){
+                 return;
+             }
+             //计算天
+             if(projectDurationUnit == 1){
+                 d-=parseInt(projectDuration);
+             }//计算周
+             else if(projectDurationUnit == 2){
+                 d-=parseInt(projectDuration)*7;
+             }//计算月
+             else if(projectDurationUnit == 3){
+                 m-=parseInt(projectDuration);
+             }//计算季
+             else if(projectDurationUnit == 4){
+                 m-=parseInt(projectDuration)*3;
+             }//计算年
+             else if(projectDurationUnit == 5){
+                 y-=parseInt(projectDuration);
+             }
+             $("#_startDate").datebox("setValue", y+"-"+m+"-"+d);
+         }
+     </script>
     <div class="easyui-layout" fit="true">
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
@@ -56,11 +142,11 @@
                         <th data-options="field:'projectName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             项目名称
                         </th>
-                        <th data-options="field:'startTime',  _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            起始时间
+                        <th data-options="field:'startDate', _index:17, _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            起始日期
                         </th>
-                        <th data-options="field:'endTime',  _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            结束时间
+                        <th data-options="field:'endDate', _index:18,  _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            结束日期
                         </th>
                         <th data-options="field:'projectDuration', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             项目期限
@@ -71,19 +157,16 @@
                         <th data-options="field:'profitRatio',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             年化收益率
                         </th>
-                        <th data-options="field:'voucher',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            满减券
+                        <th data-options="field:'deducted', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            已抵扣
                         </th>
                         <th data-options="field:'interestCoupon',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             加息券
                         </th>
-                        <th data-options="field:'cashCoupon',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            现金券
+                        <th data-options="field:'cashCoupon', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            优惠券
                         </th>
-                        <th data-options="field:'actualExpenditure',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            扣除满减券的支付额
-                        </th>
-                        <th data-options="field:'investment',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'investment', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             投资额
                         </th>
                         <th data-options="field:'isRemind',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -94,6 +177,12 @@
                         </th>
                         <th data-options="field:'bankCardId', _provider:'bankCardProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             银行卡
+                        </th>
+                        <th data-options="field:'currentProfit', _index:15, _provider:'currentProfitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            已得收益
+                        </th>
+                        <th data-options="field:'expectProfit', _index:16, _provider:'expectProfitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            预计收益
                         </th>
                         <th data-options="field:'notes', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             备注
@@ -120,7 +209,7 @@
     <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="投资记录" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 500,
+				height: 465,
 				width: 800,
 				buttons: [{
 					text:'确认',
@@ -157,44 +246,35 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-datebox" name="_startTime" id="_startTime" style="width:100%" editable="false" data-options="label:'起始时间:'" />
+                    <input class="easyui-datebox" name="_startDate" id="_startDate" style="width:100%" data-options="label:'起始日期:'" />
                 </td>
                 <td style="padding:5px;">
-                    <input class="easyui-datebox" name="_endTime" id="_endTime" style="width:100%" editable="false" data-options="label:'结束时间:'" />
+                    <input class="easyui-datebox" name="_endDate" id="_endDate" style="width:100%" data-options="label:'结束日期:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_projectDuration" id="_projectDuration" style="width:100%" data-options="label:'项目期限:'" />
+                    <input class="easyui-numberbox" name="_projectDuration" id="_projectDuration" style="width:100%" data-options="label:'项目期限:', onChange:computeEndDate" />
                 </td>
                 <td style="padding:5px;">
-                       <input name="_projectDurationUnit" id="_projectDurationUnit" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="期限单位:" />
+                       <input name="_projectDurationUnit" id="_projectDurationUnit" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="期限单位:" data-options="onChange:computeEndDate"/>
                        <#comboProvider _id="_projectDurationUnit" _provider='projectDurationUnitProvider'/>
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_actualExpenditure" id="_actualExpenditure" style="width:100%" data-options="label:'实际支付额:'" />
+                    <input class="easyui-numberbox" precision="2" min="0" name="_investment" id="_investment" style="width:100%" data-options="label:'投资额:'" />
                 </td>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_investment" id="_investment" style="width:100%" data-options="label:'投资额:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_bankCardId" id="_bankCardId"  panelHeight="auto" label="银行卡:" style="width: 100%;"
-                           data-options="editable:false,buttonText:'选择',onClickButton:_selectBankCard,onChange:_changeTextboxShowClear" />
-                </td>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_voucher" id="_voucher" style="width:100%" data-options="label:'满减券:'" />
+                    <input class="easyui-numberbox" precision="2" min="0" name="_deducted" id="_deducted" style="width:100%" data-options="label:'已抵扣:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_interestCoupon" id="_interestCoupon" style="width:100%" data-options="label:'加息券:'" />
+                    <input class="easyui-numberbox" precision="0" min="0" name="_interestCoupon" id="_interestCoupon" style="width:100%" data-options="label:'加息券:'" />
                 </td>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_cashCoupon" id="_cashCoupon" style="width:100%" data-options="label:'现金券:'" />
+                    <input class="easyui-numberbox" precision="2" min="0" name="_cashCoupon" id="_cashCoupon" style="width:100%" data-options="label:'现金券:'" />
                 </td>
             </tr>
             <tr>
@@ -208,7 +288,11 @@
                 </td>
             </tr>
             <tr>
-                <td style="padding:5px;" colspan="2">
+                <td style="padding:5px;" valign="top">
+                    <input class="easyui-textbox" name="_bankCardId" id="_bankCardId"  panelHeight="auto" label="银行卡:" style="width: 100%;"
+                           data-options="editable:false,buttonText:'选择',onClickButton:_selectBankCard,onChange:_changeTextboxShowClear" />
+                </td>
+                <td style="padding:5px;">
                     <input class="easyui-textbox" name="_notes"  id="_notes" multiline="true" style="width:100%;height:80px;"  data-options="label:'备注:', validType:'length[0,250]'" />
                 </td>
             </tr>
@@ -220,6 +304,7 @@
     <!-- style & script 分隔线 -->
     <!-- ====================================================================================================================== -->
     <script type="text/javascript">
+
         //打开新增窗口
         function openInsert(){
             $('#dlg').dialog('open');
@@ -246,6 +331,10 @@
             $('#dlg').dialog('center');
             formFocus("_form", "_investorId");
             var formData = $.extend({},selected);
+            //现金券、已抵扣、实际支付和投资额不取原始值
+            formData[orginal_key_prefix + "cashCoupon"] = formData["cashCoupon"];
+            formData[orginal_key_prefix + "deducted"] = formData["deducted"];
+            formData[orginal_key_prefix + "investment"] = formData["investment"];
             formData = addKeyStartWith(getOriginalData(formData),"_");
             $('#_form').form('load', formData);
             //加载所属用户

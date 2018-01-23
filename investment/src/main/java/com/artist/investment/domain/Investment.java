@@ -1,7 +1,5 @@
 package com.artist.investment.domain;
 
-import com.dili.ss.domain.annotation.Like;
-import com.dili.ss.domain.annotation.Operator;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
@@ -16,7 +14,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-01-22 10:24:59.
+ * This file was generated on 2018-01-23 09:56:55.
  */
 @Table(name = "`investment`")
 public interface Investment extends IBaseDomain {
@@ -46,24 +44,23 @@ public interface Investment extends IBaseDomain {
     @Column(name = "`project_name`")
     @FieldDef(label="项目名称", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
-    @Like(Like.BOTH)
     String getProjectName();
 
     void setProjectName(String projectName);
 
     @Column(name = "`start_time`")
-    @FieldDef(label="起始时间")
-    @EditMode(editor = FieldEditor.Datetime, required = false)
-    Date getStartTime();
+    @FieldDef(label="起始日期")
+    @EditMode(editor = FieldEditor.Date, required = false)
+    Date getStartDate();
 
-    void setStartTime(Date startTime);
+    void setStartDate(Date startDate);
 
     @Column(name = "`end_time`")
-    @FieldDef(label="结束时间")
-    @EditMode(editor = FieldEditor.Datetime, required = false)
-    Date getEndTime();
+    @FieldDef(label="结束日期")
+    @EditMode(editor = FieldEditor.Date, required = false)
+    Date getEndDate();
 
-    void setEndTime(Date endTime);
+    void setEndDate(Date endDate);
 
     @Column(name = "`project_duration`")
     @FieldDef(label="项目期限")
@@ -86,12 +83,12 @@ public interface Investment extends IBaseDomain {
 
     void setProfitRatio(Integer profitRatio);
 
-    @Column(name = "`voucher`")
-    @FieldDef(label="满减券")
+    @Column(name = "`deducted`")
+    @FieldDef(label="已抵扣")
     @EditMode(editor = FieldEditor.Number, required = false)
-    Long getVoucher();
+    Long getDeducted();
 
-    void setVoucher(Long voucher);
+    void setDeducted(Long deducted);
 
     @Column(name = "`Interest_coupon`")
     @FieldDef(label="加息券")
@@ -106,13 +103,6 @@ public interface Investment extends IBaseDomain {
     Long getCashCoupon();
 
     void setCashCoupon(Long cashCoupon);
-
-    @Column(name = "`actual_expenditure`")
-    @FieldDef(label="扣除满减券的支付额")
-    @EditMode(editor = FieldEditor.Number, required = false)
-    Long getActualExpenditure();
-
-    void setActualExpenditure(Long actualExpenditure);
 
     @Column(name = "`investment`")
     @FieldDef(label="投资额")

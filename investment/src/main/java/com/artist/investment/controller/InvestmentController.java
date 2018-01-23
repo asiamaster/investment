@@ -62,14 +62,7 @@ public class InvestmentController {
 	})
     @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(Investment investment) {
-        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-        if(userTicket == null){
-            throw new NotLoginException();
-        }
-        investment.setCreatedId(userTicket.getId());
-        investment.setModifiedId(userTicket.getId());
-        investmentService.insertSelective(investment);
-        return BaseOutput.success("新增成功");
+        return investmentService.insertSelectiveWithOutput(investment);
     }
 
     @ApiOperation("修改Investment")
@@ -78,16 +71,7 @@ public class InvestmentController {
 	})
     @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(Investment investment) {
-        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-        if(userTicket == null){
-            throw new NotLoginException();
-        }
-        investment.setModifiedId(userTicket.getId());
-        investment.setModified(new Date());
-        //这里是为了解决投资人或银行卡为空的时候，只能从数据库获取旧值，然后用新值覆盖后强制更新
-        investment = DTOUtils.link(investment, investmentService.get(investment.getId()), Investment.class);
-        investmentService.update(investment);
-        return BaseOutput.success("修改成功");
+        return investmentService.updateSelectiveWithOutput(investment);
     }
 
     @ApiOperation("删除Investment")
@@ -96,7 +80,7 @@ public class InvestmentController {
 	})
     @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
-        investmentService.delete(id);
-        return BaseOutput.success("删除成功");
+        return BaseOutput.success("删除成功").setData(investmentService.delete(id));
     }
+
 }

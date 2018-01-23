@@ -6,7 +6,7 @@
 				&nbsp;&nbsp;
 				<a class="easyui-linkbutton"  data-options="width:80" iconCls="icon-search" onclick="searchBankCard();">查询</a>
 				&nbsp;&nbsp;
-				<a class="easyui-linkbutton"  data-options="width:80" iconCls="icon-ok" onclick="javascript:confirmBankCardBtn('${textboxId}');">确认</a>
+				<a class="easyui-linkbutton"  data-options="width:80" iconCls="icon-ok" onclick="javascript:confirmBankCardBtn('${bankCardTextboxId}');">确认</a>
 			</form>
 		</div>
 	</div>
@@ -39,7 +39,7 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
 </div>
 <script type="text/javascript">
 	function dbClickBankCard(index, row) {
-		confirmBankCardBtn("${textboxId}");
+		confirmBankCardBtn("${bankCardTextboxId}");
 	}
 	function searchBankCard() {
 		var opts = $("#selectBankCardGrid").datagrid("options");
