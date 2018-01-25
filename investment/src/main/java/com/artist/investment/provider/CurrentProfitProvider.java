@@ -37,9 +37,17 @@ public class CurrentProfitProvider implements ValueProvider {
         //总天数
 //        int totalDay = DateUtils.differentDays(investment.getStartDate(), investment.getEndDate());
         //计算开始投资时间到现在的收益(单位元)
-        //获取投资额，因为这里已经被批量提供者转换过了，所以要取原始值
-        Long investment1 = Long.parseLong(investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "investment").toString());
-        Long cashCoupon = Long.parseLong(investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "cashCoupon").toString());
+        //获取投资额，因为这里已经被批量提供者转换过了，所以要取原始值，如果没有原始值才取字段的值
+        Object investmentObj = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "investment");
+        if(investmentObj == null){
+            investmentObj = investment.aget("investment");
+        }
+        Long investment1 = Long.parseLong(investmentObj.toString());
+        Object cashCouponObj = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "cashCoupon");
+        if(cashCouponObj == null){
+            cashCouponObj = investment.aget("cashCoupon");
+        }
+        Long cashCoupon = Long.parseLong(cashCouponObj.toString());
         //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 已投资天数 / 总天数 / 100(分)
         BigDecimal bigDecimal = new BigDecimal((investment1+cashCoupon) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * defDay);
         BigDecimal bigDecimalTotalDay = new BigDecimal(365);

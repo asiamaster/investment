@@ -9,8 +9,8 @@
     <result column="investor_id" jdbcType="BIGINT" property="investorId" />
     <result column="platform_id" jdbcType="BIGINT" property="platformId" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
-    <result column="start_time" jdbcType="DATE" property="startDate" />
-    <result column="end_time" jdbcType="DATE" property="endDate" />
+    <result column="start_date" jdbcType="DATE" property="startDate" />
+    <result column="end_date" jdbcType="DATE" property="endDate" />
     <result column="project_duration" jdbcType="INTEGER" property="projectDuration" />
     <result column="project_duration_unit" jdbcType="INTEGER" property="projectDurationUnit" />
     <result column="profit_ratio" jdbcType="INTEGER" property="profitRatio" />
@@ -19,7 +19,6 @@
     <result column="cash_coupon" jdbcType="BIGINT" property="cashCoupon" />
     <result column="investment" jdbcType="BIGINT" property="investment" />
     <result column="is_remind" jdbcType="INTEGER" property="isRemind" />
-    <result column="is_progressing" jdbcType="INTEGER" property="isProgressing" />
     <result column="bank_card_id" jdbcType="BIGINT" property="bankCardId" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
     <result column="created_id" jdbcType="BIGINT" property="createdId" />
@@ -31,9 +30,9 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, investor_id, platform_id, project_name, start_time, end_time, project_duration, 
+    id, investor_id, platform_id, project_name, start_date, end_date, project_duration,
     project_duration_unit, profit_ratio, deducted, Interest_coupon, cash_coupon,
-    investment, is_remind, is_progressing, bank_card_id, notes, created_id, modified_id, 
+    investment, is_remind, bank_card_id, notes, created_id, modified_id,
     created, modified
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -45,6 +44,61 @@
     from investment
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <!-- 查询投资分布饼图 -->
+  <select id="selectDistributionPieChart" parameterType="map" resultType="map">
+    select sum(i.investment) investment, ip.name platformName from investment i, investment_platform ip where i.platform_id = ip.id
+    <if test="isProgressing != null and isProgressing == 1">
+      <![CDATA[
+      and now()> i.start_date and now() < i.end_date
+      ]]>
+    </if>
+    <if test="isProgressing != null and isProgressing == 0">
+      <![CDATA[
+      and (now()< i.start_date or now() > i.end_date)
+      ]]>
+    </if>
+    <if test="investorId != null and investorId != ''">
+      and i.investor_id = #{investorId,jdbcType=BIGINT}
+    </if>
+    group by i.platform_id
+  </select>
+
+  <!-- 查询收益分布饼图 -->
+  <!-- (投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100% /100(分)， 保留两位小数并四舍五入 -->
+  <select id="selectProfitPieChart" parameterType="map" resultType="map">
+    select ROUND(sum((i.investment+i.cash_coupon)*(i.profit_ratio+i.interest_coupon)*datediff(i.end_date, i.start_date))/365/10000, 2) profit
+    , ip.name platformName
+    from investment i, investment_platform ip where i.platform_id = ip.id
+    <if test="isProgressing != null and isProgressing == 0">
+      <![CDATA[
+      and now()< i.start_date and now() > i.end_date
+      ]]>
+    </if>
+    <if test="investorId != null and investorId != ''">
+      and i.investor_id = #{investorId,jdbcType=BIGINT}
+    </if>
+    <if test="investorId != null and investorId != ''">
+      and i.investor_id = #{investorId,jdbcType=BIGINT}
+    </if>
+    group by i.platform_id
+  </select>
+  <!-- 查询投资横比柱图 -->
+  <select id="selectInvestmentComparisonBarChart" parameterType="map" resultType="map">
+    select ROUND(sum(i.investment)/100) investment
+    , ip.name platformName, i.investor_id investorId
+    from investment i, investment_platform ip where i.platform_id = ip.id
+    <if test="isProgressing != null and isProgressing == 0">
+      <![CDATA[
+      and now()< i.start_date and now() > i.end_date
+      ]]>
+    </if>
+    <if test="investorId != null and investorId != ''">
+      and i.investor_id = #{investorId,jdbcType=BIGINT}
+    </if>
+    group by i.investor_id, i.platform_id
+  </select>
+
   <update id="updateBy" parameterType="com.artist.investment.domain.Investment">
     <!--
       WARNING - @mbg.generated
@@ -61,10 +115,10 @@
         project_name = #{projectName,jdbcType=VARCHAR},
       </if>
       <if test="startDate != null">
-        start_time = #{startDate,jdbcType=DATE},
+        start_date = #{startDate,jdbcType=DATE},
       </if>
       <if test="endDate != null">
-        end_time = #{endDate,jdbcType=DATE},
+        end_date = #{endDate,jdbcType=DATE},
       </if>
       <if test="projectDuration != null">
         project_duration = #{projectDuration,jdbcType=INTEGER},

@@ -1,5 +1,6 @@
 package com.artist.investment.domain;
 
+import com.dili.ss.domain.annotation.Operator;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
@@ -48,14 +49,14 @@ public interface Investment extends IBaseDomain {
 
     void setProjectName(String projectName);
 
-    @Column(name = "`start_time`")
+    @Column(name = "`start_date`")
     @FieldDef(label="起始日期")
     @EditMode(editor = FieldEditor.Date, required = false)
     Date getStartDate();
 
     void setStartDate(Date startDate);
 
-    @Column(name = "`end_time`")
+    @Column(name = "`end_date`")
     @FieldDef(label="结束日期")
     @EditMode(editor = FieldEditor.Date, required = false)
     Date getEndDate();
@@ -79,9 +80,9 @@ public interface Investment extends IBaseDomain {
     @Column(name = "`profit_ratio`")
     @FieldDef(label="年化收益率")
     @EditMode(editor = FieldEditor.Number, required = false)
-    Integer getProfitRatio();
+    Float getProfitRatio();
 
-    void setProfitRatio(Integer profitRatio);
+    void setProfitRatio(Float profitRatio);
 
     @Column(name = "`deducted`")
     @FieldDef(label="已抵扣")
@@ -90,12 +91,12 @@ public interface Investment extends IBaseDomain {
 
     void setDeducted(Long deducted);
 
-    @Column(name = "`Interest_coupon`")
+    @Column(name = "`interest_coupon`")
     @FieldDef(label="加息券")
     @EditMode(editor = FieldEditor.Number, required = false)
-    Integer getInterestCoupon();
+    Float getInterestCoupon();
 
-    void setInterestCoupon(Integer interestCoupon);
+    void setInterestCoupon(Float interestCoupon);
 
     @Column(name = "`cash_coupon`")
     @FieldDef(label="现金券")
@@ -117,13 +118,6 @@ public interface Investment extends IBaseDomain {
     Integer getIsRemind();
 
     void setIsRemind(Integer isRemind);
-
-    @Column(name = "`is_progressing`")
-    @FieldDef(label="是否投资中")
-    @EditMode(editor = FieldEditor.Combo, required = false, params="{\"provider\":\"YesOrNoProvider\"}")
-    Integer getIsProgressing();
-
-    void setIsProgressing(Integer isProgressing);
 
     @Column(name = "`bank_card_id`")
     @FieldDef(label="投资卡")

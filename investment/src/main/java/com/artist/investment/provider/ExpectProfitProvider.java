@@ -29,9 +29,17 @@ public class ExpectProfitProvider implements ValueProvider {
     public String getDisplayText(Object obj, Map metaMap, FieldMeta fieldMeta) {
         Investment investment = (Investment)metaMap.get(ROW_DATA_KEY);
         //计算开始投资时间到现在的收益(单位元)
-        //获取投资额，因为这里已经被批量提供者转换过了，所以要取原始值
-        Long investment1 = Long.parseLong(investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "investment").toString());
-        Long cashCoupon = Long.parseLong(investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "cashCoupon").toString());
+        //获取投资额，因为这里可能已经被批量提供者转换过了，所以要取原始值，如果没有原始值才取字段的值
+        Object investmentObj = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "investment");
+        if(investmentObj == null){
+            investmentObj = investment.aget("investment");
+        }
+        Long investment1 = Long.parseLong(investmentObj.toString());
+        Object cashCouponObj = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "cashCoupon");
+        if(cashCouponObj == null){
+            cashCouponObj = investment.aget("cashCoupon");
+        }
+        Long cashCoupon = Long.parseLong(cashCouponObj.toString());
         Date startDate = investment.getStartDate();
         Date endDate = investment.getEndDate();
         if(startDate == null || endDate == null){

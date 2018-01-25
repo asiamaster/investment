@@ -1,12 +1,14 @@
 package com.artist.investment.controller;
 
 import com.artist.investment.domain.Investment;
+import com.artist.investment.domain.dto.InvestmentDto;
 import com.artist.investment.service.InvestmentService;
 import com.artist.sysadmin.sdk.domain.UserTicket;
 import com.artist.sysadmin.sdk.exception.NotLoginException;
 import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.util.DateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,6 +16,8 @@ import io.swagger.annotations.ApiOperation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -52,7 +56,24 @@ public class InvestmentController {
 		@ApiImplicitParam(name="Investment", paramType="form", value = "Investment的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(Investment investment) throws Exception {
+    public @ResponseBody String listPage(InvestmentDto investment) throws Exception {
+        return investmentService.listEasyuiPageByExample(investment, true).toString();
+    }
+
+    @ApiOperation(value="查询近期到帐10笔投资", notes = "分页查询Investment，返回easyui分页信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="Investment", paramType="form", value = "Investment的form信息", required = false, dataType = "string")
+    })
+    @RequestMapping(value="/listComingInvestment", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody String listComingInvestment(InvestmentDto investment) throws Exception {
+        investment.setSort("endDate");
+        investment.setOrder("asc");
+        investment.setPage(1);
+        investment.setRows(10);
+        Date now = new Date();
+        //查询一个月内即将到期的投资
+        investment.setLtEndDate(DateUtils.addDays(now, 30));
+        investment.setGteEndDate(now);
         return investmentService.listEasyuiPageByExample(investment, true).toString();
     }
 
@@ -81,6 +102,37 @@ public class InvestmentController {
     @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         return BaseOutput.success("删除成功").setData(investmentService.delete(id));
+    }
+
+    // ==================================   报表  ==================================
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="Investment", paramType="form", value = "查询投资分布饼图", required = false, dataType = "string")
+    })
+    @RequestMapping(value="/selectDistributionPieChart", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody List<Map> selectDistributionPieChart(InvestmentDto investment) throws Exception {
+        return investmentService.selectDistributionPieChart(investment.getIsProgressing(), investment.getInvestorId());
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="Investment", paramType="form", value = "查询收益分布饼图", required = false, dataType = "string")
+    })
+    @RequestMapping(value="/selectProfitPieChart", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody List<Map> selectProfitPieChart(InvestmentDto investment) throws Exception {
+        return investmentService.selectProfitPieChart(investment.getIsProgressing(), investment.getInvestorId());
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="Investment", paramType="form", value = "查询横向对比柱图", required = false, dataType = "string")
+    })
+    @RequestMapping(value="/selectInvestmentComparisonBarChart", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody List<Map> selectInvestmentComparisonBarChart(InvestmentDto investment) throws Exception {
+        return investmentService.selectInvestmentComparisonBarChart(investment.getIsProgressing());
+    }
+
+    @ApiOperation("跳转到投资分布详情报表页面")
+    @RequestMapping(value="/distributionPieChart.html", method = RequestMethod.GET)
+    public String distributionPieChart(ModelMap modelMap) {
+        return "investment/distributionPieChart";
     }
 
 }
