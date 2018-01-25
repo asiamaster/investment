@@ -127,7 +127,7 @@
                         <div  class="easyui-panel" header="#investmentDistributionHeader" border="false" style="width:100%;height:100%;" >
                             <div id="investmentDistributionHeader"  class="panel-title" >
                                 <span id="investmentDistributionTitle">投资分布</span>
-                                <a class="linkmore" href="${contextPath}/customer/locations.html">查看更多&gt;</a>
+                                <a class="linkmore" href="${contextPath}/investment/investmentDistributionPieChart.html">查看更多&gt;</a>
                             </div>
                             <div id="investmentDistributionPieChartDiv" style="width:99%;height:99%;"></div>
                             <#echarts _id="investmentDistributionPieChartDiv" _title="投资分布" _type="Pie"  _url="${contextPath}/investment/selectInvestmentDistributionPieChart" _queryParams="{isProgressing:1, investorId:${getUserTicket().id}}"
@@ -147,7 +147,7 @@
                         <div  class="easyui-panel" header="#investmentComparisonBarChartHeader" border="false"  title="投资人横向对比"  style="width:100%;height:100%;">
                             <div id="investmentComparisonBarChartHeader"  class="panel-title">
                                 <span id="investmentComparisonBarChartTitle">投资人横向对比</span>
-                                <a class="linkmore" href="${contextPath}/chart/salestopAmount.html">查看更多&gt;</a>
+                                <a class="linkmore" href="${contextPath}/investment/investmentStats.html">查看更多&gt;</a>
                             </div>
                             <div id="investmentComparisonBarChartDiv" style="width:99%;height:99%;"></div>
                             <#echarts _id="investmentComparisonBarChartDiv" _title="投资人横向对比" _type="Bar"  _url="${contextPath}/investment/selectInvestmentComparisonBarChart" _queryParams="{isProgressing:1}"
