@@ -3,11 +3,7 @@ package com.artist.investment.controller;
 import com.artist.investment.domain.Investment;
 import com.artist.investment.domain.dto.InvestmentDto;
 import com.artist.investment.service.InvestmentService;
-import com.artist.sysadmin.sdk.domain.UserTicket;
-import com.artist.sysadmin.sdk.exception.NotLoginException;
-import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.util.DateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -108,31 +104,63 @@ public class InvestmentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name="Investment", paramType="form", value = "查询投资分布饼图", required = false, dataType = "string")
     })
-    @RequestMapping(value="/selectDistributionPieChart", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<Map> selectDistributionPieChart(InvestmentDto investment) throws Exception {
-        return investmentService.selectDistributionPieChart(investment.getIsProgressing(), investment.getInvestorId());
+    @RequestMapping(value="/selectInvestmentDistributionPieChart", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody List<Map> selectInvestmentDistributionPieChart(InvestmentDto investment) {
+        return investmentService.selectInvestmentDistributionPieChart(investment.getIsProgressing(), investment.getInvestorId());
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name="Investment", paramType="form", value = "查询收益分布饼图", required = false, dataType = "string")
     })
-    @RequestMapping(value="/selectProfitPieChart", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<Map> selectProfitPieChart(InvestmentDto investment) throws Exception {
-        return investmentService.selectProfitPieChart(investment.getIsProgressing(), investment.getInvestorId());
+    @RequestMapping(value="/selectProfitDistributionPieChart", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody List<Map> selectProfitDistributionPieChart(InvestmentDto investment) {
+        return investmentService.selectProfitDistributionPieChart(investment.getIsProgressing(), investment.getInvestorId());
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name="Investment", paramType="form", value = "查询横向对比柱图", required = false, dataType = "string")
     })
     @RequestMapping(value="/selectInvestmentComparisonBarChart", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<Map> selectInvestmentComparisonBarChart(InvestmentDto investment) throws Exception {
+    public @ResponseBody List<Map> selectInvestmentComparisonBarChart(InvestmentDto investment) {
         return investmentService.selectInvestmentComparisonBarChart(investment.getIsProgressing());
     }
 
+    /**
+     * 查询投资人平台统计
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/selectInvestorPlatformStats", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody List<Map> selectInvestorPlatformStats() {
+        return investmentService.selectInvestorPlatformStats();
+    }
+
+    /**
+     * 查询投资人统计
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/selectInvestorStats", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody List<Map> selectInvestorStats(){
+        return investmentService.selectInvestorStats();
+    }
+
     @ApiOperation("跳转到投资分布详情报表页面")
-    @RequestMapping(value="/distributionPieChart.html", method = RequestMethod.GET)
-    public String distributionPieChart(ModelMap modelMap) {
-        return "investment/distributionPieChart";
+    @RequestMapping(value="/investmentDistributionPieChart.html", method = RequestMethod.GET)
+    public String investmentDistributionPieChart(ModelMap modelMap) {
+        return "investment/investmentDistributionPieChart";
+    }
+
+    @ApiOperation("跳转到投资收益分布详情报表页面")
+    @RequestMapping(value="/profitDistributionPieChart.html", method = RequestMethod.GET)
+    public String profitDistributionPieChart(ModelMap modelMap) {
+        return "investment/profitDistributionPieChart";
+    }
+
+    @ApiOperation("跳转到投资统计页面")
+    @RequestMapping(value="/investmentStats.html", method = RequestMethod.GET)
+    public String investmentStats(ModelMap modelMap) {
+        return "investment/investmentStats";
     }
 
 }

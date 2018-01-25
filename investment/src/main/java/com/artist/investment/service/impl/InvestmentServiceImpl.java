@@ -14,11 +14,10 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
-import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -88,55 +87,60 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
     }
 
     @Override
-    public List<Map> selectDistributionPieChart(Integer isProgressing, Long investorId) {
-//        if(investorId == null) {
-//            UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-//            if (userTicket == null) {
-//                throw new NotLoginException();
-//            }
-//            investorId = userTicket.getId();
-//        }
+    public List<Map> selectInvestmentDistributionPieChart(Integer isProgressing, Long investorId) {
         Map map = new HashMap(2);
         map.put("isProgressing", isProgressing);
         map.put("investorId", investorId);
-        return getActualDao().selectDistributionPieChart(map);
+        return getActualDao().selectInvestmentDistributionPieChart(map);
     }
 
     @Override
-    public List<Map> selectProfitPieChart(Integer isProgressing, Long investorId) {
-        if(investorId == null) {
-            UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-            if (userTicket == null) {
-                throw new NotLoginException();
-            }
-            investorId = userTicket.getId();
-        }
+    public List<Map> selectProfitDistributionPieChart(Integer isProgressing, Long investorId) {
         Map map = new HashMap(2);
         map.put("isProgressing", isProgressing);
         map.put("investorId", investorId);
-        return getActualDao().selectProfitPieChart(map);
+        return getActualDao().selectProfitDistributionPieChart(map);
     }
 
     @Override
     public List<Map> selectInvestmentComparisonBarChart(Integer isProgressing) {
         Map map = new HashMap(1);
         map.put("isProgressing", isProgressing);
-        List<Map> list = getActualDao().selectInvestmentComparisonBarChart(map);
+        return convertInvestor(getActualDao().selectInvestmentComparisonBarChart(map), null);
+    }
+
+    @Override
+    public List<Map> selectInvestorPlatformStats() {
+        return convertInvestor(getActualDao().selectInvestorPlatformStats(), "investorId");
+    }
+
+    @Override
+    public List<Map> selectInvestorStats() {
+        return convertInvestor(getActualDao().selectInvestorStats(), "investorId");
+    }
+
+    /**
+     * 将Map中的investorId转为投资人真实姓名
+     */
+    private List<Map> convertInvestor(List<Map> list, String investorIdKey){
+        if(StringUtils.isBlank(investorIdKey)){
+            investorIdKey = "investorId";
+        }
         //这里只查出了投资人id，所以需要转换为投资人真实姓名
         //缓存用户，避免多次远程调用
         Map<Object, String> userCache = new HashMap<>();
         for(Map data : list){
-            if(userCache.containsKey(data.get("investorId"))){
-                data.put("investorId", userCache.get("investorId"));
+            if(userCache.containsKey(data.get(investorIdKey))){
+                data.put(investorIdKey, userCache.get(investorIdKey));
             }else{
-                BaseOutput<User> userBaseOutput= userRpc.get(Long.parseLong(data.get("investorId").toString()));
+                BaseOutput<User> userBaseOutput= userRpc.get(Long.parseLong(data.get(investorIdKey).toString()));
                 if(userBaseOutput.isSuccess()){
-                    data.put("investorId", userBaseOutput.getData().getRealName());
-                    userCache.put("investorId", userBaseOutput.getData().getRealName());
+                    data.put(investorIdKey, userBaseOutput.getData().getRealName());
+                    userCache.put(investorIdKey, userBaseOutput.getData().getRealName());
                 }else{
                     //远程查询用户失败，则直接显示用户id
-                    data.put("investorId", data.get("investorId"));
-                    userCache.put("investorId", data.get("investorId").toString());
+                    data.put(investorIdKey, data.get(investorIdKey));
+                    userCache.put(investorIdKey, data.get(investorIdKey).toString());
                 }
             }
         }

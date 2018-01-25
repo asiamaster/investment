@@ -19,8 +19,8 @@
                                 <input class="easyui-textbox" name="cardNumber" id="cardNumber" style="width:100%" data-options="labelAlign:'right', label:'银行卡号:', validType:'length[0,30]'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="bank" id="bank" style="width:100%" data-options="labelAlign:'right', label:'开户行:', validType:'length[0,50]'" />
-
+                                <input name="bank" id="bank" style="width:100%" editable="false" data-options="labelAlign:'right', label:'开户行:'" />
+                                <#comboProvider _id="bank" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"4"}'/>
                             </td>
                             <td style="padding:5px;">
                                     <input name="isDefault" id="isDefault" style="width:100%;" editable="false" panelWidth="auto" labelAlign="right" panelHeight="auto" label="是否默认:"/>

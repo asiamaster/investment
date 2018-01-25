@@ -13,7 +13,7 @@ public interface InvestmentMapper extends MyMapper<Investment> {
      * @param params, isProgressing 是否进行中(0,1或null) 和 investorId 投资人id
      * @return
      */
-    List<Map> selectDistributionPieChart(Map params);
+    List<Map> selectInvestmentDistributionPieChart(Map params);
 
     /**
      * 查询收益分布饼图
@@ -21,7 +21,7 @@ public interface InvestmentMapper extends MyMapper<Investment> {
      * @param params, isProgressing 是否进行中(0,1或null) 和 investorId 投资人id
      * @return
      */
-    List<Map> selectProfitPieChart(Map params);
+    List<Map> selectProfitDistributionPieChart(Map params);
 
     /**
      * 查询投资横比柱图
@@ -30,4 +30,15 @@ public interface InvestmentMapper extends MyMapper<Investment> {
      */
     List<Map> selectInvestmentComparisonBarChart(Map params);
 
+    /**
+     * 查询投资人平台统计
+     * @return
+     */
+    List<Map> selectInvestorPlatformStats();
+
+    /**
+     * 查询投资人统计
+     * @return
+     */
+    List<Map> selectInvestorStats();
 }

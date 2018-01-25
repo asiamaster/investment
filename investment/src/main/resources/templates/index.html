@@ -11,9 +11,9 @@
             }
             /*top-left 板块*/
             #header,
-            #distributionHeader,
+            #investmentDistributionHeader,
             #investmentComparisonBarChartHeader,
-            #profitPieChartHeader {
+            #profitDistributionPieChartHeader {
                 height: 40px;
                 margin: 0;
                 padding-right: 30px;
@@ -49,13 +49,13 @@
             #header  {
                 background: url(${contextPath}/resources/images/icon/add-cus-icon.png) no-repeat 20px center ;
             }
-            #distributionHeader  {
+            #investmentDistributionHeader  {
                 background: url(${contextPath}/resources/images/icon/locations-icon.png) no-repeat 20px center ;
             }
             #investmentComparisonBarChartHeader  {
                 background: url(${contextPath}/resources/images/icon/money-icon.png) no-repeat 20px center ;
             }
-            #profitPieChartHeader  {
+            #profitDistributionPieChartHeader  {
                 background: url(${contextPath}/resources/images/icon/buy-icon.png) no-repeat 20px center ;
             }
 
@@ -124,13 +124,13 @@
                         </div>
                     </div>
                     <div region="center" style="width:100%;border:0px;" height="auto" border="false">
-                        <div  class="easyui-panel" header="#distributionHeader" border="false" style="width:100%;height:100%;" >
-                            <div id="distributionHeader"  class="panel-title" >
-                                <span id="distributionTitle">投资分布</span>
+                        <div  class="easyui-panel" header="#investmentDistributionHeader" border="false" style="width:100%;height:100%;" >
+                            <div id="investmentDistributionHeader"  class="panel-title" >
+                                <span id="investmentDistributionTitle">投资分布</span>
                                 <a class="linkmore" href="${contextPath}/customer/locations.html">查看更多&gt;</a>
                             </div>
-                            <div id="distributionPieChartDiv" style="width:99%;height:99%;"></div>
-                            <#echarts _id="distributionPieChartDiv" _title="投资分布" _type="Pie"  _url="${contextPath}/investment/selectDistributionPieChart" _queryParams="{isProgressing:1, investorId:<#userTicket field="id"/>}"
+                            <div id="investmentDistributionPieChartDiv" style="width:99%;height:99%;"></div>
+                            <#echarts _id="investmentDistributionPieChartDiv" _title="投资分布" _type="Pie"  _url="${contextPath}/investment/selectInvestmentDistributionPieChart" _queryParams="{isProgressing:1, investorId:${getUserTicket().id}}"
                                     _nameField="platformName" _valueField="investment" _options="{legend:{selectedMode:false},series: [{label:{normal:{formatter: '{b}({d}%)'} } }]}"></#echarts>
                         </div>
                     </div>
@@ -141,7 +141,6 @@
             <!-- 中央布局 -->
             <!-- ====================================================================================================================== -->
             <!-- 表格 -->
-            <!--<div region="center"  style="height: 450px; border:0px; padding: 10px 25px 0; background: #e7e9eb "  height="auto" border="false">-->
             <div style="height: 480px; border:0px; padding: 10px 25px 0; background: #e7e9eb ">
                 <div class="easyui-layout" fit="true" border="false" >
                     <div region="west" height="auto" align="center" style="width:50%;" border="false">
@@ -156,19 +155,18 @@
                         </div>
                     </div>
                     <div region="center"  height="auto" align="center"  style="width:50%; " border="false">
-                        <div  class="easyui-panel" id="abc" data-options="headerCls:'asdsad'" header="#profitPieChartHeader" border="false" title="收益分布"  style="width:100%;height:100%;">
-                            <div id="profitPieChartHeader"  class="panel-title">
-                                <span id="profitPieChartTitle">收益分布</span>
-                                <a class="linkmore" href="${contextPath}/chart/consumptionAmount.html">查看更多&gt;</a>
+                        <div  class="easyui-panel" id="abc" data-options="headerCls:'asdsad'" header="#profitDistributionPieChartHeader" border="false" title="预期收益分布"  style="width:100%;height:100%;">
+                            <div id="profitDistributionPieChartHeader"  class="panel-title">
+                                <span id="profitDistributionPieChartTitle">预期收益分布</span>
+                                <a class="linkmore" href="${contextPath}/investment/profitDistributionPieChart.html">查看更多&gt;</a>
                             </div>
-                            <div id="profitPieChartDiv" style="width:99%;height:99%;"></div>
-                            <#echarts _id="profitPieChartDiv" _title="收益分布" _type="Pie"  _url="${contextPath}/investment/selectProfitPieChart" _queryParams="{isProgressing:1}"
+                            <div id="profitDistributionPieChartDiv" style="width:99%;height:99%;"></div>
+                            <#echarts _id="profitDistributionPieChartDiv" _title="预期收益分布" _type="Pie"  _url="${contextPath}/investment/selectProfitDistributionPieChart" _queryParams="{isProgressing:1, investorId:${getUserTicket().id}}"
                                     _nameField="platformName" _valueField="profit" _options="{legend:{selectedMode:false},series: [{label:{normal:{formatter: '{b}({d}%)'} } }]}"></#echarts>
                         </div>
                     </div>
                 </div>
                 <!-- =========================================================表格========================================================= -->
-                <!--</div>-->
             </div>
         </div>
 

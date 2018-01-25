@@ -1,0 +1,100 @@
+ <#body>
+     <#impEcharts/>
+     <#controls_user dlgId="userSelectDialog" controlId="_investorId"/>
+
+    <div class="easyui-layout" fit="true">
+        <!-- ====================================================================================================================== -->
+        <!-- 上方布局 -->
+        <!-- ====================================================================================================================== -->
+        <div region="north" height="auto" align="center">
+            <!-- =========================================================表单========================================================= -->
+            <div class="easyui-panel" style="width:100%;" align="left">
+                <form id="form" class="easyui-form" method="post" fit="true">
+                    <table style="padding:10px;">
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="investorId" id="investorId" style="width:100%" labelAlign="right" data-options="label:'投资人:', editable:false,buttonText:'选择',onClickButton:_selectUser,onChange:_changeTextboxShowClear" />
+                            </td>
+                            <td style="padding:5px;">
+                                <input name="isProgressing" id="isProgressing" style="width:100%;" editable="false" labelAlign="right" panelWidth="auto" panelHeight="auto" label="是否投资中:"/>
+                                <#comboProvider _id="isProgressing" _provider='isProgressingProvider'/>
+                            </td>
+                            <td style="padding-left:28px;padding-top: 10px; padding-bottom: 10px;">
+                                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
+                                   onclick="query()">查询</a>&nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <!-- ====================================================================================================================== -->
+        <!-- 中央布局 -->
+        <!-- ====================================================================================================================== -->
+        <!-- 表格 investorId:<#userTicket field="id"/>-->
+        <div region="center" style="width:100%;" height="auto">
+            <div id="distributionPieChartDiv" style="width:99%;height:99%;"></div>
+
+
+        </div>
+    </div>
+
+    <!-- ====================================================================================================================== -->
+    <!-- style & script 分隔线 -->
+    <!-- ====================================================================================================================== -->
+    <script type="text/javascript">
+
+        //图表查询
+        function query() {
+            var _chartsParamObj = {isProgressing:$("#isProgressing").textbox("getValue"), investorId:$("#investorId").textbox("getValue")};
+            var _chartsNameField = 'platformName';
+            var _chartsValueField = 'investment';
+            //_id参数必填
+            var _chartsId = 'distributionPieChartDiv';
+            //_url参数必填
+            var _chartsUrl = '${contextPath}/investment/selectInvestmentDistributionPieChart';
+            //标题参数必填
+            var _chartsTitle = '投资分布';
+            //其它图表参数
+            var options = {legend:{selectedMode:false},series: [{label:{normal:{formatter: '{b}({d}%)'} } }]};
+
+            $.ajax({
+                type: "POST",
+                url: _chartsUrl,
+                data: _chartsParamObj,
+                dataType: "json",
+                success: function(data){
+                    var opt = MyECharts.ChartOptionTemplates.Pie(_chartsTitle, '', data, _chartsNameField, _chartsValueField, options);
+                    MyECharts.RenderChart(opt, _chartsId);
+                }
+            });
+        }
+
+
+        //清空表单
+        function clearForm() {
+            $('#form').form('clear');
+        }
+
+        /**
+         * 绑定页面回车事件，以及初始化页面时的光标定位
+         * @formId
+         *          表单ID
+         * @elementName
+         *          光标定位在指点表单元素的name属性的值
+         * @submitFun
+         *          表单提交需执行的任务
+         */
+        $(function () {
+            bindFormEvent("form", "investorId", query);
+            $('#investorId').textbox('addClearBtn', 'icon-clear');
+            //单独加载所属用户
+            $("#investorId").textbox("initValue", '<#userTicket field="id"/>');
+            $("#investorId").textbox("setText", '<#userTicket field="realName"/>');
+            //默认选中投资中的记录
+            $("#isProgressing").combobox("setValue", "1");
+            query();
+        })
+    </script>
+</#body>

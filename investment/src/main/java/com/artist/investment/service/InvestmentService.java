@@ -26,7 +26,7 @@ public interface InvestmentService extends BaseService<Investment, Long> {
      * @param isProgressing 是否进行中(0,1或null) 和 investorId 投资人id
      * @return
      */
-    List<Map> selectDistributionPieChart(Integer isProgressing, Long investorId);
+    List<Map> selectInvestmentDistributionPieChart(Integer isProgressing, Long investorId);
 
     /**
      * 查询收益分布饼图
@@ -34,7 +34,7 @@ public interface InvestmentService extends BaseService<Investment, Long> {
      * @param isProgressing 是否进行中(0,1或null) 和 investorId 投资人id
      * @return
      */
-    List<Map> selectProfitPieChart(Integer isProgressing, Long investorId);
+    List<Map> selectProfitDistributionPieChart(Integer isProgressing, Long investorId);
 
     /**
      * 查询投资横比柱图
@@ -43,4 +43,15 @@ public interface InvestmentService extends BaseService<Investment, Long> {
      */
     List<Map> selectInvestmentComparisonBarChart(Integer isProgressing);
 
+    /**
+     * 查询投资人平台统计
+     * @return
+     */
+    List<Map> selectInvestorPlatformStats();
+
+    /**
+     * 查询投资人统计
+     * @return
+     */
+    List<Map> selectInvestorStats();
 }

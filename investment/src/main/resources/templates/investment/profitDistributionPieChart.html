@@ -49,13 +49,13 @@
         function query() {
             var _chartsParamObj = {isProgressing:$("#isProgressing").textbox("getValue"), investorId:$("#investorId").textbox("getValue")};
             var _chartsNameField = 'platformName';
-            var _chartsValueField = 'investment';
+            var _chartsValueField = 'profit';
             //_id参数必填
             var _chartsId = 'distributionPieChartDiv';
             //_url参数必填
-            var _chartsUrl = '${contextPath}/investment/selectDistributionPieChart';
+            var _chartsUrl = '${contextPath}/investment/selectProfitDistributionPieChart';
             //标题参数必填
-            var _chartsTitle = '投资分布';
+            var _chartsTitle = '投资收益分布';
             //其它图表参数
             var options = {legend:{selectedMode:false},series: [{label:{normal:{formatter: '{b}({d}%)'} } }]};
 
@@ -88,7 +88,7 @@
          */
         $(function () {
             bindFormEvent("form", "investorId", query);
-
+            $('#investorId').textbox('addClearBtn', 'icon-clear');
             //单独加载所属用户
             $("#investorId").textbox("initValue", '<#userTicket field="id"/>');
             $("#investorId").textbox("setText", '<#userTicket field="realName"/>');
