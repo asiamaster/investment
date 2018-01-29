@@ -28,9 +28,9 @@ public class CurrentProfitProvider implements ValueProvider {
         if(investment.getStartDate() == null){
             return "0.00";
         }
-        //如果还没开始计算收益，则收益为抵扣券，没有抵扣券则收益为0
+        //如果还没开始计算收益，则收益为0
         if(investment.getStartDate().after(new Date())){
-            return investment.getCashCoupon() == null ? "0.00" : investment.getCashCoupon().toString();
+            return "0.00";
         }
         //求开始投资时间到现在的相关天数
         int defDay = DateUtils.differentDays(investment.getStartDate(), new Date());
@@ -43,16 +43,16 @@ public class CurrentProfitProvider implements ValueProvider {
             investmentObj = investment.aget("investment");
         }
         Long investment1 = Long.parseLong(investmentObj.toString());
-        Object cashCouponObj = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "cashCoupon");
-        if(cashCouponObj == null){
-            cashCouponObj = investment.aget("cashCoupon");
+        Object deductedObj = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "deducted");
+        if(deductedObj == null){
+            deductedObj = investment.aget("deducted");
         }
-        Long cashCoupon = Long.parseLong(cashCouponObj.toString());
+        Long deducted = Long.parseLong(deductedObj.toString());
         //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 已投资天数 / 总天数 / 100(分)
-        BigDecimal bigDecimal = new BigDecimal((investment1+cashCoupon) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * defDay);
+        BigDecimal bigDecimal = new BigDecimal((investment1+deducted) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * defDay);
         BigDecimal bigDecimalTotalDay = new BigDecimal(365);
         BigDecimal bigDecimal100 = new BigDecimal(100);
-//        Long profit = (investment1+cashCoupon) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * defDay / totalDay / 100;
+//        Long profit = (investment1+deducted) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * defDay / totalDay / 100;
         //精确计算两位小数，并且四舍五入
         Long profit = bigDecimal.divide(bigDecimalTotalDay, 0, BigDecimal.ROUND_HALF_DOWN).divide(bigDecimal100, 0, BigDecimal.ROUND_HALF_DOWN).longValue();
         return MoneyUtils.centToYuan(profit);

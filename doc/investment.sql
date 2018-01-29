@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `data_dictionary_value` (
   `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `yn` int(4) DEFAULT '1' COMMENT '是否可用##{provider:"YnProvider", data:[{value:0,text:"不可用"},{value:1, text:"可用"}]}',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8 COMMENT='数据字典值';
+) ENGINE=InnoDB AUTO_INCREMENT=184 DEFAULT CHARSET=utf8 COMMENT='数据字典值';
 
 -- 正在导出表  investment.data_dictionary_value 的数据：~29 rows (大约)
 /*!40000 ALTER TABLE `data_dictionary_value` DISABLE KEYS */;
@@ -139,7 +139,8 @@ INSERT INTO `data_dictionary_value` (`id`, `parent_id`, `dd_id`, `order_number`,
 	(179, NULL, 5, 3, '进取型', '3', '进取型', '2018-01-19 20:14:59', NULL, '2018-01-19 20:11:23', '2018-01-19 20:14:59', 1),
 	(180, NULL, 5, 4, '激进型', '4', '激进型', '2018-01-19 20:15:03', NULL, '2018-01-19 20:11:59', '2018-01-19 20:15:03', 1),
 	(181, NULL, 5, 5, '需警惕', '5', '需警惕', '2018-01-19 20:15:05', NULL, '2018-01-19 20:12:15', '2018-01-19 20:15:05', 1),
-	(182, NULL, 4, 19, '厦门国际银行', 'XIB', '厦门国际银行', '2018-01-23 17:08:55', NULL, '2018-01-23 17:08:56', '2018-01-23 17:08:56', 1);
+	(182, NULL, 4, 19, '厦门国际银行', 'XIB', '厦门国际银行', '2018-01-23 17:08:55', NULL, '2018-01-23 17:08:56', '2018-01-23 17:08:56', 1),
+	(183, NULL, 4, 20, '华瑞银行', 'HRB', '华瑞银行', '2018-01-26 11:40:15', NULL, '2018-01-26 11:40:15', '2018-01-26 11:40:15', 1);
 /*!40000 ALTER TABLE `data_dictionary_value` ENABLE KEYS */;
 
 -- 导出  表 investment.department 结构
@@ -250,10 +251,10 @@ CREATE TABLE IF NOT EXISTS `investment_platform` (
   `supervision_bank` varchar(20) DEFAULT NULL COMMENT '资金监管银行',
   `is_record` int(4) DEFAULT NULL COMMENT '是否备案',
   `registry_place` varchar(10) DEFAULT NULL COMMENT '注册地',
-  `business_place` varchar(10) DEFAULT NULL COMMENT '经营地',
+  `business_place` varchar(120) DEFAULT NULL COMMENT '经营地',
   `platform_background` varchar(120) DEFAULT NULL COMMENT '平台背景',
   `security_level` int(4) DEFAULT NULL COMMENT '安全级别',
-  `avg_profit_ratio` int(4) DEFAULT NULL COMMENT '平均收益率',
+  `avg_profit_ratio` float(4,2) DEFAULT '0.00' COMMENT '平均收益率',
   `business_mode` varchar(120) DEFAULT NULL COMMENT '业务模式',
   `flexible` varchar(120) DEFAULT NULL COMMENT '灵活度',
   `guarantee` varchar(60) DEFAULT NULL COMMENT '保障',
@@ -263,13 +264,16 @@ CREATE TABLE IF NOT EXISTS `investment_platform` (
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='投资平台';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='投资平台';
 
--- 正在导出表  investment.investment_platform 的数据：~1 rows (大约)
+-- 正在导出表  investment.investment_platform 的数据：~2 rows (大约)
 /*!40000 ALTER TABLE `investment_platform` DISABLE KEYS */;
 INSERT INTO `investment_platform` (`id`, `name`, `supervision_bank`, `is_record`, `registry_place`, `business_place`, `platform_background`, `security_level`, `avg_profit_ratio`, `business_mode`, `flexible`, `guarantee`, `introduction`, `uptime`, `notes`, `created`, `modified`) VALUES
-	(1, '宜人贷', '广东发展银行', 0, '北京', '北京', '上市公司', 2, 8, '宜人贷创新实现P2P从客户获取、风险控制、交易达成到客户服务全流程线上操作。宜人贷专注于具有信用维护意识的城市白领人群，这一群体具有较好的教育水平、信用意识以及稳定的还款能力。', '宜定盈可提前退出，但要收取1%～2%的紧急退出费，且会扣除相应的优惠券、宜人币（如有使用）；精英标持有90天之后可以转让，收取成交金额的2‰ ', '质保服务专款，存管在广发银行', '中国首家在美国纽交所上市的P2P公司，投宜人贷在安全性上还是很有保障的，但收益很一般', '2012-01-01', '中国首家在美国纽交所上市的P2P公司，投宜人贷在安全性上还是很有保障的，但收益很一般', '2018-01-19 17:53:28', '2018-01-22 09:56:48'),
-	(2, '达人贷', 'XIB', 0, '深圳', '深圳', '民营系', 3, 12, '达人贷只做小额信贷业务，其中超80%是小微企业主借贷，借款金额在5-7万。剩余20%不到是薪金贷，给有稳定工资收入的人群放贷，平均借款金额也在7万左右。', '微信宝可转让', 'IPC技术。目前平台的不良率在2.6%左右，待收近1亿，风险准备金330万，数据上看是可以覆盖住风险的。', '深圳一家做信贷的小平台，业务规模不大，但总体做的还算比较扎实。团队经验丰富，且比较稳定，平台行业口碑尚可，投资性价比还不错', '2013-12-01', '业务方面平台是完全合规的，所有项目都遵循小额分散。\r\n12个月内（包含12个月）投资安全都有一定保障。\r\n每天10:00和18:00放标。\r\n', '2018-01-23 17:03:25', '2018-01-23 17:13:15');
+	(1, '宜人贷', '广东发展银行', 0, '北京', '北京', '上市公司', 2, 8.00, '宜人贷创新实现P2P从客户获取、风险控制、交易达成到客户服务全流程线上操作。宜人贷专注于具有信用维护意识的城市白领人群，这一群体具有较好的教育水平、信用意识以及稳定的还款能力。', '宜定盈可提前退出，但要收取1%～2%的紧急退出费，且会扣除相应的优惠券、宜人币（如有使用）；精英标持有90天之后可以转让，收取成交金额的2‰ ', '质保服务专款，存管在广发银行', '中国首家在美国纽交所上市的P2P公司，投宜人贷在安全性上还是很有保障的，但收益很一般', '2012-01-01', '中国首家在美国纽交所上市的P2P公司，投宜人贷在安全性上还是很有保障的，但收益很一般', '2018-01-19 17:53:28', '2018-01-22 09:56:48'),
+	(2, '达人贷', 'XIB', 0, '深圳', '企业地址深圳市福田区沙头街道泰然九路海松大厦A座702室', '民营系', 3, 12.00, '达人贷只做小额信贷业务，其中超80%是小微企业主借贷，借款金额在5-7万。剩余20%不到是薪金贷，给有稳定工资收入的人群放贷，平均借款金额也在7万左右。', '微信宝可转让', 'IPC技术。目前平台的不良率在2.6%左右，待收近1亿，风险准备金330万，数据上看是可以覆盖住风险的。', '深圳一家做信贷的小平台，业务规模不大，但总体做的还算比较扎实。团队经验丰富，且比较稳定，平台行业口碑尚可，投资性价比还不错', '2014-12-27', '业务方面平台是完全合规的，所有项目都遵循小额分散。\r\n12个月内（包含12个月）投资安全都有一定保障。\r\n每天10:00和18:00放标。\r\n工商注册号440300602385364\r\n组织机构代码085957193\r\n统一社会信用代码91440300085957193N\r\n成立日期2013-12-27\r\n登记机关深圳市市场监督管理局\r\n营业期限2013-12-27 至 2023-12-25', '2018-01-23 17:03:25', '2018-01-26 11:07:42'),
+	(3, '钱香', 'JXB', 0, '上海', '中国（上海）自由贸易试验区浦东南路2250号2幢一层C157室', '上市公司系', 3, 9.76, NULL, '不可转让', '第三方担保&质保服务转款', '上海一家专注供黄金珠宝供应链的平台，模式与产业融合比较深，配套的担保措施比较完善，风险可控，比较适合中短期投资选择。', '2015-05-07', '公司名称：上海倾信互联网金融信息服务有限公司\r\n电话：021-68881322\r\n统一社会信用代码：91310000332725243Y\r\n工商注册号：310141000146942\r\n组织机构代码：332725243\r\n法定代表人：黄崇望\r\n注册资本：1600万人民币\r\n成立日期：2015-05-07', '2018-01-26 11:23:52', '2018-01-26 11:27:31'),
+	(4, '恒大金服', NULL, 0, '深圳', '深圳市前海深港合作区临海大道59号海运中心主塔楼21楼2101G', '恒大集团', NULL, 6.50, NULL, '部分可转让', NULL, NULL, '2016-03-16', '公司名称:恒大互联网金融服务（深圳）有限公司\r\n电话:020-38657256\r\n统一社会信用代码:91440300359451385K\r\n工商注册号:440301114542363\r\n组织机构代码:35945138-5\r\n法定代表人:刘永灼\r\n注册资本:100000万人民币\r\n成立日期:2015-12-07\r\n登记机关:深圳市市场监督管理局', '2018-01-26 11:32:52', '2018-01-26 11:32:52'),
+	(5, '小赢理财', 'HRB', 0, '深圳', '深圳市南山区粤海街道海德三道航天科技广场A座7层', '上市公司系', 2, 7.50, NULL, '部分项目可申请转让', '信用保证保险', NULL, '2014-03-07', '公司名称:深圳市赢众通金融信息服务有限责任公司\r\n电话:0755-86282977\r\n统一社会信用代码:914403000885341888\r\n工商注册号:440301108926982\r\n组织机构代码:088534188\r\n法定代表人:唐越\r\n注册资本:6510.4156万元\r\n成立日期:2014-03-07\r\n登记机关:深圳市市场监督管理局', '2018-01-26 11:43:06', '2018-01-26 11:43:06');
 /*!40000 ALTER TABLE `investment_platform` ENABLE KEYS */;
 
 -- 导出  表 investment.menu 结构
@@ -543,8 +547,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- 正在导出表  investment.user 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`, `user_name`, `password`, `last_login_ip`, `last_login_time`, `created`, `modified`, `status`, `yn`, `real_name`, `serial_number`, `fixed_line_telephone`, `cellphone`, `email`, `valid_time_begin`, `valid_time_end`) VALUES
-	(1, 'admin', '178591FD5BB0C24851', '127.0.0.1', '2018-01-25 17:19:57', '2017-07-11 14:13:04', '2017-12-14 19:54:53', 1, 1, '王宓', '001', '0281234567', '13500000000', 'yangfuchun@diligrp.com', '2017-07-11 14:13:04', '2018-07-12 00:00:00'),
-	(2, 'tiantian', '3949BA59ABBE56E057', '127.0.0.1', '2018-01-25 09:39:12', '2018-01-24 17:58:57', '2018-01-25 09:39:12', 1, 1, '田恬', '002', NULL, '18108087571', '11266133@qq.com', '2018-01-24 17:58:57', NULL);
+	(1, 'admin', '178591FD5BB0C24851', '127.0.0.1', '2018-01-26 10:27:31', '2017-07-11 14:13:04', '2017-12-14 19:54:53', 1, 1, '王宓', '001', '0281234567', '13500000000', 'yangfuchun@diligrp.com', '2017-07-11 14:13:04', '2018-07-12 00:00:00'),
+	(2, 'tiantian', '3949BA59ABBE56E057', '127.0.0.1', '2018-01-25 17:38:04', '2018-01-24 17:58:57', '2018-01-25 09:39:12', 1, 1, '小田', '002', NULL, '18108087571', '11266133@qq.com', '2018-01-24 17:58:57', NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 
 -- 导出  表 investment.user_data_auth 结构
@@ -565,13 +569,13 @@ CREATE TABLE IF NOT EXISTS `user_department` (
   `department_id` bigint(20) NOT NULL COMMENT '部门id',
   `user_id` bigint(20) NOT NULL COMMENT '用户id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35271 DEFAULT CHARSET=utf8 COMMENT='用户部门关系';
+) ENGINE=InnoDB AUTO_INCREMENT=35272 DEFAULT CHARSET=utf8 COMMENT='用户部门关系';
 
 -- 正在导出表  investment.user_department 的数据：~2 rows (大约)
 /*!40000 ALTER TABLE `user_department` DISABLE KEYS */;
 INSERT INTO `user_department` (`id`, `department_id`, `user_id`) VALUES
-	(35269, 1, 2),
-	(35270, 1, 1);
+	(35270, 1, 1),
+	(35271, 1, 2);
 /*!40000 ALTER TABLE `user_department` ENABLE KEYS */;
 
 -- 导出  表 investment.user_platform 结构
@@ -594,13 +598,13 @@ CREATE TABLE IF NOT EXISTS `user_role` (
   PRIMARY KEY (`id`),
   KEY `FK_USERROLE_USER` (`user_id`) USING BTREE,
   KEY `FK_USERROLE_ROLE` (`role_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=278 DEFAULT CHARSET=utf8 COMMENT='用户角色关系';
+) ENGINE=InnoDB AUTO_INCREMENT=279 DEFAULT CHARSET=utf8 COMMENT='用户角色关系';
 
 -- 正在导出表  investment.user_role 的数据：~2 rows (大约)
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
 INSERT INTO `user_role` (`id`, `user_id`, `role_id`) VALUES
-	(276, 2, 1),
-	(277, 1, 1);
+	(277, 1, 1),
+	(278, 2, 1);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

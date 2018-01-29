@@ -12,9 +12,9 @@
                             <td style="padding:5px;">
                                 <input class="easyui-textbox" name="name" id="name" style="width:100%" labelWidth="40" data-options="labelAlign:'right', label:'名称:', validType:'length[0,20]'" />
                             </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="supervisionBank" id="supervisionBank" style="width:100%" labelWidth="100" data-options="labelAlign:'right', label:'资金监管银行:'" />
-                            </td>
+                            <!--<td style="padding:5px;">-->
+                                <!--<input class="easyui-textbox" name="supervisionBank" id="supervisionBank" style="width:100%" labelWidth="100" data-options="labelAlign:'right', label:'资金监管银行:'" />-->
+                            <!--</td>-->
                             <td style="padding:5px;">
                                 <input class="easyui-numberbox" name="isRecord" id="isRecord" style="width:100%" data-options="labelAlign:'right', label:'是否备案:'" />
                             </td>
@@ -131,7 +131,7 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_avgProfitRatio" id="_avgProfitRatio" style="width:100%" labelWidth="90" data-options="label:'平均收益(%):', validType:'length[0,3]'" />
+                    <input class="easyui-numberbox" name="_avgProfitRatio" id="_avgProfitRatio" precision="2" style="width:100%" labelWidth="90" data-options="label:'平均收益(%):', validType:'length[0,5]'" />
                 </td>
                 <td style="padding:5px;">
                     <input name="_securityLevel" id="_securityLevel" editable="false" panelHeight="auto" style="width:100%" data-options="label:'安全级别:', validType:'length[0,8]'" />
@@ -143,7 +143,7 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
                     <input class="easyui-textbox" name="_registryPlace" id="_registryPlace" style="width:100%" data-options="label:'注册地:', validType:'length[0,10]'" />
                 </td>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_businessPlace" id="_businessPlace" style="width:100%" data-options="label:'经营地:', validType:'length[0,10]'" />
+                    <input class="easyui-textbox" name="_businessPlace" id="_businessPlace" style="width:100%" data-options="label:'经营地:', validType:'length[0,120]'" />
                 </td>
             </tr>
             <tr>

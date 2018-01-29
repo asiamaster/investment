@@ -1,9 +1,15 @@
 package com.artist.investment.controller;
 
+import com.artist.investment.domain.BankCard;
 import com.artist.investment.domain.Investment;
 import com.artist.investment.domain.dto.InvestmentDto;
+import com.artist.investment.service.BankCardService;
 import com.artist.investment.service.InvestmentService;
+import com.artist.sysadmin.sdk.domain.UserTicket;
+import com.artist.sysadmin.sdk.exception.NotLoginException;
+import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.util.DateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,9 +38,27 @@ public class InvestmentController {
     @Autowired
     InvestmentService investmentService;
 
+    @Autowired
+    BankCardService bankCardService;
+
     @ApiOperation("跳转到Investment页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
+        //查询当前用户的默认，非存管银行卡
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+        BankCard bankCard = DTOUtils.newDTO(BankCard.class);
+        bankCard.setUserId(userTicket.getId());
+        bankCard.setIsDefault(1);
+        bankCard.setIsDepository(0);
+        List<BankCard> bankCards = bankCardService.list(bankCard);
+        if(bankCards!= null && !bankCards.isEmpty()){
+            modelMap.put("bankCardId", bankCards.get(0).getId());
+            modelMap.put("bankCardNumber", bankCards.get(0).getCardNumber());
+        }
+
         return "investment/index";
     }
 
@@ -118,7 +142,7 @@ public class InvestmentController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name="Investment", paramType="form", value = "查询横向对比柱图", required = false, dataType = "string")
+            @ApiImplicitParam(name="Investment", paramType="form", value = "查询投资人横向对比柱图", required = false, dataType = "string")
     })
     @RequestMapping(value="/selectInvestmentComparisonBarChart", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<Map> selectInvestmentComparisonBarChart(InvestmentDto investment) {
@@ -141,8 +165,8 @@ public class InvestmentController {
      * @throws Exception
      */
     @RequestMapping(value="/selectInvestorStats", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<Map> selectInvestorStats(){
-        return investmentService.selectInvestorStats();
+    public @ResponseBody String selectInvestorStats(){
+        return investmentService.selectInvestorStats().toString();
     }
 
     @ApiOperation("跳转到投资分布详情报表页面")

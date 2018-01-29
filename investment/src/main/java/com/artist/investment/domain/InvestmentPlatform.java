@@ -79,9 +79,9 @@ public interface InvestmentPlatform extends IBaseDomain {
     @Column(name = "`avg_profit_ratio`")
     @FieldDef(label="平均收益率")
     @EditMode(editor = FieldEditor.Number, required = false)
-    Integer getAvgProfitRatio();
+    Float getAvgProfitRatio();
 
-    void setAvgProfitRatio(Integer avgProfitRatio);
+    void setAvgProfitRatio(Float avgProfitRatio);
 
     @Column(name = "`business_mode`")
     @FieldDef(label="业务模式", maxLength = 120)

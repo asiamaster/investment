@@ -19,6 +19,7 @@ public class YesOrNoProvider implements ValueProvider {
 
     static {
         buffer = new ArrayList<ValuePair<?>>();
+        buffer.add(new ValuePairImpl<>(EMPTY_ITEM_TEXT, null));
         buffer.add(new ValuePairImpl("否", "0"));
         buffer.add(new ValuePairImpl("是", "1"));
     }

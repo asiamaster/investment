@@ -1,5 +1,5 @@
  <#body>
-     <#controls_user dlgId="userSelectDialog" controlId="_investorId"/>
+     <#controls_user dlgId="_userSelectDialog" controlId="_investorId"/>
      <#controls_bankCard dlgId="bankCardSelectDialog" controlId="_bankCardId"/>
      <script>
          //根据项目期限和期限单位计算结束日期
@@ -102,7 +102,8 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="investorId" id="investorId" style="width:100%" labelAlign="right" data-options="label:'投资人:', validType:'length[0,19]'" />
+                                <input class="easyui-textbox" name="investorId" id="investorId"  panelHeight="auto" labelAlign="right" label="投资人:" style="width: 100%;"
+                                       data-options="editable:false,buttonText:'选择',onClickButton:_selectUser,onChange:_changeTextboxShowClear" />
                             </td>
                             <td style="padding:5px;">
                                 <input name="platformId" id="platformId" style="width:100%" editable="false" labelAlign="right" panelWidth="auto" panelHeight="auto" data-options="label:'投资平台:'" />
@@ -133,7 +134,7 @@
         <div region="center" style="width:100%;" height="auto">
             <!-- =========================================================表格========================================================= -->
             <table class="easyui-datagrid" title="投资记录" id="grid" fitColumns="true" noheader="true"
-                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="false"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="true"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="investorId"
                    align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
@@ -147,7 +148,7 @@
                         <th data-options="field:'projectName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             项目名称
                         </th>
-                        <th data-options="field:'startDate', _index:18, _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'startDate', _index:20, _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             起始日期
                         </th>
                         <th data-options="field:'endDate', _index:19,  _provider:'dateProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -162,17 +163,29 @@
                         <th data-options="field:'profitRatio',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             年化利率(%)
                         </th>
+                        <th data-options="field:'investment', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            投资额
+                        </th>
                         <th data-options="field:'deducted', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             已抵扣
                         </th>
                         <th data-options="field:'interestCoupon',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            利率券(%)
+                            加息券(%)
                         </th>
                         <th data-options="field:'cashCoupon', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            优惠券
+                            现金券
                         </th>
-                        <th data-options="field:'investment', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            投资额
+                        <th data-options="field:'currentProfit', _index:16, _provider:'currentProfitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            已得收益
+                        </th>
+                        <th data-options="field:'expectProfit', _index:17, _provider:'expectProfitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            预计收益
+                        </th>
+                        <th data-options="field:'principalAndInterest', _provider:'principalAndInterestProvider', _index:18, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            本息合计
+                        </th>
+                        <th data-options="field:'exitDays', _index:15, _provider:'exitDaysProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            距退出(天)
                         </th>
                         <th data-options="field:'isRemind',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否到期提醒
@@ -182,15 +195,6 @@
                         </th>
                         <th data-options="field:'bankCardId', _provider:'bankCardProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             银行卡
-                        </th>
-                        <th data-options="field:'currentProfit', _index:16, _provider:'currentProfitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            已得收益
-                        </th>
-                        <th data-options="field:'expectProfit', _index:17, _provider:'expectProfitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            预计收益
-                        </th>
-                        <th data-options="field:'exitDays', _index:15, _provider:'exitDaysProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            距退出(天)
                         </th>
                         <th data-options="field:'notes', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             备注
@@ -274,15 +278,15 @@
                     <input class="easyui-numberbox" precision="2" min="0" name="_investment" id="_investment" style="width:100%" data-options="required:true,label:'投资额:'" />
                 </td>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" min="0" name="_deducted" id="_deducted" style="width:100%" data-options="label:'已抵扣:'" />
+                    <input class="easyui-numberbox" precision="2" min="0" name="_deducted" id="_deducted" style="width:100%" data-options="label:'已抵扣:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" precision="2" min="0" name="_interestCoupon" precision="2" id="_interestCoupon" style="width:100%" data-options="label:'加息券:'" />
+                    <input class="easyui-numberbox" precision="2" min="0" name="_interestCoupon" id="_interestCoupon" style="width:100%" data-options="label:'加息券:'" />
                 </td>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" precision="0" min="0" name="_cashCoupon" id="_cashCoupon" style="width:100%" data-options="label:'现金券:'" />
+                    <input class="easyui-numberbox" precision="2" min="0" name="_cashCoupon" id="_cashCoupon" style="width:100%" data-options="label:'现金券:'" />
                 </td>
             </tr>
             <tr>
@@ -320,6 +324,11 @@
             //单独加载所属用户
             $("#_investorId").textbox("initValue", '<#userTicket field="id"/>');
             $("#_investorId").textbox("setText", '<#userTicket field="realName"/>');
+            //设置默认银行卡
+            <% if(has(bankCardId) && has(bankCardNumber)){%>
+                $("#_bankCardId").textbox("initValue", '${bankCardId}');
+                $("#_bankCardId").textbox("setText", '${bankCardNumber}');
+            <%}%>
         }
 
         //打开修改窗口
@@ -474,6 +483,7 @@
             } else {
                 document.onkeyup = getKey;
             }
+            $('#investorId').textbox('addClearBtn', 'icon-clear');
             var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
                 pager.pagination({
                     <#controls_paginationOpts/>,

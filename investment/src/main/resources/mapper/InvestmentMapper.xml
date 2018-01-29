@@ -47,7 +47,7 @@
 
   <!-- 查询投资分布饼图 -->
   <select id="selectInvestmentDistributionPieChart" parameterType="map" resultType="map">
-    select sum(i.investment) investment, ip.name platformName from investment i, investment_platform ip where i.platform_id = ip.id
+    select sum(i.investment)/100 investment, ip.name platformName from investment i, investment_platform ip where i.platform_id = ip.id
     <if test="isProgressing != null and isProgressing == 1">
       <![CDATA[
       and now()> i.start_date and now() < i.end_date
@@ -67,7 +67,7 @@
   <!-- 查询收益分布饼图 -->
   <!-- (投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100% /100(分)， 保留两位小数并四舍五入 -->
   <select id="selectProfitDistributionPieChart" parameterType="map" resultType="map">
-    select ROUND(sum((i.investment+i.cash_coupon)*(i.profit_ratio+i.interest_coupon)*datediff(i.end_date, i.start_date))/365/10000, 2) profit
+    select ROUND(sum((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)*datediff(i.end_date, i.start_date))/365/10000, 2) profit
     , ip.name platformName
     from investment i, investment_platform ip where i.platform_id = ip.id
     <if test="isProgressing != null and isProgressing == 0">
@@ -87,7 +87,7 @@
   </select>
   <!-- 查询投资横比柱图 -->
   <select id="selectInvestmentComparisonBarChart" parameterType="map" resultType="map">
-    select ROUND(sum(i.investment)/100) investment
+    select ROUND(sum(i.investment)/100, 2) investment
     , ip.name platformName, i.investor_id investorId
     from investment i, investment_platform ip where i.platform_id = ip.id
     <if test="isProgressing != null and isProgressing == 0">
@@ -111,16 +111,22 @@
     t1.investorId
     ,t1.platformName
     ,t1.investment
+    ,t1.deducted
     ,t1.profit
+    ,t1.principalAndInterest
     ,t1.investmentAmount
     ,t3.dailyProfit
     ,t2.totalInvestment
+    ,t2.totalDeducted
+    ,t2.totalPrincipalAndInterest
     ,t2.totalProfit
     ,t2.totalInvestmentAmount
     FROM
     (
-    SELECT ROUND(SUM((i.investment+i.cash_coupon)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) profit
-    , ROUND(SUM(i.investment)/100) investment
+    SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) profit
+    , ROUND(SUM(i.investment)/100, 2) investment
+    , ROUND(SUM(i.deducted)/100, 2) deducted
+    , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) principalAndInterest
     , COUNT(i.id) investmentAmount
     , ip.name platformName
     , ip.id pid
@@ -133,8 +139,10 @@
     GROUP BY i.investor_id, i.platform_id) t1
     ,
     (
-    SELECT ROUND(SUM((i.investment+i.cash_coupon)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) totalProfit
-    , ROUND(SUM(i.investment)/100) totalInvestment
+    SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) totalProfit
+    , ROUND(SUM(i.investment)/100, 2) totalInvestment
+    , ROUND(SUM(i.deducted)/100, 2) totalDeducted
+    , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) totalPrincipalAndInterest
     , COUNT(i.id) totalInvestmentAmount
     , ip.name platformName
     , ip.id pid
@@ -144,7 +152,7 @@
     GROUP BY i.investor_id, i.platform_id) t2
     ,
     (
-    SELECT ROUND(SUM((i.investment+i.cash_coupon)*(i.profit_ratio+i.interest_coupon))/365/10000, 2) dailyProfit
+    SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon))/365/10000, 2) dailyProfit
     , i.platform_id pid
     , i.investor_id investorId
     FROM investment i
@@ -163,16 +171,22 @@
     SELECT
     t1.investorId
     ,t1.investment
+    ,t1.deducted
     ,t1.profit
+    ,t1.principalAndInterest
     ,t1.investmentAmount
     ,t3.dailyProfit
     ,t2.totalInvestment
+    ,t2.totalDeducted
+    ,t2.totalPrincipalAndInterest
     ,t2.totalProfit
     ,t2.totalInvestmentAmount
     FROM
     (
-    SELECT ROUND(SUM((i.investment+i.cash_coupon)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) profit
-    , ROUND(SUM(i.investment)/100) investment
+    SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) profit
+    , ROUND(SUM(i.investment)/100, 2) investment
+    , ROUND(SUM(i.deducted)/100, 2) deducted
+    , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) principalAndInterest
     , COUNT(i.id) investmentAmount
     , i.investor_id investorId
     FROM investment i
@@ -182,15 +196,17 @@
     GROUP BY i.investor_id) t1
     ,
     (
-    SELECT ROUND(SUM((i.investment+i.cash_coupon)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) totalProfit
-    , ROUND(SUM(i.investment)/100) totalInvestment
+    SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) totalProfit
+    , ROUND(SUM(i.investment)/100, 2) totalInvestment
+    , ROUND(SUM(i.deducted)/100, 2) totalDeducted
+    , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) totalPrincipalAndInterest
     , COUNT(i.id) totalInvestmentAmount
     , i.investor_id investorId
     FROM investment i
     GROUP BY i.investor_id) t2
     ,
     (
-    SELECT ROUND(SUM((i.investment+i.cash_coupon)*(i.profit_ratio+i.interest_coupon))/365/10000, 2) dailyProfit
+    SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon))/365/10000, 2) dailyProfit
     , i.investor_id investorId
     FROM investment i
     <![CDATA[

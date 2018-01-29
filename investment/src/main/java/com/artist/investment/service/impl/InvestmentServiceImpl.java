@@ -18,10 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -115,8 +112,46 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
     }
 
     @Override
-    public List<Map> selectInvestorStats() {
-        return convertInvestor(getActualDao().selectInvestorStats(), "investorId");
+    public EasyuiPageOutput selectInvestorStats() {
+        List<Map> list = convertInvestor(getActualDao().selectInvestorStats(), "investorId");
+        EasyuiPageOutput easyuiPageOutput = new EasyuiPageOutput();
+        easyuiPageOutput.setRows(list);
+        easyuiPageOutput.setTotal(list.size());
+        List<Map> summationList = new ArrayList<>();
+        Map summation = new HashMap();
+        summation.put("investorId", "合计");
+        Float dailyProfit = 0f;
+        Float investmentAmount = 0f;
+        Float investment = 0f;
+        Float deducted = 0f;
+        Float profit = 0f;
+        Float principalAndInterest = 0f;
+        Float totalInvestment = 0f;
+        Float totalInvestmentAmount = 0f;
+        Float totalProfit = 0f;
+        for(Map data : list){
+            dailyProfit += Float.parseFloat(data.get("dailyProfit").toString());
+            investmentAmount += Float.parseFloat(data.get("investmentAmount").toString());
+            investment += Float.parseFloat(data.get("investment").toString());
+            deducted += Float.parseFloat(data.get("deducted").toString());
+            profit += Float.parseFloat(data.get("profit").toString());
+            principalAndInterest += Float.parseFloat(data.get("principalAndInterest").toString());
+            totalInvestment += Float.parseFloat(data.get("totalInvestment").toString());
+            totalInvestmentAmount += Float.parseFloat(data.get("totalInvestmentAmount").toString());
+            totalProfit += Float.parseFloat(data.get("totalProfit").toString());
+        }
+        summation.put("dailyProfit", dailyProfit);
+        summation.put("investmentAmount", investmentAmount);
+        summation.put("investment", investment);
+        summation.put("deducted", deducted);
+        summation.put("profit", profit);
+        summation.put("principalAndInterest", principalAndInterest);
+        summation.put("totalInvestment", totalInvestment);
+        summation.put("totalInvestmentAmount", totalInvestmentAmount);
+        summation.put("totalProfit", totalProfit);
+        summationList.add(summation);
+        easyuiPageOutput.setFooter(summationList);
+        return easyuiPageOutput;
     }
 
     /**

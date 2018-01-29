@@ -53,5 +53,5 @@ public interface InvestmentService extends BaseService<Investment, Long> {
      * 查询投资人统计
      * @return
      */
-    List<Map> selectInvestorStats();
+    EasyuiPageOutput selectInvestorStats();
 }
