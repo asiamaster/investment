@@ -27,6 +27,11 @@ public class UpdateUserDto {
 	private String serialNumber;
 
 	/**
+	 * 余额
+	 */
+	private String balance;
+
+	/**
 	 * 固定电话
 	 */
 	private String fixedLineTelephone;
@@ -125,4 +130,11 @@ public class UpdateUserDto {
 		this.department = department;
 	}
 
+	public String getBalance() {
+		return balance;
+	}
+
+	public void setBalance(String balance) {
+		this.balance = balance;
+	}
 }

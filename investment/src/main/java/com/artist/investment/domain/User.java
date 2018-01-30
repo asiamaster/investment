@@ -101,6 +101,12 @@ public class User extends BaseDomain {
 	private String email;
 
 	/**
+	 * 余额
+	 */
+	@Column(name="`balance`")
+	private Long balance;
+
+	/**
 	 * 有效时间开始点
 	 */
 	@Column(name = "`valid_time_begin`")
@@ -416,5 +422,13 @@ public class User extends BaseDomain {
 	 */
 	public void setValidTimeEnd(Date validTimeEnd) {
 		this.validTimeEnd = validTimeEnd;
+	}
+
+	public Long getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Long balance) {
+		this.balance = balance;
 	}
 }

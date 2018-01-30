@@ -99,6 +99,9 @@ public class UserController {
 		JSONObject userStatusProvider = new JSONObject();
 		userStatusProvider.put("provider", "userStatusProvider");
 		metadata.put("status", userStatusProvider);
+		JSONObject centToYuanProvider = new JSONObject();
+		centToYuanProvider.put("provider", "centToYuanProvider");
+		metadata.put("balance", centToYuanProvider);
 		JSONObject datetimeProvider = new JSONObject();
 		datetimeProvider.put("provider", "datetimeProvider");
 		metadata.put("validTimeBegin", datetimeProvider);
@@ -106,7 +109,6 @@ public class UserController {
 		metadata.put("created", datetimeProvider);
 		metadata.put("modified", datetimeProvider);
 		metadata.put("lastLoginTime", datetimeProvider);
-
 		try {
 			User user = userService.update(dto);
 			List<Map> list = ValueProviderUtils.buildDataByProvider(metadata, Lists.newArrayList(user));
@@ -124,6 +126,9 @@ public class UserController {
 		JSONObject userStatusProvider = new JSONObject();
 		userStatusProvider.put("provider", "userStatusProvider");
 		metadata.put("status", userStatusProvider);
+		JSONObject centToYuanProvider = new JSONObject();
+		centToYuanProvider.put("provider", "centToYuanProvider");
+		metadata.put("balance", centToYuanProvider);
 		JSONObject datetimeProvider = new JSONObject();
 		datetimeProvider.put("provider", "datetimeProvider");
 		metadata.put("validTimeBegin", datetimeProvider);

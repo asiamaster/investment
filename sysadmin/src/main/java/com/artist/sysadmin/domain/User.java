@@ -40,6 +40,12 @@ public class User extends BaseDomain {
 	private String password;
 
 	/**
+	 * 余额
+	 */
+	@Column(name="`balance`")
+	private Long balance;
+
+	/**
 	 * 最后登录ip
 	 */
 	@Column(name = "`last_login_ip`")
@@ -422,5 +428,13 @@ public class User extends BaseDomain {
 	 */
 	public void setValidTimeEnd(Date validTimeEnd) {
 		this.validTimeEnd = validTimeEnd;
+	}
+
+	public Long getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Long balance) {
+		this.balance = balance;
 	}
 }

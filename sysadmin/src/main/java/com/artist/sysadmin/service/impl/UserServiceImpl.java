@@ -20,7 +20,9 @@ import com.dili.ss.metadata.ValueProviderUtils;
 import com.artist.sysadmin.exception.UserException;
 import com.artist.sysadmin.service.UserService;
 import com.artist.sysadmin.service.ValidatePwdService;
+import com.dili.ss.util.BeanConver;
 import com.github.pagehelper.Page;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -158,14 +161,29 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			throw new UserException("用户不存在");
 		}
 		String password = user.getPassword();
-		BeanCopier copier = BeanCopier.create(UpdateUserDto.class, User.class, true);
-		copier.copy(dto, user, (v, c, m) -> {
-			if ("setPassword".equals(m) && null != v) {
-				return this.md5Utils.getMD5ofStr(v.toString()).substring(6, 24);
-			}
-			return v;
-		});
+		Map userTmp = null;
+		try {
+			userTmp = BeanConver.transformObjectToMap(dto);
+			BeanUtils.populate(user, userTmp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+//		BeanCopier copier = BeanCopier.create(Map.class, User.class, true);
+//		BeanUtils.copyProperties(userTmp, user);
+//		copier.copy(userTmp, user, (v, c, m) -> {
+//			if ("setPassword".equals(m) && null != v) {
+//				return this.md5Utils.getMD5ofStr(v.toString()).substring(6, 24);
+//			}
+//			return v;
+//		});
 
+		if(StringUtils.isNotBlank(dto.getPassword())) {
+			user.setPassword(md5Utils.getMD5ofStr(dto.getPassword()).substring(6, 24));
+		}
+		//单独拷贝余额
+		if(StringUtils.isNotBlank(dto.getBalance())) {
+			user.setBalance(new BigDecimal(dto.getBalance()).multiply(new BigDecimal(100)).longValue());
+		}
 		// 修改用户信息，默认不会给前端提供该密码，即为空
 		if (null == user.getPassword()) {
 			user.setPassword(password);
@@ -217,13 +235,27 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			return BaseOutput.failure("用户名已存在");
 		}
 		User user = new User();
-		BeanCopier copier = BeanCopier.create(AddUserDto.class, User.class, true);
-		copier.copy(dto, user, (v, c, m) -> {
-			if (m.equals("setPassword")) {
-				return md5Utils.getMD5ofStr(v.toString()).substring(6, 24);
-			}
-			return v;
-		});
+//		BeanCopier copier = BeanCopier.create(AddUserDto.class, User.class, true);
+//		copier.copy(dto, user, (v, c, m) -> {
+//			if (m.equals("setPassword")) {
+//				return md5Utils.getMD5ofStr(v.toString()).substring(6, 24);
+//			}
+//			return v;
+//		});
+		Map userTmp = null;
+		try {
+			userTmp = BeanConver.transformObjectToMap(dto);
+			BeanUtils.populate(user, userTmp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(StringUtils.isNotBlank(dto.getPassword())) {
+			user.setPassword(md5Utils.getMD5ofStr(dto.getPassword()).substring(6, 24));
+		}
+		//单独拷贝余额
+		if(StringUtils.isNotBlank(dto.getBalance())) {
+			user.setBalance(new BigDecimal(dto.getBalance()).multiply(new BigDecimal(100)).longValue());
+		}
 		int result = this.userMapper.insertSelective(user);
 		if (result <= 0) {
 			return BaseOutput.failure("新增用户失败");
@@ -458,13 +490,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public EasyuiPageOutput listPageUserDto(User user) {
 		List<User> list = this.listByExample(user);
 		Page<User> page = (Page<User>) list;
-		@SuppressWarnings("unchecked")
 		Map<Object, Object> metadata = null == user.getMetadata() ? new HashMap<>() : user.getMetadata();
 
 		JSONObject userStatusProvider = new JSONObject();
 		userStatusProvider.put("provider", "userStatusProvider");
 		metadata.put("status", userStatusProvider);
-
+		JSONObject centToYuanProvider = new JSONObject();
+		centToYuanProvider.put("provider", "centToYuanProvider");
+		metadata.put("balance", centToYuanProvider);
 		JSONObject provider = new JSONObject();
 		provider.put("provider", "datetimeProvider");
 		metadata.put("validTimeBegin", provider);
@@ -473,7 +506,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		metadata.put("modified", provider);
 		user.setMetadata(metadata);
 		try {
-			@SuppressWarnings("unchecked")
 			List<UserDepartmentDto> results = this.parseToUserDepartmentDto(list);
 			List users = ValueProviderUtils.buildDataByProvider(user, results);
 			return new EasyuiPageOutput(Integer.valueOf(Integer.parseInt(String.valueOf(page.getTotal()))), users);

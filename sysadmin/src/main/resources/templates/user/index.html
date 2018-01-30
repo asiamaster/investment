@@ -50,14 +50,15 @@
 				<thead>
 					<tr>
 						<th width="9%" data-options="field:'serialNumber',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">用户编号</th>
-						<th width="10%" data-options="field:'userName',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">用户名</th>
-						<th width="10%" data-options="field:'realName',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">真实姓名</th>
-						<th width="10%" data-options="field:'lastLoginIp',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">最后登录ip</th>
-						<th width="15%" data-options="field:'lastLoginTime',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">最后登录时间</th>
+						<th width="9%" data-options="field:'userName',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">用户名</th>
+						<th width="9%" data-options="field:'realName',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">真实姓名</th>
+                        <th width="7%" data-options="field:'balance', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">余额</th>
+						<th width="9%" data-options="field:'lastLoginIp',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">最后登录ip</th>
+						<th width="12%" data-options="field:'lastLoginTime',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">最后登录时间</th>
 						<th width="10%" data-options="field:'cellphone',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">手机号码</th>
-						<th width="12%" data-options="field:'email',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">邮箱</th>
+						<th width="14%" data-options="field:'email',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">邮箱</th>
 						<th width="10%" data-options="field:'status', _data:[{'text':'已启用','value':1},{'text':'已停用','value':0}],  sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">状态</th>
-						<th width="15%" data-options="field:'options', formatter:formatOptions, align:'center', resizable:'true', fixed:'false'">操作</th>
+						<th width="12%" data-options="field:'options', formatter:formatOptions, align:'center', resizable:'true', fixed:'false'">操作</th>
 					</tr>
 				</thead>
 			</table>
@@ -69,7 +70,7 @@
 	</div>
 </div>
 <!-- 隐藏编辑框 -->
-<div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding: 20px;" modal="true" border="thin" closed="true">
+<div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding: 10px;" modal="true" border="thin" closed="true">
 	<table style="padding: 0px; margin: 0px;">
 		<tr>
 			<td>
@@ -80,7 +81,7 @@
                         <td style="padding: 5px;"><input class="easyui-textbox" name="_userName" id="_userName" style="width: 100%" data-options="labelAlign:'right',label:'*用户名:', validType:'length[0,50]'" required="true"
                             validateOnCreate="false" /></td>
                         <td rowspan="13" style="padding-top: 5px;padding-left:10px;vertical-align:top" id="existsRoleTd">
-                            <div id="existsRole" class="easyui-datalist" title="已分配角色" style="width: 100px;height:415px;" valueField="id" textField="roleName"></div>
+                            <div id="existsRole" class="easyui-datalist" title="已分配角色" style="width: 100px;height:315px;" valueField="id" textField="roleName"></div>
                         </td>
                     </tr>
                     <tr>
@@ -91,6 +92,11 @@
                     <tr>
                         <td style="padding: 5px;"><input class="easyui-textbox" name="_realName" id="_realName" style="width: 100%" data-options="labelAlign:'right',label:'*真实姓名:', validType:'length[0,64]'" required="true"
                             validateOnCreate="false" /></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px;"><input class="easyui-numberbox" precision="2" min="0" name="_balance" id="_balance" style="width: 100%" data-options="labelAlign:'right',label:'*余额:', validType:'length[0,20]'" required="true"
+                                                         validateOnCreate="false" /></td>
                         <td></td>
                     </tr>
                     <tr>
@@ -118,45 +124,29 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td style="padding: 5px;" id="_lastLoginIpTd"><input class="easyui-textbox" name="_lastLoginIp" id="_lastLoginIp" style="width: 100%"
-                            data-options="labelAlign:'right',label:'最后登录ip:', validType:'length[0,20]'" /></td>
+                        <td style="padding: 0px;" id="_lastLoginIpTd">
+                            <input class="easyui-textbox" name="_lastLoginIp" id="_lastLoginIp" style="width: 100%" data-options="labelAlign:'right',label:'最后登录ip:', validType:'length[0,20]'" />
+                            <input class="easyui-datetimebox" name="_lastLoginTime" id="_lastLoginTime" style="width: 100%" data-options="labelAlign:'right',label:'最后登录时间:',hasDownArrow:false" />
+                            <input class="easyui-datetimebox" name="_created" id="_created" style="width: 100%" data-options="labelAlign:'right',label:'创建时间:',hasDownArrow:false" />
+                            <input class="easyui-datetimebox" name="_modified" id="_modified" style="width: 100%" data-options="labelAlign:'right',label:'修改时间:',hasDownArrow:false" />
+                            <input name="_status" id="_status" style="width: 100%;" panelWidth="auto" panelHeight="auto" label="状态:" data-options="hasDownArrow:false, labelAlign:'right'"  /> <#comboProvider _id="_status"
+                                _data='[{"text":"-- 请选择 --"},{"text":"已启用","value":"1"},{"text":"已停用","value":"0"}]' />
+                            <input class="easyui-datetimebox" name="_validTimeBegin" id="_validTimeBegin" style="width: 100%" data-options="label:'有效时间开始点:'" />
+                            <input class="easyui-datetimebox" name="_validTimeEnd" id="_validTimeEnd" style="width: 100%" data-options="label:'有效时间结束点:'" />
+                        </td>
                         <td></td>
                     </tr>
-                    <tr>
-                        <td style="padding: 5px;" id="_lastLoginTimeTd"><input class="easyui-datetimebox" name="_lastLoginTime" id="_lastLoginTime" style="width: 100%" data-options="labelAlign:'right',label:'最后登录时间:',hasDownArrow:false" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 5px;" id="_createdTd"><input class="easyui-datetimebox" name="_created" id="_created" style="width: 100%" data-options="labelAlign:'right',label:'创建时间:',hasDownArrow:false" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 5px;" id="_modifiedTd"><input class="easyui-datetimebox" name="_modified" id="_modified" style="width: 100%" data-options="labelAlign:'right',label:'修改时间:',hasDownArrow:false" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 5px;" id="_statusTd"><input name="_status" id="_status" style="width: 100%;" panelWidth="auto" panelHeight="auto" label="状态:" data-options="hasDownArrow:false, labelAlign:'right'"  /> <#comboProvider _id="_status"
-                                _data='[{"text":"-- 请选择 --"},{"text":"已启用","value":"1"},{"text":"已停用","value":"0"}]' /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 5px;" id="_validTimeBeginTd"><input class="easyui-datetimebox" name="_validTimeBegin" id="_validTimeBegin" style="width: 100%" data-options="label:'有效时间开始点:'" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 5px;" id="_validTimeEndTd"><input class="easyui-datetimebox" name="_validTimeEnd" id="_validTimeEnd" style="width: 100%" data-options="label:'有效时间结束点:'" /></td>
-                        <td></td>
-                    </tr>
+
                 </table>
             </form>
             </td>
             <td valign="top" >
-                <div id="editRoleDiv" style="width:100%; height:100%;padding-top: 5px;">
+                <div id="editRoleDiv" style="width:100%; height:320px;padding-top: 5px;">
                     <form id="roleForm" class="easyui-form" method="post" >
                         <table style="padding: 0px; margin: 0px;">
                             <tr>
                                 <td id="withoutRoleDatalistTd" >
-                                    <div id="withoutRoleDatalist" class="easyui-datalist" title="未分配角色" style="width: 100px;height:270px" data-options="onDblClickRow:addSelectedRole" valueField="id" textField="roleName"></div>
+                                    <div id="withoutRoleDatalist" class="easyui-datalist" title="未分配角色" style="width: 100px;height:310px" data-options="onDblClickRow:addSelectedRole" valueField="id" textField="roleName"></div>
                                 </td>
                                 <td id="buttonsTd" width="120" align="center">
                                     <#resource code="grantRoleToUser">
@@ -175,7 +165,7 @@
                                     </#resource>
                                 </td>
                                 <td>
-                                    <div id="withRoleDatalist" class="easyui-datalist" title="已分配角色" style="width: 100px; height: 270px" data-options="onDblClickRow:delSelectedRole" valueField="id" textField="roleName"></div>
+                                    <div id="withRoleDatalist" class="easyui-datalist" title="已分配角色" style="width: 100px; height: 310px" data-options="onDblClickRow:delSelectedRole" valueField="id" textField="roleName"></div>
                                 </td>
                             </tr>
                         </table>
@@ -188,17 +178,17 @@
 
 
     <!-- 隐藏查看框 -->
-    <div id="viewDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding: 20px;" modal="true" border="thin" closed="true">
+    <div id="viewDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding: 10px;" modal="true" border="thin" closed="true">
         <table style="padding: 0px; margin: 0px;">
             <tr>
                 <td>
                     <form id="v_form" class="easyui-form" method="post">
-                        <table width="340px">
+                        <table width="380px">
                             <tr>
                                 <td style="padding: 5px;"><input class="easyui-textbox" name="v_userName" id="v_userName" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'*用户名:', validType:'length[0,50]'" required="true"
                                                                  validateOnCreate="false" /></td>
-                                <td rowspan="13" style="padding-top: 5px;padding-left:10px;vertical-align:top" id="v_existsRoleTd">
-                                    <div id="v_existsRole" class="easyui-datalist" title="已分配角色" style="width: 100px;height:438px;" valueField="id" textField="roleName"></div>
+                                <td rowspan="10" style="padding-top: 5px;vertical-align:top" id="v_existsRoleTd">
+                                    <div id="v_existsRole" class="easyui-datalist" title="已分配角色" style="width: 120px;height:328px;" valueField="id" textField="roleName"></div>
                                 </td>
                             </tr>
                             <tr>
@@ -212,7 +202,12 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="padding: 5px;"><input class="easyui-textbox" name="v_serialNumber" id="v_serialNumber" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'*用户编号:', validType:'length[0,128]'" required="true"
+                                <td style="padding: 5px;"><input class="easyui-textbox" name="v_serialNumber" id="v_serialNumber" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'*用户编号:', validType:'length[0,40]'" required="true"
+                                                                 validateOnCreate="false" /></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;"><input class="easyui-numberbox" name="v_balance" id="v_balance" precision="2" min="0" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'*余额:', validType:'length[0,20]'" required="true"
                                                                  validateOnCreate="false" /></td>
                                 <td></td>
                             </tr>
@@ -233,36 +228,21 @@
                             <tr>
                                 <td style="padding: 5px;"><select class="easyui-combotree" name="v_department" id="v_department" style="width: 100%"
                                                                   data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',checkbox:true,cascadeCheck:true,multiple:true,loadFilter:treeLoadFilter, _idField:'id', hasDownArrow:false, _textField:'name', _parentIdField:'parentId',label:'*所属部门:', url:'${contextPath!}/department/listTree.json',editable:false,required:true,validateOnCreate:false"></select></td>
-                                <td></td>
+                                <td>
+                                </td>
                             </tr>
                             <tr>
-                                <td style="padding: 5px;" id="v_lastLoginIpTd"><input class="easyui-textbox" name="v_lastLoginIp" id="v_lastLoginIp" style="width: 100%"
-                                                                                     data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'最后登录ip:', validType:'length[0,20]'" /></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 5px;" id="v_lastLoginTimeTd"><input class="easyui-datetimebox" name="v_lastLoginTime" id="v_lastLoginTime" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'最后登录时间:',hasDownArrow:false" /></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 5px;" id="v_createdTd"><input class="easyui-datetimebox" name="v_created" id="v_created" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'创建时间:',hasDownArrow:false" /></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 5px;" id="v_modifiedTd"><input class="easyui-datetimebox" name="v_modified" id="v_modified" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'修改时间:',hasDownArrow:false" /></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 5px;" id="v_statusTd"><input name="v_status" id="v_status" style="width: 100%;" panelWidth="auto" panelHeight="auto" label="状态:" data-options="cls:'noborder', editable:false, readonly:true, hasDownArrow:false, labelAlign:'right'"  /> <#comboProvider _id="v_status"
-                                        _data='[{"text":"-- 请选择 --"},{"text":"已启用","value":"1"},{"text":"已停用","value":"0"}]' /></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 5px;" id="v_validTimeBeginTd"><input class="easyui-datetimebox" name="v_validTimeBegin" id="v_validTimeBegin" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, label:'有效时间开始点:'" /></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 5px;" id="v_validTimeEndTd"><input class="easyui-datetimebox" name="v_validTimeEnd" id="v_validTimeEnd" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, label:'有效时间结束点:'" /></td>
+                                <td style="padding: 0px;display: none;" id="v_lastLoginIpTd">
+                                    <input class="easyui-textbox" name="v_lastLoginIp" id="v_lastLoginIp" style="width: 100%"
+                                           data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'最后登录ip:', validType:'length[0,20]'" />
+                                    <input class="easyui-datetimebox" name="v_lastLoginTime" id="v_lastLoginTime" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'最后登录时间:',hasDownArrow:false" />
+                                    <input class="easyui-datetimebox" name="v_created" id="v_created" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'创建时间:',hasDownArrow:false" />
+                                    <input class="easyui-datetimebox" name="v_modified" id="v_modified" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, labelAlign:'right',label:'修改时间:',hasDownArrow:false" />
+                                    <input name="v_status" id="v_status" style="width: 100%;" panelWidth="auto" panelHeight="auto" label="状态:" data-options="cls:'noborder', editable:false, readonly:true, hasDownArrow:false, labelAlign:'right'"  /> <#comboProvider _id="v_status"
+                                        _data='[{"text":"-- 请选择 --"},{"text":"已启用","value":"1"},{"text":"已停用","value":"0"}]' />
+                                    <input class="easyui-datetimebox" name="v_validTimeBegin" id="v_validTimeBegin" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, label:'有效时间开始点:'" />
+                                    <input class="easyui-datetimebox" name="v_validTimeEnd" id="v_validTimeEnd" style="width: 100%" data-options="cls:'noborder', editable:false, readonly:true, label:'有效时间结束点:'" />
+                                </td>
                                 <td></td>
                             </tr>
                         </table>

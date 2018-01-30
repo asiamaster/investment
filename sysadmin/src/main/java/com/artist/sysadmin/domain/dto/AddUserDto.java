@@ -22,6 +22,11 @@ public class AddUserDto {
 	private String realName;
 
 	/**
+	 * 余额
+	 */
+	private String balance;
+
+	/**
 	 * 用户编号
 	 */
 	private String serialNumber;
@@ -122,5 +127,13 @@ public class AddUserDto {
 
 	public void setDepartment(List<Long> department) {
 		this.department = department;
+	}
+
+	public String getBalance() {
+		return balance;
+	}
+
+	public void setBalance(String balance) {
+		this.balance = balance;
 	}
 }

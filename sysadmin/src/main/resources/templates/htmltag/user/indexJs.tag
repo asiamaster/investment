@@ -98,12 +98,7 @@ function onAddClicked() {
 	}
 	$('#_passwordTd').show();
 	$('#_lastLoginIpTd').hide();
-	$('#_lastLoginTimeTd').hide();
-	$('#_createdTd').hide();
-	$('#_modifiedTd').hide();
-	$('#_statusTd').hide();
-	$('#_validTimeBeginTd').hide();
-	$('#_validTimeEndTd').hide();
+
 	$('#existsRoleTd').hide();
 	$('#_userName').textbox({
 				readonly : false
@@ -162,7 +157,6 @@ $('#editRoleDiv').css('display','block');
 
 	formFocus("_form", "_userName");
 	queryRole();
-
 	$('#dlg').dialog('open');
 	$('#dlg').dialog('center');
 	$('#_form').form('clear');
@@ -183,12 +177,6 @@ function onEditClicked(id) {
 	userGrid.datagrid("selectRow", index);
 	$('#_passwordTd').show();
 	$('#_lastLoginIpTd').hide();
-	$('#_lastLoginTimeTd').hide();
-	$('#_createdTd').hide();
-	$('#_modifiedTd').hide();
-	$('#_statusTd').hide();
-	$('#_validTimeBeginTd').hide();
-	$('#_validTimeEndTd').hide();
 	$('#existsRoleTd').hide();;
 	$('#_userName').textbox({
 				readonly : true
@@ -203,6 +191,9 @@ function onEditClicked(id) {
 	$('#_serialNumber').textbox({
 				readonly : false
 			});
+	$('#_balance').numberbox({
+		readonly : false
+	});
 	$('#_fixedLineTelephone').textbox({
 				readonly : false
 			});
@@ -237,7 +228,7 @@ function onEditClicked(id) {
 //	$('#roleForm').show();
 $('#editRoleDiv').css('display','block');
 	$('#dlg').dialog({
-				width:650,
+				width:640,
 				height:440,
 				buttons : [{
 							text : '确认',
@@ -260,12 +251,12 @@ $('#_department').combotree("setValue", selected.departments);
 				}
 			});
 */
-
-	formData = addKeyStartWith(getOriginalData(formData), "_");
+	var balance = formData['balance'];
+formData = addKeyStartWith(getOriginalData(formData), "_");
 	formData._password = "";
+	formData['_balance'] = balance;
 	$('#_form').form('load', formData);
 	queryRole(selected.id);
-
 	$('#dlg').dialog('open');
 	$('#dlg').dialog('center');
 	formFocus("_form", "_userName");
@@ -285,7 +276,7 @@ function onUserDetailClicked(id) {
 	$('#v_validTimeBeginTd').hide();
 	$('#v_validTimeEndTd').hide();
 	$('#viewDlg').dialog({
-				height:560,
+				height:410,
 				width:405
 			});
 

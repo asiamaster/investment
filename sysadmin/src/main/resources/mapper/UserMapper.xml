@@ -11,6 +11,7 @@
 		<result column="created" jdbcType="TIMESTAMP" property="created" />
 		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
 		<result column="status" jdbcType="TINYINT" property="status" />
+		<result column="balance" jdbcType="BIGINT" property="balance" />
 		<result column="yn" jdbcType="TINYINT" property="yn" />
 		<result column="real_name" jdbcType="VARCHAR" property="realName" />
 		<result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
@@ -39,6 +40,7 @@
 		fixed_line_telephone,
 		cellphone,
 		email,
+		balance,
 		valid_time_begin,
 		valid_time_end
 	</sql>
@@ -57,6 +59,7 @@
 		,u.fixed_line_telephone
 		,u.cellphone
 		,u.email
+		,u.balance
 		,u.valid_time_begin
 		,u.valid_time_end
 	</sql>
@@ -98,6 +101,10 @@
 			<if test="realName != null">
 				real_name = #{realName,jdbcType=VARCHAR},
 			</if>
+			<if test="balance != null">
+				balance = #{balance,jdbcType=BIGINT},
+			</if>
+
 			<if test="serialNumber != null">
 				serial_number = #{serialNumber,jdbcType=VARCHAR},
 			</if>
