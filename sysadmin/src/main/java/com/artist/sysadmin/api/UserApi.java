@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -60,5 +61,16 @@ public class UserApi {
 		UserDto user = new UserDto();
 		user.setIds(ids);
 		return BaseOutput.success().setData(userService.listByExample(user));
+	}
+
+	/**
+	 * 调整余额(单位均为分)
+	 * @param param, id 用户id, amount 调整金额，正为加，负为减
+	 * @return	返回调整后余额
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/adjustBalance", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<Long> adjustBalance(@RequestBody Map<String, Long> param){
+		return BaseOutput.success().setData(userService.adjustBalance(param.get("id"), param.get("amount")));
 	}
 }

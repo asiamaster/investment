@@ -10,6 +10,7 @@ import com.dili.ss.util.MoneyUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class PrincipalAndInterestProvider implements ValueProvider {
         }
         Long deducted = Long.parseLong(deductedObj.toString());
         //直接使用expectProfitProvider的计算结果*100
-        Long expectProfit = new BigDecimal(Float.parseFloat(investment.aget("expectProfit").toString())).multiply(new BigDecimal(100)).longValue();
+        Long expectProfit = new BigDecimal(Float.parseFloat(investment.aget("expectProfit").toString())).setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).longValue();
         return MoneyUtils.centToYuan(investment1 + deducted + expectProfit) ;
     }
 }

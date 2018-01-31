@@ -1,11 +1,15 @@
 package com.artist.investment.service.impl;
 
+import com.artist.investment.constant.PaymentType;
 import com.artist.investment.dao.InvestmentMapper;
 import com.artist.investment.domain.Investment;
+import com.artist.investment.domain.PaymentRecord;
 import com.artist.investment.domain.User;
 import com.artist.investment.domain.dto.InvestmentDto;
 import com.artist.investment.rpc.UserRpc;
+import com.artist.investment.service.InvestmentPlatformService;
 import com.artist.investment.service.InvestmentService;
+import com.artist.investment.service.PaymentRecordService;
 import com.artist.sysadmin.sdk.domain.UserTicket;
 import com.artist.sysadmin.sdk.exception.NotLoginException;
 import com.artist.sysadmin.sdk.session.SessionContext;
@@ -14,9 +18,12 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
+import com.dili.ss.util.DateUtils;
+import com.dili.ss.util.MoneyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -29,6 +36,12 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
 
     @Autowired
     private UserRpc userRpc;
+
+    @Autowired
+    private PaymentRecordService paymentRecordService;
+
+    @Autowired
+    private InvestmentPlatformService investmentPlatformService;
 
     public InvestmentMapper getActualDao() {
         return (InvestmentMapper)getDao();
@@ -56,6 +69,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
     }
 
     @Override
+    @Transactional
     public BaseOutput insertSelectiveWithOutput(Investment investment) {
         UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
         if(userTicket == null){
@@ -64,22 +78,60 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         investment.setCreatedId(userTicket.getId());
         investment.setModifiedId(userTicket.getId());
         centToYuanIntrospection(investment);
+        //先新增，再记录
         insertSelective(investment);
+        //调整用户余额(减去当前投资额)
+        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), -investment.getInvestment());
+        PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+        paymentRecord.setCreatedName(userTicket.getRealName());
+        //设置当前余额
+        paymentRecord.setBalance(balanceOutput.getData());
+        paymentRecord.setInitialAmount(0L);
+        paymentRecord.setTargetAmount(investment.getInvestment());
+        paymentRecord.setName("新增投资");
+        paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
+        paymentRecord.setType(PaymentType.EXPENDITURE.getCode());
+        paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
+        paymentRecord.setNotes(getInsertInvestmentPaymentNotes(investment));
+        paymentRecordService.insertSelective(paymentRecord);
         return BaseOutput.success("新增成功");
     }
 
     @Override
+    @Transactional
     public BaseOutput updateSelectiveWithOutput(Investment investment) {
         UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
         if(userTicket == null){
             throw new NotLoginException();
         }
+        //先获取原始投资金额，用于收支记录的初始金额
+        Long originalInvestment = get(investment.getId()).getInvestment();
         investment.setModifiedId(userTicket.getId());
         investment.setModified(new Date());
         centToYuanIntrospection(investment);
         //这里是为了解决投资人或银行卡为空的时候，只能从数据库获取旧值，然后用新值覆盖后强制更新
         investment = DTOUtils.link(investment, get(investment.getId()), Investment.class);
         update(investment);
+
+        //调整用户余额
+        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), originalInvestment-investment.getInvestment());
+        PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+        paymentRecord.setCreatedName(userTicket.getRealName());
+        //设置当前余额
+        paymentRecord.setBalance(balanceOutput.getData());
+        paymentRecord.setInitialAmount(originalInvestment);
+        paymentRecord.setTargetAmount(investment.getInvestment());
+        paymentRecord.setName("修改投资");
+        paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
+        //如果调整金额小于等于调整前的金额，则是收入，否则是支出
+        if(originalInvestment-investment.getInvestment() >= 0) {
+            paymentRecord.setType(PaymentType.INCOME.getCode());
+        }else{
+            paymentRecord.setType(PaymentType.EXPENDITURE.getCode());
+        }
+        paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
+        paymentRecord.setNotes(getUpdateInvestmentPaymentNotes(investment, originalInvestment));
+        paymentRecordService.insertSelective(paymentRecord);
         return BaseOutput.success("修改成功");
     }
 
@@ -154,6 +206,34 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         return easyuiPageOutput;
     }
 
+    @Override
+    @Transactional
+    public int delete(Long id) {
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+        Investment investment = get(id);
+        //先删除，再记录
+        int count = super.delete(id);
+        //调整用户余额
+        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), investment.getInvestment());
+        PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+        paymentRecord.setCreatedName(userTicket.getRealName());
+        //设置当前余额
+        paymentRecord.setBalance(balanceOutput.getData());
+        paymentRecord.setInitialAmount(investment.getInvestment());
+        paymentRecord.setTargetAmount(0L);
+        paymentRecord.setName("删除投资");
+        paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
+        //删除投资算是收入
+        paymentRecord.setType(PaymentType.INCOME.getCode());
+        paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
+        paymentRecord.setNotes(getDeleteInvestmentPaymentNotes(investment));
+        paymentRecordService.insertSelective(paymentRecord);
+        return count;
+    }
+
     /**
      * 将Map中的investorId转为投资人真实姓名
      */
@@ -207,6 +287,71 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             Float cashCoupon = Float.parseFloat(investment.aget("investment").toString()) * 100;
             investment.aset("investment", cashCoupon.longValue());
         }
+    }
+
+    /**
+     * 构造新增投资备注
+     * @param investment
+     * @return
+     */
+    private String getInsertInvestmentPaymentNotes(Investment investment){
+        StringBuilder stringBuilder = new StringBuilder("新增投资:")
+                .append(investment.getProjectName())
+                .append(MoneyUtils.centToYuan(investment.getInvestment()))
+                .append("元,从")
+                .append(DateUtils.format(investment.getStartDate(), "yyyy-MM-dd"))
+                .append("到")
+                .append(DateUtils.format(investment.getEndDate(), "yyyy-MM-dd"))
+                .append(",利率:")
+                .append(investment.getProfitRatio());
+        if(investment.getInterestCoupon() != null){
+            stringBuilder.append(",加息:").append(investment.getInterestCoupon()).append("%");
+        }
+        if(investment.getDeducted() != null) {
+            stringBuilder.append(",券抵扣:").append(MoneyUtils.centToYuan(investment.getDeducted())).append("元");
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 构造修改投资备注
+     * @param investment
+     * @return
+     */
+    private String getUpdateInvestmentPaymentNotes(Investment investment, Long originalAmount){
+        StringBuilder stringBuilder = new StringBuilder("修改投资:")
+                .append(investment.getProjectName())
+                .append(",从")
+                .append(MoneyUtils.centToYuan(originalAmount))
+                .append("元,")
+                .append("到")
+                .append(MoneyUtils.centToYuan(investment.getInvestment()))
+                .append("元,从")
+                .append(DateUtils.format(investment.getStartDate(), "yyyy-MM-dd"))
+                .append("到")
+                .append(DateUtils.format(investment.getEndDate(), "yyyy-MM-dd"))
+                .append(",利率")
+                .append(investment.getProfitRatio()).append("%");
+        if(investment.getInterestCoupon() != null){
+            stringBuilder.append(",加息:").append(investment.getInterestCoupon()).append("%");
+        }
+        if(investment.getDeducted() != null) {
+            stringBuilder.append(",券抵扣:").append(MoneyUtils.centToYuan(investment.getDeducted())).append("元");
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 构造删除投资备注
+     * @param investment
+     * @return
+     */
+    private String getDeleteInvestmentPaymentNotes(Investment investment){
+        StringBuilder stringBuilder = new StringBuilder("删除投资:")
+                .append(investment.getProjectName())
+                .append(MoneyUtils.centToYuan(investment.getInvestment()))
+                .append("元");
+        return stringBuilder.toString();
     }
 
 }

@@ -20,6 +20,8 @@
     <result column="investment" jdbcType="BIGINT" property="investment" />
     <result column="is_remind" jdbcType="INTEGER" property="isRemind" />
     <result column="bank_card_id" jdbcType="BIGINT" property="bankCardId" />
+    <result column="balance_due" jdbcType="BIGINT" property="balanceDue" />
+    <result column="is_expired" jdbcType="INTEGER" property="isExpired" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
     <result column="created_id" jdbcType="BIGINT" property="createdId" />
     <result column="modified_id" jdbcType="BIGINT" property="modifiedId" />
@@ -32,8 +34,8 @@
     -->
     id, investor_id, platform_id, project_name, start_date, end_date, project_duration,
     project_duration_unit, profit_ratio, deducted, Interest_coupon, cash_coupon,
-    investment, is_remind, bank_card_id, notes, created_id, modified_id,
-    created, modified
+    investment, is_remind, bank_card_id, balance_due, is_expired, notes, created_id,
+    modified_id, created, modified
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--

@@ -3,23 +3,23 @@ package com.artist.sysadmin.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.artist.sysadmin.dao.*;
+import com.artist.sysadmin.domain.*;
+import com.artist.sysadmin.domain.dto.*;
+import com.artist.sysadmin.exception.UserException;
+import com.artist.sysadmin.manager.*;
 import com.artist.sysadmin.sdk.domain.UserTicket;
 import com.artist.sysadmin.sdk.session.ManageConfig;
 import com.artist.sysadmin.sdk.session.SessionConstants;
 import com.artist.sysadmin.sdk.session.SessionContext;
 import com.artist.sysadmin.sdk.util.ManageRedisUtil;
-import com.artist.sysadmin.dao.*;
-import com.artist.sysadmin.domain.*;
-import com.artist.sysadmin.domain.dto.*;
-import com.artist.sysadmin.manager.*;
+import com.artist.sysadmin.service.UserService;
+import com.artist.sysadmin.service.ValidatePwdService;
 import com.artist.sysadmin.utils.MD5Util;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.metadata.ValueProviderUtils;
-import com.artist.sysadmin.exception.UserException;
-import com.artist.sysadmin.service.UserService;
-import com.artist.sysadmin.service.ValidatePwdService;
 import com.dili.ss.util.BeanConver;
 import com.github.pagehelper.Page;
 import org.apache.commons.beanutils.BeanUtils;
@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -518,6 +517,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public List<Department> listUserDepartmentByUserId(Long userId) {
         return departmentMapper.findByUserId(userId);
     }
+
+	@Override
+	@Transactional
+	public Long adjustBalance(Long id, Long amount) {
+		User user = get(id);
+		user.setBalance(user.getBalance()+amount);
+		updateSelective(user);
+		return user.getBalance();
+	}
 
 	private List<UserDepartmentDto> parseToUserDepartmentDto(List<User> results) {
 		List<UserDepartmentDto> target = new ArrayList<>(results.size());

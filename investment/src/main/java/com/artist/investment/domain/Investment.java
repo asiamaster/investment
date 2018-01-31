@@ -1,5 +1,6 @@
 package com.artist.investment.domain;
 
+import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.domain.annotation.Operator;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
@@ -45,6 +46,7 @@ public interface Investment extends IBaseDomain {
     @Column(name = "`project_name`")
     @FieldDef(label="项目名称", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getProjectName();
 
     void setProjectName(String projectName);
@@ -125,6 +127,18 @@ public interface Investment extends IBaseDomain {
     Long getBankCardId();
 
     void setBankCardId(Long bankCardId);
+
+    @Column(name = "`balance_due`")
+    @FieldDef(label="到期余额")
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Long getBalanceDue();
+    void setBalanceDue(Long balanceDue);
+
+    @Column(name = "`is_expired`")
+    @FieldDef(label="是否到期")
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Integer getIsExpired();
+    void setIsExpired(Integer isExpired);
 
     @Column(name = "`notes`")
     @FieldDef(label="备注信息", maxLength = 250)

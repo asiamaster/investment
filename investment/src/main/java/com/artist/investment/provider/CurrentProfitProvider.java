@@ -48,7 +48,7 @@ public class CurrentProfitProvider implements ValueProvider {
             deductedObj = investment.aget("deducted");
         }
         Long deducted = Long.parseLong(deductedObj.toString());
-        //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 已投资天数 / 总天数 / 100(分)
+        //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 已投资天数 / 总天数 / 100%
         BigDecimal bigDecimal = new BigDecimal((investment1+deducted) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * defDay);
         BigDecimal bigDecimalTotalDay = new BigDecimal(365);
         BigDecimal bigDecimal100 = new BigDecimal(100);

@@ -1,0 +1,153 @@
+ <#body>
+    <div class="easyui-layout" fit="true">
+        <!-- ====================================================================================================================== -->
+        <!-- 上方布局 -->
+        <!-- ====================================================================================================================== -->
+        <div region="north" height="auto" align="center">
+            <!-- =========================================================表单========================================================= -->
+            <div class="easyui-panel" style="width:100%;" align="left">
+                <form id="form" class="easyui-form" method="post" fit="true">
+                    <table style="padding:10px;">
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="name" id="name" style="width:100%" labelAlign="right" data-options="label:'名称:', validType:'length[0,50]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-numberbox" name="userName" id="userName" style="width:100%" labelAlign="right" data-options="label:'用户名:', validType:'length[0,19]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="platformName" id="platformName" style="width:100%" labelAlign="right" data-options="label:'资金去向:', validType:'length[0,20]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                    <input name="type" id="type" style="width:100%;" editable="false" labelAlign="right" panelWidth="auto" panelHeight="auto" label="类型:"/>
+                                    <#comboProvider _id="type" _provider='paymentTypeProvider'/>
+
+                            </td>
+                            <td style="padding-left:28px;padding-top: 10px; padding-bottom: 10px;">
+                                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
+                                   onclick="queryGrid()">查询</a>&nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <!-- ====================================================================================================================== -->
+        <!-- 中央布局 -->
+        <!-- ====================================================================================================================== -->
+        <!-- 表格 -->
+        <div region="center" style="width:100%;" height="auto">
+            <!-- =========================================================收支明细表格========================================================= -->
+            <table class="easyui-datagrid" title="收支明细" id="grid" fitColumns="true" noheader="true"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="false"
+                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="userName"
+                   align="center" fit="true" striped="true" idField="id" data-options="onHeaderContextMenu:headerContextMenu">
+                <thead>
+                    <tr>
+                        <th width="6%" data-options="field:'name',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            名称
+                        </th>
+                        <th width="6%" data-options="field:'userName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            用户
+                        </th>
+                        <th width="6%" data-options="field:'platformName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            资金去向
+                        </th>
+                        <th width="6%" data-options="field:'type',  _provider:'paymentTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            类型
+                        </th>
+                        <th width="6%" data-options="field:'initialAmount', _provider:'centToYuanProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            初始金额
+                        </th>
+                        <th width="6%" data-options="field:'targetAmount', _provider:'centToYuanProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            目标金额
+                        </th>
+                        <th width="6%" data-options="field:'balance', _provider:'centToYuanProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            余额
+                        </th>
+                        <th width="43%" data-options="field:'notes',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            备注信息
+                        </th>
+                        <th width="6%" data-options="field:'createdName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            创建人
+                        </th>
+                        <th width="10%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            创建时间
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- ====================================================================================================================== -->
+    <!-- style & script 分隔线 -->
+    <!-- ====================================================================================================================== -->
+    <script type="text/javascript">
+
+        //表格查询
+        function queryGrid() {
+            var opts = $("#grid").datagrid("options");
+            if (null == opts.url || "" == opts.url) {
+                opts.url = "${contextPath}/paymentRecord/listPage";
+            }
+            if(!$('#form').form("validate")){
+                return;
+            }
+            $("#grid").datagrid("load", bindGridMeta2Form("grid", "form"));
+        }
+
+
+        //清空表单
+        function clearForm() {
+            $('#form').form('clear');
+        }
+
+        //表格表头右键菜单
+        function headerContextMenu(e, field){
+            e.preventDefault();
+            if (!cmenu){
+                createColumnMenu("grid");
+            }
+            cmenu.menu('show', {
+                left:e.pageX,
+                top:e.pageY
+            });
+        }
+
+        /**
+         * 绑定页面回车事件，以及初始化页面时的光标定位
+         * @formId
+         *          表单ID
+         * @elementName
+         *          光标定位在指点表单元素的name属性的值
+         * @submitFun
+         *          表单提交需执行的任务
+         */
+        $(function () {
+            bindFormEvent("form", "name", queryGrid);
+
+            var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
+                pager.pagination({
+                    <#controls_paginationOpts/>,
+                    buttons:[
+                    {
+                        iconCls:'icon-export',
+                        text:'导出',
+                        handler:function(){
+                            doExport('grid');
+                        }
+                    }
+                ]
+            });
+            //表格仅显示下边框
+            $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+            queryGrid();
+        })
+    </script>
+</#body>

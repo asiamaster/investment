@@ -45,7 +45,7 @@ public class ExpectProfitProvider implements ValueProvider {
         if(startDate == null || endDate == null){
             return null;
         }
-        //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100(分)
+        //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100%
         BigDecimal bigDecimal = new BigDecimal((investment1+deducted) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(startDate, endDate));
         BigDecimal bigDecimal365 = new BigDecimal(365);
         BigDecimal bigDecimal100 = new BigDecimal(100);

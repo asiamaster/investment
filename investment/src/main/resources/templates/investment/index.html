@@ -190,11 +190,14 @@
                         <th data-options="field:'isRemind',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否到期提醒
                         </th>
-                        <th data-options="field:'isProgressing',  _provider:'isProgressingProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            是否投资中
+                        <th data-options="field:'isExpired',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            是否到期
                         </th>
                         <th data-options="field:'bankCardId', _provider:'bankCardProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             银行卡
+                        </th>
+                        <th data-options="field:'balanceDue', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            到期余额
                         </th>
                         <th data-options="field:'notes', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             备注

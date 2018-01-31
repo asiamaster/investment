@@ -51,4 +51,12 @@ public interface UserService extends BaseService<User, Long> {
 	 * @return 用户所属部门信息
 	 */
 	List<Department> listUserDepartmentByUserId(Long userId);
+
+	/**
+	 * 调整余额(单位均为分)
+	 * @param id	用户id
+	 * @param amount	调整金额，正为加，负为减
+	 * @return	返回调整后余额
+	 */
+	Long adjustBalance(Long id, Long amount);
 }
