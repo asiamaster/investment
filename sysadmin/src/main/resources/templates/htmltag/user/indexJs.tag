@@ -1,3 +1,4 @@
+<script type="text/javascript">
 function getHyperlinkContext(text, handler, data) {
 	return '<span style="padding:5px;"><a href="javascript:void(0)" onclick="' + handler + '(' + data + ')">' + text + '</a></span>'
 }
@@ -297,6 +298,38 @@ function onUserDetailClicked(id) {
 	$('#viewDlg').dialog('open');
 	$('#viewDlg').dialog('center');
 	formFocus("v_form", "v_userName");
+}
+
+//打开调整余额窗口
+function openAdjusteBalance(id){
+    $('#balanceDlg').dialog('open');
+    $('#balanceDlg').dialog('center');
+    $("#adjustId").val(id)
+}
+
+/**
+ * 调整余额
+ */
+function adjustBalance() {
+    $.ajax({
+        type : "POST",
+        url : '${contextPath}/user/adjustBalance',
+        data : {id:$("#adjustId").val(), balance:$("#updateBalance").numberspinner("getValue"), notes:$("#notes").textbox("getValue")},
+        dataType : "json",
+        processData : true,
+        async : true,
+        success : function(retData) {
+            if (retData.code == "200") {
+                queryGrid();
+                $('#balanceDlg').dialog('close');
+            } else {
+                $.messager.alert('错误', retData.result);
+            }
+        },
+        error : function(data) {
+            $.messager.alert('错误', '远程访问失败:'+data);
+        }
+    });
 }
 
 // 禁用/启用某一行的用户
@@ -659,3 +692,4 @@ saveUserDataAuth = function() {
 onTypeChange = function(newVal, oldVal) {
 	loadTree(userId, newVal);
 };
+</script>

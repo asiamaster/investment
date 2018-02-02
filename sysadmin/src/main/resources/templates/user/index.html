@@ -95,7 +95,7 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td style="padding: 5px;"><input class="easyui-numberbox" precision="2" min="0" name="_balance" id="_balance" style="width: 100%" data-options="labelAlign:'right',label:'*余额:', validType:'length[0,20]'" required="true"
+                        <td style="padding: 5px;"><input class="easyui-numberbox" precision="2" min="0" name="_balance" id="_balance" style="width: 100%" disabled="true" data-options="labelAlign:'right',label:'*余额:', validType:'length[0,20]'" required="true"
                                                          validateOnCreate="false" /></td>
                         <td></td>
                     </tr>
@@ -251,6 +251,28 @@
             </tr>
         </table>
     </div>
+
+    <!-- 隐藏余额编辑框 -->
+    <div id="balanceDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true"
+         draggable="false" title="调整余额" style="padding: 10px;" modal="true" border="thin" closed="true"
+        data-options="buttons:[{text:'确认',iconCls:'icon-ok',handler:adjustBalance}]">
+        <form id="balanceForm" class="easyui-form" method="post">
+            <table style="padding: 0px; margin: 0px;">
+                <tr>
+                    <td style="padding: 5px;">
+                        <input id="adjustId" name="id" type="hidden"/>
+                        <input class="easyui-numberspinner" value="0" precision="2" name="balance" id="updateBalance" style="width: 200px;" data-options="labelAlign:'right',label:'*余额增量:', validType:'length[0,20]',increment:1000" required="true"
+                                                     validateOnCreate="false" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input class="easyui-textbox" name="notes" id="notes" style="width:320px;height:80px;" data-options="labelAlign:'right',label:'*备注:',multiline:true, validType:'length[0,250]'" required="true"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 <!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
 <script type="text/javascript">
 	var dataAuth = {
@@ -260,45 +282,50 @@
 		viewUserDataAuth : <%if(hasResource('viewUserDataAuth')){%>true<%}else{%>false<%}%>,
 		changeUserStatus : <%if(hasResource('changeUserStatus')){%>true<%}else{%>false<%}%>,
 	};
-	<#user_indexJs />
-</script> <script type="text/javascript">
-	// 每一行的操作
-	function formatOptions(value, row, index) {
-		var content = '';
-		var changeStatusContext = "";
-		if (0 == row.$_status) {
-			// 0 是已停用，功能对应是 启用
-            content += getHyperlinkContext('启用',
-					'onChangeUserStatusClicked', row.id);
-		} else if (1 == row.$_status) {
-			// 1 是已启用，功能对应是 禁用
-            content += getHyperlinkContext('禁用',
-					'onChangeUserStatusClicked', row.id);
-		}
 
-		content += getHyperlinkContext('查看', 'onUserDetailClicked', row.id)
-		if (dataAuth.viewUserDataAuth) {
-//			content += getHyperlinkContext('数据权限', 'openDataAuth', row.id)
-		}
-		if (dataAuth.changeUserStatus) {
-			content += changeStatusContext;
-		}
-		return content;
-	}
-
-
-
-    //打开修改窗口
-    function openUpdate() {
-        var selected = $("#userGrid").datagrid("getSelected");
-        if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
-            return;
-        }
-        onEditClicked();
+</script>
+<#user_indexJs />
+<script type="text/javascript">
+// 每一行的操作
+function formatOptions(value, row, index) {
+    var content = '';
+    var changeStatusContext = "";
+    if (0 == row.$_status) {
+        // 0 是已停用，功能对应是 启用
+        content += getHyperlinkContext('启用',
+                'onChangeUserStatusClicked', row.id);
+    } else if (1 == row.$_status) {
+        // 1 是已启用，功能对应是 禁用
+        content += getHyperlinkContext('禁用',
+                'onChangeUserStatusClicked', row.id);
     }
 
-    $(function () {
+    content += getHyperlinkContext('查看', 'onUserDetailClicked', row.id);
+
+    content += getHyperlinkContext('调整余额', 'openAdjusteBalance', row.id);
+
+    if (dataAuth.viewUserDataAuth) {
+//			content += getHyperlinkContext('数据权限', 'openDataAuth', row.id)
+    }
+    if (dataAuth.changeUserStatus) {
+        content += changeStatusContext;
+    }
+    return content;
+}
+
+
+
+//打开修改窗口
+function openUpdate() {
+    var selected = $("#userGrid").datagrid("getSelected");
+    if (null == selected) {
+        $.messager.alert('警告', '请选中一条数据');
+        return;
+    }
+    onEditClicked();
+}
+
+$(function () {
 //        bindFormEvent("form", "customerId", queryGrid);
 //        if (document.addEventListener) {
 //            document.addEventListener("keyup",getKey,false);
@@ -307,49 +334,50 @@
 //        } else {
 //            document.onkeyup = getKey;
 //        }
-        var pager = $('#userGrid').datagrid('getPager');    // get the pager of treegrid
-        pager.pagination({
-        	<#controls_paginationOpts/>
-            ,buttons:[
-            	  <%if(hasResource("addUser")) {%>
-                {
-                    iconCls:'icon-add',
-                    text:'新增',
-                    handler:function(){
-                    	onAddClicked();
-                    }
-                },
-                <%}%>
-            <%if(hasResource("editUser")) {%>
-                  {
-                     iconCls:'icon-edit',
-                     text:'修改',
-                     handler:function(){
-                         openUpdate();
-                     }
-                  },
-             <%}%>
-             <%if(hasResource("removeUser")) {%>
-             {
-                iconCls:'icon-remove',
-                text:'删除',
+    var pager = $('#userGrid').datagrid('getPager');    // get the pager of treegrid
+    pager.pagination({
+        <#controls_paginationOpts/>
+        ,buttons:[
+              <%if(hasResource("addUser")) {%>
+            {
+                iconCls:'icon-add',
+                text:'新增',
                 handler:function(){
-                	onRemoveClicked();
+                    onAddClicked();
                 }
-             },
-        	<%}%>
-
-                {
-                    iconCls:'icon-export',
-                    text:'导出',
-                        handler:function(){
-                        doExport('userGrid');
-                    }
+            },
+            <%}%>
+        <%if(hasResource("editUser")) {%>
+              {
+                 iconCls:'icon-edit',
+                 text:'修改',
+                 handler:function(){
+                     openUpdate();
                  }
-            ]
-        });
-        //表格仅显示下边框
-        $('#userGrid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
-    })
+              },
+         <%}%>
+         <%if(hasResource("removeUser")) {%>
+         {
+            iconCls:'icon-remove',
+            text:'删除',
+            handler:function(){
+                onRemoveClicked();
+            }
+         },
+        <%}%>
 
-</script> <#user_datalistButtonsJs /> </#body>
+            {
+                iconCls:'icon-export',
+                text:'导出',
+                    handler:function(){
+                    doExport('userGrid');
+                }
+             }
+        ]
+    });
+    //表格仅显示下边框
+    $('#userGrid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+})
+</script>
+<#user_datalistButtonsJs />
+</#body>

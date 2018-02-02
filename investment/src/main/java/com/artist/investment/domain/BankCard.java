@@ -2,6 +2,7 @@ package com.artist.investment.domain;
 
 import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
+import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
@@ -18,7 +19,7 @@ import javax.persistence.Id;
  * This file was generated on 2018-01-19 14:15:47.
  */
 @Table(name = "`bank_card`")
-public interface BankCard extends IBaseDomain {
+public interface BankCard extends IBaseDomain, IMybatisForceParams {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`")

@@ -1,75 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.artist.investment.dao.BankCardMapper">
-  <resultMap id="BaseResultMap" type="com.artist.investment.domain.BankCard">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
-    <result column="card_type" jdbcType="INTEGER" property="cardType" />
-    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
-    <result column="id_number" jdbcType="VARCHAR" property="idNumber" />
-    <result column="subbranch" jdbcType="VARCHAR" property="subbranch" />
-    <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
-    <result column="bank" jdbcType="VARCHAR" property="bank" />
-    <result column="is_default" jdbcType="INTEGER" property="isDefault" />
-    <result column="is_depository" jdbcType="INTEGER" property="isDepository" />
-    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, user_id, card_type, account_name, id_number, subbranch, card_number, bank, is_default, 
-    is_depository, add_time
-  </sql>
-  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    select 
-    <include refid="Base_Column_List" />
-    from bank_card
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <update id="updateBy" parameterType="com.artist.investment.domain.BankCard">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    update bank_card
-    <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="cardType != null">
-        card_type = #{cardType,jdbcType=INTEGER},
-      </if>
-      <if test="accountName != null">
-        account_name = #{accountName,jdbcType=VARCHAR},
-      </if>
-      <if test="idNumber != null">
-        id_number = #{idNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="subbranch != null">
-        subbranch = #{subbranch,jdbcType=VARCHAR},
-      </if>
-      <if test="cardNumber != null">
-        card_number = #{cardNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="bank != null">
-        bank = #{bank,jdbcType=VARCHAR},
-      </if>
-      <if test="isDefault != null">
-        is_default = #{isDefault,jdbcType=INTEGER},
-      </if>
-      <if test="isDepository != null">
-        is_depository = #{isDepository,jdbcType=INTEGER},
-      </if>
-      <if test="addTime != null">
-        add_time = #{addTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+    <resultMap id="BaseResultMap" type="com.artist.investment.domain.BankCard">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="card_type" jdbcType="INTEGER" property="cardType"/>
+        <result column="account_name" jdbcType="VARCHAR" property="accountName"/>
+        <result column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <result column="subbranch" jdbcType="VARCHAR" property="subbranch"/>
+        <result column="card_number" jdbcType="VARCHAR" property="cardNumber"/>
+        <result column="bank" jdbcType="VARCHAR" property="bank"/>
+        <result column="is_default" jdbcType="INTEGER" property="isDefault"/>
+        <result column="is_depository" jdbcType="INTEGER" property="isDepository"/>
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, user_id, card_type, account_name, id_number, subbranch, card_number, bank, is_default,
+        is_depository, add_time
+    </sql>
+    <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        select
+        <include refid="Base_Column_List"/>
+        from bank_card
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <update id="updateBy" parameterType="com.artist.investment.domain.BankCard">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        update bank_card
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="cardType != null">
+                card_type = #{cardType,jdbcType=INTEGER},
+            </if>
+            <if test="accountName != null">
+                account_name = #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                id_number = #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="subbranch != null">
+                subbranch = #{subbranch,jdbcType=VARCHAR},
+            </if>
+            <if test="cardNumber != null">
+                card_number = #{cardNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="bank != null">
+                bank = #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="isDefault != null">
+                is_default = #{isDefault,jdbcType=INTEGER},
+            </if>
+            <if test="isDepository != null">
+                is_depository = #{isDepository,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
 </mapper>

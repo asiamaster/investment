@@ -1,6 +1,7 @@
 package com.artist.investment.service.impl;
 
 import com.artist.investment.constant.PaymentType;
+import com.artist.investment.constant.Yn;
 import com.artist.investment.dao.InvestmentMapper;
 import com.artist.investment.domain.Investment;
 import com.artist.investment.domain.PaymentRecord;
@@ -104,33 +105,35 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         if(userTicket == null){
             throw new NotLoginException();
         }
+        Investment originalInvestment = get(investment.getId());
         //先获取原始投资金额，用于收支记录的初始金额
-        Long originalInvestment = get(investment.getId()).getInvestment();
+        Long originalInvestmentAmount = originalInvestment.getInvestment();
         investment.setModifiedId(userTicket.getId());
         investment.setModified(new Date());
+        //分转元内省，因为这时入参中的各项资金指标还是有小数点的
         centToYuanIntrospection(investment);
         //这里是为了解决投资人或银行卡为空的时候，只能从数据库获取旧值，然后用新值覆盖后强制更新
-        investment = DTOUtils.link(investment, get(investment.getId()), Investment.class);
-        update(investment);
+//        investment = DTOUtils.link(investment, originalInvestment, Investment.class);
+        updateSelective(investment);
 
         //调整用户余额
-        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), originalInvestment-investment.getInvestment());
+        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), originalInvestmentAmount-investment.getInvestment());
         PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
         paymentRecord.setCreatedName(userTicket.getRealName());
         //设置当前余额
         paymentRecord.setBalance(balanceOutput.getData());
-        paymentRecord.setInitialAmount(originalInvestment);
+        paymentRecord.setInitialAmount(originalInvestmentAmount);
         paymentRecord.setTargetAmount(investment.getInvestment());
         paymentRecord.setName("修改投资");
         paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
         //如果调整金额小于等于调整前的金额，则是收入，否则是支出
-        if(originalInvestment-investment.getInvestment() >= 0) {
+        if(originalInvestmentAmount-investment.getInvestment() >= 0) {
             paymentRecord.setType(PaymentType.INCOME.getCode());
         }else{
             paymentRecord.setType(PaymentType.EXPENDITURE.getCode());
         }
         paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
-        paymentRecord.setNotes(getUpdateInvestmentPaymentNotes(investment, originalInvestment));
+        paymentRecord.setNotes(getUpdateInvestmentPaymentNotes(investment, originalInvestmentAmount));
         paymentRecordService.insertSelective(paymentRecord);
         return BaseOutput.success("修改成功");
     }
@@ -216,12 +219,17 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         Investment investment = get(id);
         //先删除，再记录
         int count = super.delete(id);
-        //调整用户余额
-        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), investment.getInvestment());
+        Long balance = 0L;
+        if(investment.getIsExpired().equals(Yn.YES.getCode())){
+            balance = userRpc.get(investment.getInvestorId()).getData().getBalance();
+        }else{
+            //判断如果是没过期的投资才调整用户余额
+            balance = userRpc.adjustBalance(investment.getInvestorId(), investment.getInvestment()).getData();
+        }
         PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
         paymentRecord.setCreatedName(userTicket.getRealName());
         //设置当前余额
-        paymentRecord.setBalance(balanceOutput.getData());
+        paymentRecord.setBalance(balance);
         paymentRecord.setInitialAmount(investment.getInvestment());
         paymentRecord.setTargetAmount(0L);
         paymentRecord.setName("删除投资");

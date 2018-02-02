@@ -8,7 +8,9 @@ import com.artist.sysadmin.domain.*;
 import com.artist.sysadmin.domain.dto.*;
 import com.artist.sysadmin.exception.UserException;
 import com.artist.sysadmin.manager.*;
+import com.artist.sysadmin.rpc.PaymentRecordRpc;
 import com.artist.sysadmin.sdk.domain.UserTicket;
+import com.artist.sysadmin.sdk.exception.NotLoginException;
 import com.artist.sysadmin.sdk.session.ManageConfig;
 import com.artist.sysadmin.sdk.session.SessionConstants;
 import com.artist.sysadmin.sdk.session.SessionContext;
@@ -19,6 +21,7 @@ import com.artist.sysadmin.utils.MD5Util;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.ss.util.BeanConver;
 import com.github.pagehelper.Page;
@@ -81,6 +84,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	private DepartmentMapper departmentMapper;
 	@Autowired
 	private UserDataAuthMapper userDataAuthMapper;
+	@Autowired
+	PaymentRecordRpc paymentRecordRpc;
 
 	public UserMapper getActualDao() {
 		return (UserMapper) getDao();
@@ -525,6 +530,42 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		user.setBalance(user.getBalance()+amount);
 		updateSelective(user);
 		return user.getBalance();
+	}
+
+	@Override
+	public BaseOutput<String> adjustBalance(Long id, String balance, String notes) {
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket == null){
+			throw new NotLoginException();
+		}
+		User user = get(id);
+		//记录初始余额
+		Long oriBalance = user.getBalance();
+		//计算更新后的余额
+		Long newBalance = user.getBalance()+new BigDecimal(balance).setScale(2,BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).longValue();
+		user.setBalance(newBalance);
+		//更新用户余额
+		updateSelective(user);
+		PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+		paymentRecord.setCreatedName(userTicket.getRealName());
+		//设置当前余额
+		paymentRecord.setBalance(newBalance);
+		//查询原始余额
+		paymentRecord.setInitialAmount(oriBalance);
+		paymentRecord.setTargetAmount(newBalance);
+		paymentRecord.setName("调整余额");
+		//调整余额为正数，则是收入1,否则为支出2
+		if(Float.parseFloat(balance) > 0) {
+			paymentRecord.setType(1);
+		}else{
+			paymentRecord.setType(2);
+		}
+		paymentRecord.setUserName(user.getRealName());
+		//资金去向
+		paymentRecord.setPlatformName("余额调整:"+balance+"元");
+		paymentRecord.setNotes(notes);
+		paymentRecordRpc.insert(paymentRecord);
+		return BaseOutput.success("调整余额成功");
 	}
 
 	private List<UserDepartmentDto> parseToUserDepartmentDto(List<User> results) {

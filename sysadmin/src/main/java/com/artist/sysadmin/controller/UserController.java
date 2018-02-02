@@ -5,10 +5,15 @@ import com.artist.sysadmin.dao.UserMapper;
 import com.artist.sysadmin.domain.Role;
 import com.artist.sysadmin.domain.User;
 import com.artist.sysadmin.domain.dto.AddUserDto;
+import com.artist.sysadmin.domain.dto.PaymentRecord;
 import com.artist.sysadmin.exception.UserException;
+import com.artist.sysadmin.rpc.PaymentRecordRpc;
+import com.artist.sysadmin.sdk.exception.NotLoginException;
+import com.artist.sysadmin.sdk.session.SessionContext;
 import com.artist.sysadmin.service.UserService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.artist.sysadmin.domain.dto.UpdateUserDto;
 import com.artist.sysadmin.domain.dto.UpdateUserPasswordDto;
@@ -27,6 +32,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +96,6 @@ public class UserController {
 		return userService.add(dto);
 	}
 
-	@SuppressWarnings("unchecked")
 	@ApiOperation("修改User")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = true, dataType = "string") })
 	@RequestMapping(value = "/update", method = { RequestMethod.GET, RequestMethod.POST })
@@ -221,6 +226,13 @@ public class UserController {
 	public @ResponseBody BaseOutput kickUserOffline(Long id) throws UserException {
 		userService.kickUserOffline(id);
 		return BaseOutput.success("下线成功");
+	}
+
+	@ApiOperation("调整余额")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = true, dataType = "string") })
+	@RequestMapping(value = "/adjustBalance", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody BaseOutput<String> adjustBalance(@RequestParam Long id, @RequestParam String balance, @RequestParam(required = false) String notes) {
+		return userService.adjustBalance(id, balance, notes);
 	}
 
 }

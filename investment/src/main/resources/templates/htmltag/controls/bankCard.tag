@@ -28,7 +28,7 @@ function closeBankCardSelectDlg(){
 function showBankCardDlg(id) {
 	$('#${dlgId}').dialog({
 				title : '银行卡选择',
-				width : 800,
+				width : 860,
 				height : 400,
 				queryParams : {
 					textboxId : id

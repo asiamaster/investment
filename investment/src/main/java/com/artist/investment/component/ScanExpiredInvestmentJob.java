@@ -2,9 +2,12 @@ package com.artist.investment.component;
 
 import com.artist.investment.constant.PaymentType;
 import com.artist.investment.constant.Yn;
+import com.artist.investment.dao.BankCardMapper;
+import com.artist.investment.domain.BankCard;
 import com.artist.investment.domain.Investment;
 import com.artist.investment.domain.PaymentRecord;
 import com.artist.investment.rpc.UserRpc;
+import com.artist.investment.service.BankCardService;
 import com.artist.investment.service.InvestmentPlatformService;
 import com.artist.investment.service.InvestmentService;
 import com.artist.investment.service.PaymentRecordService;
@@ -21,10 +24,13 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 扫描到期投资
@@ -47,8 +53,22 @@ public class ScanExpiredInvestmentJob implements ApplicationListener<ContextRefr
 	@Autowired
 	private InvestmentPlatformService investmentPlatformService;
 
+	@Autowired
+	private BankCardService bankCardService;
+
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+//		BankCard card = DTOUtils.newDTO(BankCard.class);
+//		card.setId(6L);
+//		Map setParams = new HashMap();
+//		setParams.put("account_name", null);
+//		setParams.put("is_default", null);
+//		System.out.println(setParams.containsKey("account_name"));
+//		card.setSetForceParams(setParams);
+//
+//		BankCard condition = DTOUtils.newDTO(BankCard.class);
+//		condition.setId(6L);
+//		bankCardService.updateExactByExample(card, condition);
 		execute();
 	}
 
@@ -71,14 +91,14 @@ public class ScanExpiredInvestmentJob implements ApplicationListener<ContextRefr
 			return;
 		}
 		for(Investment investment : investmentList) {
-			//计算本息合计收益
+			//计算本息合计收益(分为单位)
 			//(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100%
 			BigDecimal bigDecimal = new BigDecimal((investment.getInvestment()+investment.getDeducted()) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(investment.getStartDate(), investment.getEndDate()));
 			BigDecimal bigDecimal365 = new BigDecimal(365);
 			BigDecimal bigDecimal100 = new BigDecimal(100);
 			//精确计算两位小数，并且四舍五入
 			Long profit = bigDecimal.divide(bigDecimal365, 0, BigDecimal.ROUND_HALF_DOWN).divide(bigDecimal100, 0, BigDecimal.ROUND_HALF_DOWN).longValue();
-			Long principalAndInterest = investment.getInvestment() + profit;
+			Long principalAndInterest = investment.getInvestment() + investment.getDeducted() + profit;
 			//调整用户余额
 			BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), principalAndInterest);
 			PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
