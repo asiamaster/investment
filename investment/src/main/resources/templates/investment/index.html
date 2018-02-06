@@ -91,6 +91,9 @@
              $("#_startDate").datebox("setValue", y+"-"+m+"-"+d);
          }
      </script>
+     <div>
+         <#nav/>
+     </div>
     <div class="easyui-layout" fit="true">
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
@@ -387,8 +390,8 @@
                         $.messager.alert('错误',data.result);
                     }
                 },
-                error: function(){
-                    $.messager.alert('错误','远程访问失败');
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    $.messager.alert('错误','远程访问失败'+XMLHttpRequest.responseText);
                 }
             });
         }

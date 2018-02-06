@@ -525,11 +525,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	@Transactional
-	public Long adjustBalance(Long id, Long amount) {
+	public BaseOutput<Long> adjustBalance(Long id, Long amount) {
 		User user = get(id);
+		if(user.getBalance()<-amount){
+			return BaseOutput.failure("余额不足");
+		}
 		user.setBalance(user.getBalance()+amount);
 		updateSelective(user);
-		return user.getBalance();
+		return BaseOutput.success().setData(user.getBalance());
 	}
 
 	@Override

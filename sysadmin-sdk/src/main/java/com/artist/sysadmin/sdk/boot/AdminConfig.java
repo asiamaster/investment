@@ -33,7 +33,7 @@ public class AdminConfig {
 		mappings.put("java.lang.RuntimeException", SystemConfigUtils.getProperty("error.page.default", "error"));
 		mappings.put("java.lang.Exception", SystemConfigUtils.getProperty("error.page.default", "error"));
 		mappings.put("java.lang.Throwable", SystemConfigUtils.getProperty("error.page.default", "error"));
-		mappings.put(NotLoginException.class.getName(), SystemConfigUtils.getProperty("error.page.default", "error"));
+		mappings.put(NotLoginException.class.getName(), "/error/noAccess.do");
 		simpleMappingExceptionResolver.setExceptionMappings(mappings);
 		return simpleMappingExceptionResolver;
 	}

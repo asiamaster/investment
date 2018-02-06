@@ -79,10 +79,14 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         investment.setCreatedId(userTicket.getId());
         investment.setModifiedId(userTicket.getId());
         centToYuanIntrospection(investment);
-        //先新增，再记录
-        insertSelective(investment);
+
         //调整用户余额(减去当前投资额)
         BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), -investment.getInvestment());
+        if(!balanceOutput.isSuccess()){
+            return balanceOutput;
+        }
+        //先新增，再记录
+        insertSelective(investment);
         PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
         paymentRecord.setCreatedName(userTicket.getRealName());
         //设置当前余额
@@ -114,10 +118,12 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         centToYuanIntrospection(investment);
         //这里是为了解决投资人或银行卡为空的时候，只能从数据库获取旧值，然后用新值覆盖后强制更新
 //        investment = DTOUtils.link(investment, originalInvestment, Investment.class);
-        updateSelective(investment);
-
         //调整用户余额
         BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), originalInvestmentAmount-investment.getInvestment());
+        if(!balanceOutput.isSuccess()){
+            return balanceOutput;
+        }
+        updateSelective(investment);
         PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
         paymentRecord.setCreatedName(userTicket.getRealName());
         //设置当前余额
@@ -305,6 +311,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
     private String getInsertInvestmentPaymentNotes(Investment investment){
         StringBuilder stringBuilder = new StringBuilder("新增投资:")
                 .append(investment.getProjectName())
+                .append(",")
                 .append(MoneyUtils.centToYuan(investment.getInvestment()))
                 .append("元,从")
                 .append(DateUtils.format(investment.getStartDate(), "yyyy-MM-dd"))

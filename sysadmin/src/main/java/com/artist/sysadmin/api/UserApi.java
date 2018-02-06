@@ -71,6 +71,6 @@ public class UserApi {
 	@ResponseBody
 	@RequestMapping(value = "/adjustBalance", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Long> adjustBalance(@RequestBody Map<String, Long> param){
-		return BaseOutput.success().setData(userService.adjustBalance(param.get("id"), param.get("amount")));
+		return userService.adjustBalance(param.get("id"), param.get("amount"));
 	}
 }
