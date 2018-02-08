@@ -2,7 +2,10 @@ package com.artist.sysadmin;
 
 import com.dili.ss.retrofitful.annotation.RestfulScan;
 import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.TaskService;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +13,10 @@ import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfigurati
 import org.springframework.boot.autoconfigure.velocity.VelocityAutoConfiguration;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -42,7 +48,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * 以Maven为例，首先需要将<packaging>从jar改成war，然后取消spring-boot-maven-plugin，然后修改Application.java
  * 继承SpringBootServletInitializer
  */
+@RestController("")
 public class SysadminApplication extends SpringBootServletInitializer {
+
+	@Autowired
+	private TaskService taskService;
+	@Autowired
+	private ProcessEngine processEngine;
+	@RequestMapping("/test")
+	public String index() {
+		System.out.println("################################taskService" + taskService);
+		System.out.println("################################processEngine" + processEngine);
+		return "xxxxxxxxxxxxx";
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(SysadminApplication.class, args);
