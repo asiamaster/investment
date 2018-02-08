@@ -20,59 +20,62 @@
              }
          });
      </script>
-     <div>
-         <#nav/>
-     </div>
+
     <div class="easyui-layout" fit="true">
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
         <div region="north" height="210" align="center" split="true">
-            <table class="easyui-datagrid" title="投资人统计" id="investorStatsGrid" fitColumns="true"
-                   rownumbers="true" remoteSort="false" noHeader="true"
-                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false"
-                   align="center" fit="true" striped="true" toolbar="#investorStatsGridToolbar" data-options="showFooter:true, rowStyler:investorStatsGridRowStyler, view:footerView">
-                <thead>
-                <tr>
-                    <th width="7%" data-options="field:'investorId', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        投资人
-                    </th>
-                    <th width="7%" data-options="field:'dailyProfit',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        今日收益
-                    </th>
-                    <th width="8%" data-options="field:'investment',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        投资额
-                    </th>
-                    <th width="7%" data-options="field:'deducted',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        用券抵扣
-                    </th>
-                    <th width="7%" data-options="field:'profit', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        预期收益
-                    </th>
-                    <th width="8%" data-options="field:'principalAndInterest', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        本息合计
-                    </th>
-                    <th width="7%" data-options="field:'investmentAmount', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        投资笔数
-                    </th>
-                    <th width="8%" data-options="field:'totalInvestment', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        累计投资额
-                    </th>
-                    <th width="7%" data-options="field:'totalDeducted',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        累计抵扣
-                    </th>
-                    <th width="7%" data-options="field:'totalProfit',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        累计收益
-                    </th>
-                    <th width="9%" data-options="field:'totalPrincipalAndInterest', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        累计本息合计
-                    </th>
-                    <th width="7%" data-options="field:'totalInvestmentAmount', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        累计笔数
-                    </th>
-                </tr>
-                </thead>
-            </table>
+            <div align="left">
+                <#nav/>
+            </div>
+            <div style="height:180px;">
+                <table class="easyui-datagrid" title="投资人统计" id="investorStatsGrid" fitColumns="true"
+                       rownumbers="true" remoteSort="false" noHeader="true"
+                       loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false"
+                       align="center" fit="true" striped="true" toolbar="#investorStatsGridToolbar" data-options="showFooter:true, rowStyler:investorStatsGridRowStyler, view:footerView">
+                    <thead>
+                    <tr>
+                        <th width="7%" data-options="field:'investorId', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            投资人
+                        </th>
+                        <th width="7%" data-options="field:'dailyProfit',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            今日收益
+                        </th>
+                        <th width="8%" data-options="field:'investment',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            投资额
+                        </th>
+                        <th width="7%" data-options="field:'deducted',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            用券抵扣
+                        </th>
+                        <th width="7%" data-options="field:'profit', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            预期收益
+                        </th>
+                        <th width="8%" data-options="field:'principalAndInterest', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            本息合计
+                        </th>
+                        <th width="7%" data-options="field:'investmentAmount', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            投资笔数
+                        </th>
+                        <th width="8%" data-options="field:'totalInvestment', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            累计投资额
+                        </th>
+                        <th width="7%" data-options="field:'totalDeducted',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            累计抵扣
+                        </th>
+                        <th width="7%" data-options="field:'totalProfit',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            累计收益
+                        </th>
+                        <th width="9%" data-options="field:'totalPrincipalAndInterest', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            累计本息合计
+                        </th>
+                        <th width="7%" data-options="field:'totalInvestmentAmount', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            累计笔数
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
             <!-- datagrid工具栏 -->
             <div id="investorStatsGridToolbar" style="padding:2px 5px;">
                 <B style="font-size: 16px">投资人统计</B>

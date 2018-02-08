@@ -40,6 +40,13 @@
 	</build>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-spring-boot-starter-basic -->
+		<!--<dependency>-->
+			<!--<groupId>org.activiti</groupId>-->
+			<!--<artifactId>activiti-spring-boot-starter-basic</artifactId>-->
+			<!--<version>5.22.0</version>-->
+		<!--</dependency>-->
+
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<!--<dependency>-->
 			<!--<groupId>org.projectlombok</groupId>-->

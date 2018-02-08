@@ -124,23 +124,26 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             return balanceOutput;
         }
         updateSelective(investment);
-        PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
-        paymentRecord.setCreatedName(userTicket.getRealName());
-        //设置当前余额
-        paymentRecord.setBalance(balanceOutput.getData());
-        paymentRecord.setInitialAmount(originalInvestmentAmount);
-        paymentRecord.setTargetAmount(investment.getInvestment());
-        paymentRecord.setName("修改投资");
-        paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
-        //如果调整金额小于等于调整前的金额，则是收入，否则是支出
-        if(originalInvestmentAmount-investment.getInvestment() >= 0) {
-            paymentRecord.setType(PaymentType.INCOME.getCode());
-        }else{
-            paymentRecord.setType(PaymentType.EXPENDITURE.getCode());
+        //如果要调整余额，还要记录收支明细
+        if(investment.aget("adjustBalance").equals("1")) {
+            PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+            paymentRecord.setCreatedName(userTicket.getRealName());
+            //设置当前余额
+            paymentRecord.setBalance(balanceOutput.getData());
+            paymentRecord.setInitialAmount(originalInvestmentAmount);
+            paymentRecord.setTargetAmount(investment.getInvestment());
+            paymentRecord.setName("修改投资");
+            paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
+            //如果调整金额小于等于调整前的金额，则是收入，否则是支出
+            if (originalInvestmentAmount - investment.getInvestment() >= 0) {
+                paymentRecord.setType(PaymentType.INCOME.getCode());
+            } else {
+                paymentRecord.setType(PaymentType.EXPENDITURE.getCode());
+            }
+            paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
+            paymentRecord.setNotes(getUpdateInvestmentPaymentNotes(investment, originalInvestmentAmount));
+            paymentRecordService.insertSelective(paymentRecord);
         }
-        paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
-        paymentRecord.setNotes(getUpdateInvestmentPaymentNotes(investment, originalInvestmentAmount));
-        paymentRecordService.insertSelective(paymentRecord);
         return BaseOutput.success("修改成功");
     }
 
