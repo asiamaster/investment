@@ -25,7 +25,7 @@ public class ExitDaysProvider implements ValueProvider {
     @Override
     public String getDisplayText(Object obj, Map metaMap, FieldMeta fieldMeta) {
         Investment investment = (Investment) metaMap.get(ROW_DATA_KEY);
-        if (investment.getEndDate() == null) {
+        if (investment.getEndDate() == null || investment.getEndDate().before(new Date())) {
             return "";
         }
         return String.valueOf(DateUtils.differentDays(investment.getEndDate(), new Date()));

@@ -53,13 +53,19 @@ public class InvestmentController {
         bankCard.setUserId(userTicket.getId());
         bankCard.setIsDefault(1);
         bankCard.setIsDepository(0);
+        //查询当前用户的默认非存管银行卡
         List<BankCard> bankCards = bankCardService.list(bankCard);
         if(bankCards!= null && !bankCards.isEmpty()){
             modelMap.put("bankCardId", bankCards.get(0).getId());
             modelMap.put("bankCardNumber", bankCards.get(0).getCardNumber());
         }
-
         return "investment/index";
+    }
+
+    @ApiOperation("跳转到计算页面")
+    @RequestMapping(value="/compute.html", method = RequestMethod.GET)
+    public String compute(ModelMap modelMap) {
+        return "investment/compute";
     }
 
     @ApiOperation(value="查询Investment", notes = "查询Investment，返回列表信息")
