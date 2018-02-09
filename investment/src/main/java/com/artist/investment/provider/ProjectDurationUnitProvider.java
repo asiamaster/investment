@@ -19,6 +19,7 @@ public class ProjectDurationUnitProvider implements ValueProvider {
 
     static {
         buffer = new ArrayList<ValuePair<?>>();
+        buffer.add(new ValuePairImpl(ValueProvider.EMPTY_ITEM_TEXT, null));
         buffer.add(new ValuePairImpl("天", "1"));
         buffer.add(new ValuePairImpl("周", "2"));
         buffer.add(new ValuePairImpl("月", "3"));

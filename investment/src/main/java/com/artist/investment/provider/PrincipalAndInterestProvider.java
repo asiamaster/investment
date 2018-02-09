@@ -29,18 +29,31 @@ public class PrincipalAndInterestProvider implements ValueProvider {
     @Override
     public String getDisplayText(Object obj, Map metaMap, FieldMeta fieldMeta) {
         Investment investment = (Investment)metaMap.get(ROW_DATA_KEY);
+        //收益
+        String profit = null;
+        //先取预计收益
+        if(null != investment.aget("expectProfit")){
+            profit = investment.aget("expectProfit").toString();
+        }//没有预期收益则为活期，这时取当前收益
+        else if(null != investment.aget("currentProfit")){
+            profit = investment.aget("currentProfit").toString();
+        }else{
+            return null;
+        }
+        //获取当前投资额，单位分
         Object investmentObj = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "investment");
         if(investmentObj == null){
             investmentObj = investment.aget("investment");
         }
         Long investment1 = Long.parseLong(investmentObj.toString());
+        //获取抵扣额，单位分
         Object deductedObj = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "deducted");
         if(deductedObj == null){
             deductedObj = investment.aget("deducted");
         }
         Long deducted = Long.parseLong(deductedObj.toString());
         //直接使用expectProfitProvider的计算结果*100
-        Long expectProfit = new BigDecimal(Float.parseFloat(investment.aget("expectProfit").toString())).setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).longValue();
+        Long expectProfit = new BigDecimal(Float.parseFloat(profit)).setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).longValue();
         return MoneyUtils.centToYuan(investment1 + deducted + expectProfit) ;
     }
 }

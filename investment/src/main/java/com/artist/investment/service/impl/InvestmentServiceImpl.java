@@ -1,5 +1,6 @@
 package com.artist.investment.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.artist.investment.constant.PaymentType;
 import com.artist.investment.constant.Yn;
 import com.artist.investment.dao.InvestmentMapper;
@@ -19,8 +20,10 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
+import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.ss.util.DateUtils;
 import com.dili.ss.util.MoneyUtils;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,26 +83,31 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         investment.setModifiedId(userTicket.getId());
         centToYuanIntrospection(investment);
 
-        //调整用户余额(减去当前投资额)
-        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), -investment.getInvestment());
-        if(!balanceOutput.isSuccess()){
-            return balanceOutput;
-        }
         //先新增，再记录
         insertSelective(investment);
-        PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
-        paymentRecord.setCreatedName(userTicket.getRealName());
-        //设置当前余额
-        paymentRecord.setBalance(balanceOutput.getData());
-        paymentRecord.setInitialAmount(0L);
-        paymentRecord.setTargetAmount(investment.getInvestment());
-        paymentRecord.setName("新增投资");
-        paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
-        paymentRecord.setType(PaymentType.EXPENDITURE.getCode());
-        paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
-        paymentRecord.setNotes(getInsertInvestmentPaymentNotes(investment));
-        paymentRecordService.insertSelective(paymentRecord);
+
+        //如果要调整余额，还要记录收支明细
+        if(investment.aget("adjustBalance").equals("1")) {
+            //调整用户余额(减去当前投资额)
+            BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), -investment.getInvestment());
+            if (!balanceOutput.isSuccess()) {
+                return balanceOutput;
+            }
+            PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+            paymentRecord.setCreatedName(userTicket.getRealName());
+            //设置当前余额
+            paymentRecord.setBalance(balanceOutput.getData());
+            paymentRecord.setInitialAmount(0L);
+            paymentRecord.setTargetAmount(investment.getInvestment());
+            paymentRecord.setName("新增投资");
+            paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
+            paymentRecord.setType(PaymentType.EXPENDITURE.getCode());
+            paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
+            paymentRecord.setNotes(getInsertInvestmentPaymentNotes(investment));
+            paymentRecordService.insertSelective(paymentRecord);
+        }
         return BaseOutput.success("新增成功");
+
     }
 
     @Override
@@ -118,14 +126,15 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         centToYuanIntrospection(investment);
         //这里是为了解决投资人或银行卡为空的时候，只能从数据库获取旧值，然后用新值覆盖后强制更新
 //        investment = DTOUtils.link(investment, originalInvestment, Investment.class);
-        //调整用户余额
-        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), originalInvestmentAmount-investment.getInvestment());
-        if(!balanceOutput.isSuccess()){
-            return balanceOutput;
-        }
-        updateSelective(investment);
+
+        updateExactSimple(investment);
         //如果要调整余额，还要记录收支明细
         if(investment.aget("adjustBalance").equals("1")) {
+            //调整用户余额
+            BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), originalInvestmentAmount-investment.getInvestment());
+            if(!balanceOutput.isSuccess()){
+                return balanceOutput;
+            }
             PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
             paymentRecord.setCreatedName(userTicket.getRealName());
             //设置当前余额
@@ -172,29 +181,46 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
 
     @Override
     public List<Map> selectInvestorPlatformStats() {
-        return convertInvestor(getActualDao().selectInvestorPlatformStats(), "investorId");
+        try {
+            return ValueProviderUtils.buildDataByProvider(getStatsMetadata(), convertInvestor(getActualDao().selectInvestorPlatformStats(), "investorId"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public EasyuiPageOutput selectInvestorStats() {
         List<Map> list = convertInvestor(getActualDao().selectInvestorStats(), "investorId");
         EasyuiPageOutput easyuiPageOutput = new EasyuiPageOutput();
-        easyuiPageOutput.setRows(list);
+        try {
+            easyuiPageOutput.setRows(ValueProviderUtils.buildDataByProvider(getStatsMetadata(), list));
+        } catch (Exception e) {
+            e.printStackTrace();
+            easyuiPageOutput.setRows(Lists.newArrayList());
+        }
         easyuiPageOutput.setTotal(list.size());
+        //求合计
         List<Map> summationList = new ArrayList<>();
         Map summation = new HashMap();
         summation.put("investorId", "合计");
-        Float dailyProfit = 0f;
-        Float investmentAmount = 0f;
-        Float investment = 0f;
-        Float deducted = 0f;
-        Float profit = 0f;
-        Float principalAndInterest = 0f;
-        Float totalInvestment = 0f;
-        Float totalInvestmentAmount = 0f;
-        Float totalProfit = 0f;
+        Float dailyProfit = 0F;
+        Float currentProfit = 0F;
+        Float totalCurrentProfit = 0F;
+        Float investmentAmount = 0F;
+        Float investment = 0F;
+        Float deducted = 0F;
+        Float profit = 0F;
+        Float principalAndInterest = 0F;
+        Float totalInvestment = 0F;
+        Float totalInvestmentAmount = 0F;
+        Float totalProfit = 0F;
+        Float totalDeducted = 0F;
+        Float totalPrincipalAndInterest = 0F;
         for(Map data : list){
             dailyProfit += Float.parseFloat(data.get("dailyProfit").toString());
+            currentProfit += Float.parseFloat(data.get("currentProfit").toString());
+            totalCurrentProfit += Float.parseFloat(data.get("totalCurrentProfit").toString());
             investmentAmount += Float.parseFloat(data.get("investmentAmount").toString());
             investment += Float.parseFloat(data.get("investment").toString());
             deducted += Float.parseFloat(data.get("deducted").toString());
@@ -203,8 +229,12 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             totalInvestment += Float.parseFloat(data.get("totalInvestment").toString());
             totalInvestmentAmount += Float.parseFloat(data.get("totalInvestmentAmount").toString());
             totalProfit += Float.parseFloat(data.get("totalProfit").toString());
+            totalDeducted += Float.parseFloat(data.get("totalDeducted").toString());
+            totalPrincipalAndInterest += Float.parseFloat(data.get("totalPrincipalAndInterest").toString());
         }
         summation.put("dailyProfit", dailyProfit);
+        summation.put("currentProfit", currentProfit);
+        summation.put("totalCurrentProfit", totalCurrentProfit);
         summation.put("investmentAmount", investmentAmount);
         summation.put("investment", investment);
         summation.put("deducted", deducted);
@@ -213,6 +243,8 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         summation.put("totalInvestment", totalInvestment);
         summation.put("totalInvestmentAmount", totalInvestmentAmount);
         summation.put("totalProfit", totalProfit);
+        summation.put("totalDeducted", totalDeducted);
+        summation.put("totalPrincipalAndInterest", totalPrincipalAndInterest);
         summationList.add(summation);
         easyuiPageOutput.setFooter(summationList);
         return easyuiPageOutput;
@@ -370,6 +402,23 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
                 .append(MoneyUtils.centToYuan(investment.getInvestment()))
                 .append("元");
         return stringBuilder.toString();
+    }
+
+
+    /**
+     * 获取统计报表提供者，分别是本息合计提供者和累计本息合计提供者
+     * 主要是考虑活期的情况，预期收益可能为空
+     * @return
+     */
+    private Map<String, Object> getStatsMetadata(){
+        Map<String, Object> metadata = new HashMap<>();
+        JSONObject principalAndInterestStatsProvider = new JSONObject();
+        principalAndInterestStatsProvider.put("provider", "principalAndInterestStatsProvider");
+        metadata.put("principalAndInterest", principalAndInterestStatsProvider);
+        JSONObject totalPrincipalAndInterestStatsProvider = new JSONObject();
+        totalPrincipalAndInterestStatsProvider.put("provider", "totalPrincipalAndInterestStatsProvider");
+        metadata.put("totalPrincipalAndInterest", totalPrincipalAndInterestStatsProvider);
+        return metadata;
     }
 
 }

@@ -52,7 +52,7 @@
     select sum(i.investment)/100 investment, ip.name platformName from investment i, investment_platform ip where i.platform_id = ip.id
     <if test="isProgressing != null and isProgressing == 1">
       <![CDATA[
-      and now()> i.start_date and now() < i.end_date
+      and now()> i.start_date and (now() < i.end_date or i.end_date is null)
       ]]>
     </if>
     <if test="isProgressing != null and isProgressing == 0">
@@ -79,7 +79,7 @@
     </if>
     <if test="isProgressing != null and isProgressing == 1">
       <![CDATA[
-      and now()> i.start_date and now() < i.end_date
+      and now()> i.start_date and (now() < i.end_date or i.end_date is null)
       ]]>
     </if>
     <if test="investorId != null and investorId != ''">
@@ -99,7 +99,7 @@
     </if>
     <if test="isProgressing != null and isProgressing == 1">
       <![CDATA[
-      and now()> i.start_date and now() < i.end_date
+      and now()> i.start_date and (now() < i.end_date or i.end_date is null)
       ]]>
     </if>
     <if test="investorId != null and investorId != ''">
@@ -115,11 +115,13 @@
     ,t1.investment
     ,t1.deducted
     ,t1.profit
+    ,t1.currentProfit
     ,t1.principalAndInterest
     ,t1.investmentAmount
     ,t3.dailyProfit
     ,t2.totalInvestment
     ,t2.totalDeducted
+    ,t2.totalCurrentProfit
     ,t2.totalPrincipalAndInterest
     ,t2.totalProfit
     ,t2.totalInvestmentAmount
@@ -128,6 +130,7 @@
     SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) profit
     , ROUND(SUM(i.investment)/100, 2) investment
     , ROUND(SUM(i.deducted)/100, 2) deducted
+    , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(now(), i.start_date))/365/10000, 2) currentProfit
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) principalAndInterest
     , COUNT(i.id) investmentAmount
     , ip.name platformName
@@ -136,7 +139,7 @@
     FROM investment i, investment_platform ip
     WHERE i.platform_id = ip.id
     <![CDATA[
-    and now()> i.start_date and now() < i.end_date
+    and now()> i.start_date and (now() < i.end_date or i.end_date is null)
     ]]>
     GROUP BY i.investor_id, i.platform_id) t1
     ,
@@ -144,6 +147,7 @@
     SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) totalProfit
     , ROUND(SUM(i.investment)/100, 2) totalInvestment
     , ROUND(SUM(i.deducted)/100, 2) totalDeducted
+    , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(case when (i.end_date is null or i.end_date > now()) then now() else i.end_date end, i.start_date))/365/10000, 2) totalCurrentProfit
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) totalPrincipalAndInterest
     , COUNT(i.id) totalInvestmentAmount
     , ip.name platformName
@@ -159,7 +163,7 @@
     , i.investor_id investorId
     FROM investment i
     <![CDATA[
-    WHERE now()> i.start_date and now() < i.end_date
+    WHERE now()> i.start_date and (now() < i.end_date or i.end_date is null)
     ]]>
     GROUP BY i.investor_id, i.platform_id) t3
     WHERE t1.investorId = t2.investorId
@@ -175,11 +179,13 @@
     ,t1.investment
     ,t1.deducted
     ,t1.profit
+    ,t1.currentProfit
     ,t1.principalAndInterest
     ,t1.investmentAmount
     ,t3.dailyProfit
     ,t2.totalInvestment
     ,t2.totalDeducted
+    ,t2.totalCurrentProfit
     ,t2.totalPrincipalAndInterest
     ,t2.totalProfit
     ,t2.totalInvestmentAmount
@@ -188,12 +194,13 @@
     SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) profit
     , ROUND(SUM(i.investment)/100, 2) investment
     , ROUND(SUM(i.deducted)/100, 2) deducted
+    , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(now(), i.start_date))/365/10000, 2) currentProfit
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) principalAndInterest
     , COUNT(i.id) investmentAmount
     , i.investor_id investorId
     FROM investment i
     <![CDATA[
-    WHERE NOW()> i.start_date AND NOW() < i.end_date
+    WHERE NOW()> i.start_date AND (now() < i.end_date or i.end_date is null)
     ]]>
     GROUP BY i.investor_id) t1
     ,
@@ -201,6 +208,7 @@
     SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) totalProfit
     , ROUND(SUM(i.investment)/100, 2) totalInvestment
     , ROUND(SUM(i.deducted)/100, 2) totalDeducted
+    , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(case when (i.end_date is null or i.end_date > now()) then now() else i.end_date end, i.start_date))/365/10000, 2) totalCurrentProfit
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) totalPrincipalAndInterest
     , COUNT(i.id) totalInvestmentAmount
     , i.investor_id investorId
@@ -212,7 +220,7 @@
     , i.investor_id investorId
     FROM investment i
     <![CDATA[
-    WHERE NOW()> i.start_date AND NOW() < i.end_date
+    WHERE NOW()> i.start_date AND (now() < i.end_date or i.end_date is null)
     ]]>
     GROUP BY i.investor_id) t3
     WHERE t1.investorId = t2.investorId AND t1.investorId = t3.investorId
