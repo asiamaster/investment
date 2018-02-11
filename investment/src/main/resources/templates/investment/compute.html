@@ -322,7 +322,7 @@
             var profit = toFloat($("#_profit").numberbox("getValue"));
             var checked = $("#_type").switchbutton("options").checked;
             //计算相关天数
-            var fullDates = dateDifference(startDate, endDate);alert(fullDates);
+            var fullDates = dateDifference(startDate, endDate);
             //根据收益计算投资额
             if(checked){
                 //投资额=收益/利率/共计天数*365*100%
