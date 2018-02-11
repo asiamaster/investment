@@ -2,9 +2,40 @@
 
      <script>
          //根据项目期限和期限单位计算结束日期
+         function compute_EndDate(newValue, oldValue) {
+             //没有项目期限不计算
+             var projectDuration = $("#_projectDuration").numberbox("getValue");
+
+             if(projectDuration == ""){
+                 return;
+             }
+             //没有项目期限单位不计算
+             var projectDurationUnit = $("#_projectDurationUnit").combobox("getValue");
+             if(projectDurationUnit == ""){
+                 return;
+             }
+             var startDate = $("#_startDate").datebox("getValue");
+             var endDate = $("#_endDate").datebox("getValue");
+
+             //开始结束时间都没有，则不计算
+             if(startDate == "" && endDate == ""){
+                 return;
+             }
+             //只有开始时间，则计算结束时间
+             if(endDate == ""){
+                 setEndDate(projectDuration, projectDurationUnit, startDate, "_endDate");
+             }//只有结束时间，则计算开始时间
+             else if(startDate == ""){
+                 setStartDate(projectDuration, projectDurationUnit, endDate, "_startDate");
+             }//开始结束都有还是要重新计算结束时间
+             else{
+                 setEndDate(projectDuration, projectDurationUnit, startDate, "_endDate");
+             }
+         }
+         //根据项目期限和期限单位计算结束日期
          function computeEndDate(newValue, oldValue) {
              //没有项目期限不计算
-             var projectDuration = $("#projectDuration").textbox("getValue");
+             var projectDuration = $("#projectDuration").numberbox("getValue");
              if(projectDuration == ""){
                  return;
              }
@@ -22,17 +53,17 @@
              }
              //只有开始时间，则计算结束时间
              if(endDate == ""){
-                 setEndDate(projectDuration, projectDurationUnit, startDate);
+                 setEndDate(projectDuration, projectDurationUnit, startDate, "endDate");
              }//只有结束时间，则计算开始时间
              else if(startDate == ""){
-                 setStartDate(projectDuration, projectDurationUnit, endDate);
+                 setStartDate(projectDuration, projectDurationUnit, endDate, "startDate");
              }//开始结束都有还是要重新计算结束时间
              else{
-                 setEndDate(projectDuration, projectDurationUnit, startDate);
+                 setEndDate(projectDuration, projectDurationUnit, startDate, "endDate");
              }
          }
          //设置结束日期
-         function setEndDate(projectDuration, projectDurationUnit, startDate){
+         function setEndDate(projectDuration, projectDurationUnit, startDate, endDateId){
              var ss = startDate.split('-');
              var y = parseInt(ss[0],10);
              var m = parseInt(ss[1],10);
@@ -58,10 +89,10 @@
              else if(projectDurationUnit == 5){
                  y+=parseInt(projectDuration);
              }
-             $("#endDate").datebox("setValue", y+"-"+m+"-"+d);
+             $("#"+endDateId).datebox("setValue", y+"-"+m+"-"+d);
          }
          //设置开始日期
-         function setStartDate(projectDuration, projectDurationUnit, endDate){
+         function setStartDate(projectDuration, projectDurationUnit, endDate, startDateId){
              var ss = endDate.split('-');
              var y = parseInt(ss[0],10);
              var m = parseInt(ss[1],10);
@@ -87,75 +118,74 @@
              else if(projectDurationUnit == 5){
                  y-=parseInt(projectDuration);
              }
-             $("#startDate").datebox("setValue", y+"-"+m+"-"+d);
+             $("#"+startDateId).datebox("setValue", y+"-"+m+"-"+d);
          }
-         //初始化项目期限单位为"月"
+         //初始化项目期限单位为"月", 用initValue和setText代码setValue避免触发onchange事件
          function initProjectDurationUnit() {
-             $("#projectDurationUnit").combobox("setValue", "3");
+             $("#projectDurationUnit").combobox("initValue", "3");
+             $("#projectDurationUnit").combobox("setText", "月");
+         }
+         //初始化项目期限单位为"月", 用initValue和setText代码setValue避免触发onchange事件
+         function init_ProjectDurationUnit() {
+             $("#_projectDurationUnit").combobox("initValue", "3");
+             $("#_projectDurationUnit").combobox("setText", "月");
          }
      </script>
 
     <div class="easyui-layout" fit="true">
-        <div region="north" style="width:100%;" height="240">
+        <div region="north" style="width:100%;" height="270" >
             <div align="left">
                 <#nav/>
             </div>
-            <form id="form" class="easyui-form" method="post" fit="true">
-                <table width="750px" style="padding-left: 50px;padding-top: 30px;">
-                    <tr>
-                        <td style="padding:5px;width:34%;">
-                            <input class="easyui-numberbox" precision="2" min="0" name="investment" id="investment" style="width:100%" data-options="required:true,label:'投资额(元):'" />
-                        </td>
-                        <td style="padding:5px;width:33%;">
-                            <input class="easyui-numberbox" name="profitRatio" id="profitRatio" labelWidth="90" precision="2" style="width:100%" data-options="required:true,label:'年化利率(%):'" />
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="padding:5px;">
-                            <input class="easyui-numberbox" precision="2" min="0" name="deducted" id="deducted" style="width:100%" data-options="label:'已抵扣(元):'" />
-                        </td>
-                        <td style="padding:5px;">
-                            <input class="easyui-numberbox" precision="2" min="0" name="interestCoupon" id="interestCoupon" style="width:100%" data-options="label:'加息率(%):'" />
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="padding:5px;">
-                            <input class="easyui-datebox" name="startDate" id="startDate" style="width:100%" data-options="required:true, editable:false, label:'起始日期:'" />
-                        </td>
-                        <td style="padding:5px;">
-                            <input class="easyui-datebox" name="endDate" id="endDate" style="width:100%" data-options="label:'结束日期:', editable:false" />
-                        </td>
-                        <td style="padding:5px;">
-                            <input class="easyui-datebox" name="currentDate" id="currentDate" style="width:100%" data-options="label:'当前日期:', editable:false, prompt:'计算当前收益'" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding:5px;">
-                            <input class="easyui-numberbox" name="projectDuration" id="projectDuration" style="width:100%" data-options="label:'项目期限:', onChange:computeEndDate" />
-                        </td>
-                        <td style="padding:5px;">
-                            <input name="projectDurationUnit" id="projectDurationUnit" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="期限单位:"
-                                   data-options=" onChange:computeEndDate, onLoadSuccess:initProjectDurationUnit"/>
-                            <#comboProvider _id="projectDurationUnit" _provider='projectDurationUnitProvider'/>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="calculate()">计算</a></td>
-                        <td></td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-        <!-- ====================================================================================================================== -->
-        <!-- 中央布局 -->
-        <!-- ====================================================================================================================== -->
-        <div region="center" style="width:100%;" height="auto">
+            <div class="easyui-panel" title="根据投资额计算收益">
+                <form id="form" class="easyui-form" method="post" fit="true">
+                    <table width="750px" style="padding-left: 50px;padding-top: 10px;">
+                        <tr>
+                            <td style="padding:5px;width:34%;">
+                                <input class="easyui-numberbox" precision="2" min="0" name="investment" id="investment" style="width:100%" data-options="required:true,label:'投资额(元):'" />
+                            </td>
+                            <td style="padding:5px;width:33%;">
+                                <input class="easyui-numberbox" name="profitRatio" id="profitRatio" labelWidth="90" precision="2" style="width:100%" data-options="required:true,label:'年化利率(%):'" />
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-numberbox" precision="2" min="0" name="deducted" id="deducted" style="width:100%" data-options="label:'已抵扣(元):'" />
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-numberbox" precision="2" min="0" name="interestCoupon" id="interestCoupon" style="width:100%" data-options="label:'加息率(%):'" />
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-datebox" name="startDate" id="startDate" style="width:100%" data-options="required:true, editable:false, label:'起始日期:'" />
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-datebox" name="endDate" id="endDate" style="width:100%" data-options="label:'结束日期:', editable:false" />
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-datebox" name="currentDate" id="currentDate" style="width:100%" data-options="label:'当前日期:', editable:false, prompt:'计算当前收益'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-numberbox" name="projectDuration" id="projectDuration" style="width:100%" data-options="label:'项目期限:', onChange:computeEndDate" />
+                            </td>
+                            <td style="padding:5px;">
+                                <input name="projectDurationUnit" id="projectDurationUnit" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="期限单位:"
+                                       data-options="onChange:computeEndDate, onLoadSuccess:initProjectDurationUnit"/>
+                                <#comboProvider _id="projectDurationUnit" _provider='projectDurationUnitProvider'/>
+                            </td>
+                            <td><a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="calculate()">计算</a></td>
+                        </tr>
+
+                    </table>
+                </form>
+            </div>
             <form id="resultForm" class="easyui-form" method="post" fit="true">
-                <table width="750px" style="padding-left: 50px;padding-top: 10px;">
+                <table width="750px" height="30px" style="padding-left: 50px;padding-top: 10px;">
                     <tr>
                         <td style="padding:5px;width:34%;">
                             <input class="easyui-numberbox" precision="2" min="0" name="profit" id="profit" labelWidth="90" style="width:100%" data-options="label:'预期收益(元):'" />
@@ -167,7 +197,59 @@
                             <input class="easyui-numberbox" name="principalAndInterest" id="principalAndInterest" labelWidth="90" style="width:100%"  data-options="label:'本息合计(元):'" />
                         </td>
                     </tr>
+                </table>
+            </form>
+        </div>
+        <!-- ====================================================================================================================== -->
+        <!-- 中央布局 -->
+        <!-- ====================================================================================================================== -->
+        <div region="center" style="width:100%;" height="auto" title="根据收益计算投资额">
+            <form id="_form" class="easyui-form" method="post" fit="true">
+                <table width="750px" style="padding-left: 50px;padding-top: 10px;">
+                    <tr>
+                        <td style="padding:5px;width:34%;">
+                            <input class="easyui-switchbutton" id="_type" name="_type" data-options="onText:'收益',offText:'本息合计'" checked="true" style="width:35%" >
+                            &nbsp;&nbsp;
+                            <input class="easyui-numberbox" precision="2" min="0" name="_profit" id="_profit" style="width:57%" data-options="required:true" />
+                        </td>
+                        <td style="padding:5px;width:33%;">
+                            <input class="easyui-numberbox" name="_profitRatio" id="_profitRatio" labelWidth="90" precision="2" style="width:100%" data-options="required:true,label:'年化利率(%):'" />
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:5px;">
+                            <input class="easyui-datebox" name="_startDate" id="_startDate" style="width:100%" data-options="required:true, editable:false, label:'起始日期:'" />
+                        </td>
+                        <td style="padding:5px;">
+                            <input class="easyui-datebox" name="_endDate" id="_endDate" style="width:100%" data-options="label:'结束日期:', editable:false" />
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:5px;">
+                            <input class="easyui-numberbox" name="_projectDuration" id="_projectDuration" style="width:100%" data-options="label:'项目期限:', onChange:compute_EndDate" />
+                        </td>
+                        <td style="padding:5px;">
+                            <input name="_projectDurationUnit" id="_projectDurationUnit" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="期限单位:"
+                                   data-options=" onChange:compute_EndDate, onLoadSuccess:init_ProjectDurationUnit"/>
+                            <#comboProvider _id="_projectDurationUnit" _provider='projectDurationUnitProvider'/>
+                        </td>
+                        <td><a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="_calculate()">计算</a></td>
+                    </tr>
 
+                </table>
+            </form>
+            <hr/>
+            <form id="_resultForm" class="easyui-form" method="post" fit="true">
+                <table width="750px" style="padding-left: 50px;padding-top:0px;">
+                    <tr>
+                        <td style="padding:5px;width:34%;">
+                            <input class="easyui-numberbox" precision="2" min="0" name="_investment" id="_investment" labelWidth="90" style="width:100%;" data-options="label:'投资额(元):'" />
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </table>
             </form>
         </div>
@@ -199,7 +281,7 @@
             }
             return parseFloat(value);
         }
-        //计算
+        //计算收益
         function calculate(){
             if(!$('#form').form("validate")){
                 return;
@@ -216,8 +298,8 @@
 //            var projectDuration = $("#projectDuration").numberbox("getValue");
 //            var projectDurationUnit = $("#projectDurationUnit").combobox("getValue");
             //计算相关天数
-            var fullDates = dateDifference(startDate, endDate)+1;
-            var currentDates = dateDifference(startDate, currentDate)+1;
+            var fullDates = dateDifference(startDate, endDate);
+            var currentDates = dateDifference(startDate, currentDate);
             //预期收益: (投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100%
             var profit = (investment + deducted)*(profitRatio+interestCoupon)*fullDates/365/100;
             //当前收益: (投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 当前投资天数 / 365 / 100%
@@ -227,10 +309,34 @@
             $("#profit").numberbox("setValue", profit);
             $("#currentProfit").numberbox("setValue", currentProfit);
             $("#principalAndInterest").numberbox("setValue", principalAndInterest);
-
         }
 
-        //清空表单
+        //计算投资额
+        function _calculate() {
+            if (!$('#_form').form("validate")) {
+                return;
+            }
+            var startDate = $("#_startDate").datebox("getValue");
+            var endDate = $("#_endDate").datebox("getValue");
+            var profitRatio = toFloat($("#_profitRatio").numberbox("getValue"));
+            var profit = toFloat($("#_profit").numberbox("getValue"));
+            var checked = $("#_type").switchbutton("options").checked;
+            //计算相关天数
+            var fullDates = dateDifference(startDate, endDate);alert(fullDates);
+            //根据收益计算投资额
+            if(checked){
+                //投资额=收益/利率/共计天数*365*100%
+                var investment=profit/profitRatio/fullDates*365*100;
+            }//根据本息合计计算投资额
+            else{
+                var principalAndInterest = profit;
+//              公式:principalAndInterest = investment*profitRatio*fullDates/36500 + investment  -> investment = principalAndInterest /(profitRatio*fullDates/36500 +1)
+                var investment = principalAndInterest /(profitRatio*fullDates/36500 +1);
+            }
+            $("#_investment").numberbox("setValue", investment);
+        }
+
+            //清空表单
         function clearForm() {
             $('#form').form('clear');
         }
@@ -256,6 +362,7 @@
             //设置当前日期
             $("#currentDate").datebox("setValue", getCurrentDate());
             $("#startDate").datebox("setValue", getCurrentDate());
+            $("#_startDate").datebox("setValue", getCurrentDate());
 
         })
     </script>

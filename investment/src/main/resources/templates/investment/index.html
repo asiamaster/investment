@@ -358,8 +358,8 @@
             //加载银行卡
             $("#_bankCardId").textbox("initValue", selected["$_bankCardId"]);
             $("#_bankCardId").textbox("setText", selected["bankCardId"]);
-            //默认要调整余额
-            $("#_adjustBalance").combobox("setValue", "1");
+            //默认不调整余额
+            $("#_adjustBalance").combobox("setValue", "0");
         }
 
         function saveOrUpdate(){
