@@ -98,15 +98,17 @@ public class ScanExpiredInvestmentJob implements ApplicationListener<ContextRefr
 			BigDecimal bigDecimal100 = new BigDecimal(100);
 			//精确计算两位小数，并且四舍五入
 			Long profit = bigDecimal.divide(bigDecimal365, 0, BigDecimal.ROUND_HALF_DOWN).divide(bigDecimal100, 0, BigDecimal.ROUND_HALF_DOWN).longValue();
+			//本息合计
 			Long principalAndInterest = investment.getInvestment() + investment.getDeducted() + profit;
+			//调整额为本息合计-当前已到帐额
+			Long ajustAmount = principalAndInterest-investment.getArrived();
 			//调整用户余额
-			BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), principalAndInterest);
+			BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), ajustAmount);
 			PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
 			paymentRecord.setCreatedName("过期投资扫描器");
 			//设置当前余额
 			paymentRecord.setBalance(balanceOutput.getData());
-			paymentRecord.setInitialAmount(principalAndInterest);
-			paymentRecord.setTargetAmount(0L);
+			paymentRecord.setAdjustAmount(ajustAmount);
 			paymentRecord.setName("到期投资");
 			paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
 			//到期投资算是收入
@@ -114,8 +116,11 @@ public class ScanExpiredInvestmentJob implements ApplicationListener<ContextRefr
 			paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
 			paymentRecord.setNotes(getExpiredInvestmentPaymentNotes(investment, principalAndInterest));
 			paymentRecordService.insertSelective(paymentRecord);
+			//设置投资已过期
 			investment.setIsExpired(Yn.YES.getCode());
 			investment.setBalanceDue(balanceOutput.getData());
+			//设置当前到帐余额为本息合计
+			investment.setArrived(principalAndInterest);
 			investmentService.updateSelective(investment);
 		}
 	}

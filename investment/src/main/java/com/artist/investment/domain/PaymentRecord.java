@@ -1,5 +1,6 @@
 package com.artist.investment.domain;
 
+import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
@@ -30,6 +31,7 @@ public interface PaymentRecord extends IBaseDomain {
     @Column(name = "`user_name`")
     @FieldDef(label="用户", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like(Like.BOTH)
     String getUserName();
 
     void setUserName(String userName);
@@ -55,19 +57,12 @@ public interface PaymentRecord extends IBaseDomain {
 
     void setType(Integer type);
 
-    @Column(name = "`initial_amount`")
-    @FieldDef(label="初始金额")
+    @Column(name = "`adjust_amount`")
+    @FieldDef(label="调整金额")
     @EditMode(editor = FieldEditor.Number, required = false)
-    Long getInitialAmount();
+    Long getAdjustAmount();
 
-    void setInitialAmount(Long initialAmount);
-
-    @Column(name = "`target_amount`")
-    @FieldDef(label="目标金额")
-    @EditMode(editor = FieldEditor.Number, required = false)
-    Long getTargetAmount();
-
-    void setTargetAmount(Long targetAmount);
+    void setAdjustAmount(Long adjustAmount);
 
     @Column(name = "`balance`")
     @FieldDef(label="余额")

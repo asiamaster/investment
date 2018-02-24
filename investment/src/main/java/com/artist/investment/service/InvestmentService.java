@@ -22,6 +22,21 @@ public interface InvestmentService extends BaseService<Investment, Long> {
     BaseOutput updateSelectiveWithOutput(Investment investment);
 
     /**
+     * 提前到帐
+     * @param id
+     * @return
+     */
+    BaseOutput arrived(Long id);
+
+    /**
+     * 部分提前到帐
+     * @param id
+     * @param arrived 到帐金额，单位元
+     * @return
+     */
+    BaseOutput adjustArrived(Long id, String arrived);
+
+    /**
      * 查询投资分布饼图
      * @param isProgressing 是否进行中(0,1或null) 和 investorId 投资人id
      * @return

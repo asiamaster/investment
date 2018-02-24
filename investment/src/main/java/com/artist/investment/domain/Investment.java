@@ -175,4 +175,23 @@ public interface Investment extends IBaseDomain, IMybatisForceParams {
     Date getModified();
 
     void setModified(Date modified);
+
+//    @Column(name = "`arrived_interest`")
+//    @FieldDef(label="到期利息")
+//    @EditMode(editor = FieldEditor.Number, required = false)
+//    Long getArrivedInterest();
+//    void setArrivedInterest(Long arrivedInterest);
+//
+//    @Column(name = "`arrived_principal`")
+//    @FieldDef(label="到期本金")
+//    @EditMode(editor = FieldEditor.Number, required = false)
+//    Long getArrivedPrincipal();
+//    void setArrivedPrincipal(Long arrivedPrincipal);
+
+    @Column(name = "`arrived`")
+    @FieldDef(label="到期金额")
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Long getArrived();
+    void setArrived(Long arrived);
+
 }

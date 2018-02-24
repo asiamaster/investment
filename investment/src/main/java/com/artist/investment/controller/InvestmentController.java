@@ -1,5 +1,6 @@
 package com.artist.investment.controller;
 
+import com.artist.investment.constant.Yn;
 import com.artist.investment.domain.BankCard;
 import com.artist.investment.domain.Investment;
 import com.artist.investment.domain.dto.InvestmentDto;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -100,6 +102,7 @@ public class InvestmentController {
         //查询一个月内即将到期的投资
         investment.setLtEndDate(DateUtils.addDays(now, 30));
         investment.setGteEndDate(now);
+        investment.setIsExpired(Yn.NO.getCode());
         return investmentService.listEasyuiPageByExample(investment, true).toString();
     }
 
@@ -129,6 +132,26 @@ public class InvestmentController {
     public @ResponseBody BaseOutput delete(Long id) {
         return BaseOutput.success("删除成功").setData(investmentService.delete(id));
     }
+
+    @ApiOperation("提前到帐")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="id", paramType="form", value = "Investment的主键", required = true, dataType = "long")
+    })
+    @RequestMapping(value="/arrived", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput arrived(Long id) {
+        return investmentService.arrived(id);
+    }
+
+    @ApiOperation("调整提前到帐")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="id", paramType="form", value = "Investment的主键", required = true, dataType = "long")
+    })
+    @RequestMapping(value="/adjustArrived", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput adjustArrived(@RequestParam("id") Long id, @RequestParam("arrived") String arrived) {
+        return investmentService.adjustArrived(id, arrived);
+    }
+
+
 
     // ==================================   报表  ==================================
     @ApiImplicitParams({

@@ -90,6 +90,51 @@
              }
              $("#_startDate").datebox("setValue", y+"-"+m+"-"+d);
          }
+
+         function ymdDateFormatter (date) {
+             var year = date.getFullYear().toString();
+             var month = (date.getMonth() + 1);
+             var day = date.getDate().toString();
+             var hour = date.getHours().toString();
+             var minutes = date.getMinutes().toString();
+             var seconds = date.getSeconds().toString();
+             if (month < 10) {
+                 month = "0" + month;
+             }
+             if (day < 10) {
+                 day = "0" + day;
+             }
+             return year + "-" + month + "-" + day;
+         }
+
+         //求两个日期相差天数
+         //date1和date2是2006-12-18格式: date2-data1天数
+         function dateDifference(date1 , date2){
+             var date1Str = date1.split("-");//将日期字符串分隔为数组,数组元素分别为年.月.日
+             //根据年 . 月 . 日的值创建Date对象
+             var date1Obj = new Date(date1Str[0],(date1Str[1]-1),date1Str[2]);
+             var date2Str = date2.split("-");
+             var date2Obj = new Date(date2Str[0],(date2Str[1]-1),date2Str[2]);
+             var t1 = date1Obj.getTime();
+             var t2 = date2Obj.getTime();
+             var dateTime = 1000*60*60*24; //每一天的毫秒数
+             var minusDays = Math.floor(((t2-t1)/dateTime));//计算出两个日期的天数差
+//             var days = Math.abs(minusDays);//取绝对值
+             return minusDays;
+         }
+
+         function rowStyler(index, row) {
+             if (row.isExpired !=null && row.isExpired == "是"){
+                 return 'background-color:#E1E1E1;color:#000;';
+             }
+             if(row.endDate == null || row.endDate == ""){
+                return;
+             }
+             var difDates = dateDifference(ymdDateFormatter(new Date()), row.endDate);
+             if (row.isExpired !=null && row.isExpired == "否" && difDates<=30){
+                 return 'background-color:#D7FFCC;color:#000;';
+             }
+         }
      </script>
 
     <div class="easyui-layout" fit="true">
@@ -140,7 +185,7 @@
             <table class="easyui-datagrid" title="投资记录" id="grid" fitColumns="true" noheader="true"
                    pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="true"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc"
-                   align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
+                   align="center" fit="true" striped="false" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu, rowStyler:rowStyler">
                 <thead>
                     <tr>
                         <th data-options="field:'investorId',  _provider:'userProvider', _escapeFileds:{investorId:'realName', createdId:'realName', modifiedId:'realName'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -196,6 +241,9 @@
                         </th>
                         <th data-options="field:'bankCardId', _provider:'bankCardProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             银行卡
+                        </th>
+                        <th data-options="field:'arrived', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            到期金额
                         </th>
                         <th data-options="field:'balanceDue', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             到期余额
@@ -310,12 +358,93 @@
             </tr>
         </table>
     </form>
-
     </div>
+
+     <!--  到期金额框 -->
+     <div id="arrived_dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="提前到期设置" style="padding:20px" modal="true" border="thin" closed="true"
+          data-options="
+				iconCls: 'icon-save',
+				height: 155,
+				width: 300,
+				buttons: [{
+					text:'确认',
+					iconCls:'icon-ok',
+					handler:saveArrived
+				},{
+					text:'取消',
+					iconCls:'icon-cancel',
+					handler:function(){
+						$('#arrived_dlg').dialog('close');
+					}
+				}]
+			">
+         <form id="arrived_form" class="easyui-form" method="post" fit="true">
+             <input name="arrived_id" id="arrived_id" type="hidden">
+             <table width="270px">
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-numberbox" name="arrived" id="arrived" labelWidth="90" precision="2" style="width:100%" data-options="label:'提前到期(元):',required:true" />
+                     </td>
+                 </tr>
+             </table>
+         </form>
+     </div>
+
     <!-- ====================================================================================================================== -->
     <!-- style & script 分隔线 -->
     <!-- ====================================================================================================================== -->
     <script type="text/javascript">
+
+        //打开提前到期框
+        function openArrived() {
+            var selected = $("#grid").datagrid("getSelected");
+            if (null == selected) {
+                $.messager.alert('警告','请选中一条数据');
+                return;
+            }
+            $('#arrived_dlg').dialog('open');
+            $('#arrived_dlg').dialog('center');
+            $('#arrived_form').form('clear');
+            formFocus("arrived_form", "arrived");
+            $("#arrived_id").val(selected["id"]);
+        }
+
+        //保存提前到期设置
+        function saveArrived() {
+            var selected = $("#grid").datagrid("getSelected");
+            if (null == selected) {
+                $.messager.alert('警告','请选中一条数据');
+                return;
+            }
+            if(!$('#arrived_form').form("validate")){
+                return;
+            }
+            var arrived = $("#arrived").numberbox("getValue");
+            if(arrived == null || arrived.trim() == "" || arrived == "0"){
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "${contextPath}/investment/adjustArrived",
+                data: {id:selected.id, arrived:arrived},
+                processData:true,
+                dataType: "json",
+                async : true,
+                success: function (data) {
+                    if(data.code=="200"){
+                        $("#grid").datagrid("reload");
+                        $('#arrived_dlg').dialog('close');
+                    }else{
+                        $.messager.alert('错误',data.result);
+                    }
+                },
+                error: function(){
+                    $.messager.alert('错误','远程访问失败');
+                }
+            });
+
+
+        }
 
         //打开新增窗口
         function openInsert(){
@@ -352,13 +481,15 @@
             formData[orginal_key_prefix + "investment"] = formData["investment"];
             formData = addKeyStartWith(getOriginalData(formData),"_");
             $('#_form').form('load', formData);
+            //由于加载表单数据会触发计算结束日期，所以这里需要再次设置结束日期
+            $("#_endDate").datebox("setValue", formData["_endDate"]);
             //加载所属用户
             $("#_investorId").textbox("initValue", selected["$_investorId"]);
             $("#_investorId").textbox("setText", selected["investorId"]);
             //加载银行卡
             $("#_bankCardId").textbox("initValue", selected["$_bankCardId"]);
             $("#_bankCardId").textbox("setText", selected["bankCardId"]);
-            //默认不调整余额
+            //修改时默认不调整余额
             $("#_adjustBalance").combobox("setValue", "0");
         }
 
@@ -426,7 +557,37 @@
                     });
                 }
             });
-
+        }
+        //提前到帐
+        function arrived(){
+            var selected = $("#grid").datagrid("getSelected");
+            if (null == selected) {
+                $.messager.alert('警告','请选中一条数据');
+                return;
+            }
+            $.messager.confirm('确认','您确认想要提前到帐吗？',function(r){
+                if (r){
+                    $.ajax({
+                        type: "POST",
+                        url: "${contextPath}/investment/arrived",
+                        data: {id:selected.id},
+                        processData:true,
+                        dataType: "json",
+                        async : true,
+                        success: function (data) {
+                            if(data.code=="200"){
+                                $("#grid").datagrid("reload");
+                                $('#dlg').dialog('close');
+                            }else{
+                                $.messager.alert('错误',data.result);
+                            }
+                        },
+                        error: function(){
+                            $.messager.alert('错误','远程访问失败');
+                        }
+                    });
+                }
+            });
         }
         //表格查询
         function queryGrid() {
@@ -440,10 +601,11 @@
             $("#grid").datagrid("load", bindGridMeta2Form("grid", "form"));
         }
 
-
         //清空表单
         function clearForm() {
             $('#form').form('clear');
+            $("#investorId").textbox("initValue", null);
+
         }
 
         //表格表头右键菜单
@@ -513,6 +675,20 @@
                         text:'删除',
                         handler:function(){
                             del();
+                        }
+                    },
+                    {
+                        iconCls:'icon-ok',
+                        text:'提前到帐',
+                        handler:function(){
+                            arrived();
+                        }
+                    },
+                    {
+                        iconCls:'icon-edit',
+                        text:'部分到帐',
+                        handler:function(){
+                            openArrived();
                         }
                     },
                     {

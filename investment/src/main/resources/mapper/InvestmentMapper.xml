@@ -18,6 +18,7 @@
     <result column="Interest_coupon" jdbcType="INTEGER" property="interestCoupon" />
     <result column="cash_coupon" jdbcType="BIGINT" property="cashCoupon" />
     <result column="investment" jdbcType="BIGINT" property="investment" />
+    <result column="arrived" jdbcType="BIGINT" property="arrived" />
     <result column="is_remind" jdbcType="INTEGER" property="isRemind" />
     <result column="bank_card_id" jdbcType="BIGINT" property="bankCardId" />
     <result column="balance_due" jdbcType="BIGINT" property="balanceDue" />
@@ -33,7 +34,7 @@
       WARNING - @mbg.generated
     -->
     id, investor_id, platform_id, project_name, start_date, end_date, project_duration,
-    project_duration_unit, profit_ratio, deducted, Interest_coupon, cash_coupon,
+    project_duration_unit, profit_ratio, deducted, Interest_coupon, cash_coupon,arrived,
     investment, is_remind, bank_card_id, balance_due, is_expired, notes, created_id,
     modified_id, created, modified
   </sql>
@@ -52,12 +53,12 @@
     select sum(i.investment)/100 investment, ip.name platformName from investment i, investment_platform ip where i.platform_id = ip.id
     <if test="isProgressing != null and isProgressing == 1">
       <![CDATA[
-      and now()> i.start_date and (now() < i.end_date or i.end_date is null)
+      and i.is_expired = 0
       ]]>
     </if>
     <if test="isProgressing != null and isProgressing == 0">
       <![CDATA[
-      and (now()< i.start_date or now() > i.end_date)
+      and i.is_expired = 1
       ]]>
     </if>
     <if test="investorId != null and investorId != ''">
@@ -74,12 +75,12 @@
     from investment i, investment_platform ip where i.platform_id = ip.id
     <if test="isProgressing != null and isProgressing == 0">
       <![CDATA[
-      and (now()< i.start_date or now() > i.end_date)
+      and i.is_expired = 1
       ]]>
     </if>
     <if test="isProgressing != null and isProgressing == 1">
       <![CDATA[
-      and now()> i.start_date and (now() < i.end_date or i.end_date is null)
+      and i.is_expired = 0
       ]]>
     </if>
     <if test="investorId != null and investorId != ''">
@@ -94,12 +95,12 @@
     from investment i, investment_platform ip where i.platform_id = ip.id
     <if test="isProgressing != null and isProgressing == 0">
       <![CDATA[
-      and (now()< i.start_date or now() > i.end_date)
+      and i.is_expired = 1
       ]]>
     </if>
     <if test="isProgressing != null and isProgressing == 1">
       <![CDATA[
-      and now()> i.start_date and (now() < i.end_date or i.end_date is null)
+      and i.is_expired = 0
       ]]>
     </if>
     <if test="investorId != null and investorId != ''">
@@ -139,7 +140,7 @@
     FROM investment i, investment_platform ip
     WHERE i.platform_id = ip.id
     <![CDATA[
-    and now()> i.start_date and (now() < i.end_date or i.end_date is null)
+    and i.is_expired = 0
     ]]>
     GROUP BY i.investor_id, i.platform_id) t1
     ,
@@ -163,7 +164,7 @@
     , i.investor_id investorId
     FROM investment i
     <![CDATA[
-    WHERE now()> i.start_date and (now() < i.end_date or i.end_date is null)
+    WHERE i.is_expired = 0
     ]]>
     GROUP BY i.investor_id, i.platform_id) t3
     WHERE t1.investorId = t2.investorId
@@ -200,7 +201,7 @@
     , i.investor_id investorId
     FROM investment i
     <![CDATA[
-    WHERE NOW()> i.start_date AND (now() < i.end_date or i.end_date is null)
+    WHERE i.is_expired = 0
     ]]>
     GROUP BY i.investor_id) t1
     ,
@@ -220,7 +221,7 @@
     , i.investor_id investorId
     FROM investment i
     <![CDATA[
-    WHERE NOW()> i.start_date AND (now() < i.end_date or i.end_date is null)
+    WHERE i.is_expired = 0
     ]]>
     GROUP BY i.investor_id) t3
     WHERE t1.investorId = t2.investorId AND t1.investorId = t3.investorId

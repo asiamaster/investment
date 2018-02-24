@@ -20,6 +20,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
+import com.dili.ss.exception.AppException;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.ss.util.DateUtils;
 import com.dili.ss.util.MoneyUtils;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -54,18 +56,23 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
     @Override
     public EasyuiPageOutput listEasyuiPageByExample(InvestmentDto domain, boolean useProvider) throws Exception {
         if(domain.getIsProgressing() != null){
-            if(domain.getIsProgressing().equals(1)){
-                Date now = new Date();
-                //开始时间小于今天
-                domain.setLtStartDate(now);
-                //结束时间大于等于今天
-                domain.setGteEndDate(now);
+//            if(domain.getIsProgressing().equals(1)){
+//                Date now = new Date();
+//                //开始时间小于今天
+//                domain.setLtStartDate(now);
+//                //结束时间大于等于今天
+//                domain.setGteEndDate(now);
+//            }else if(domain.getIsProgressing().equals(0)){
+//                //开始时间大于今天
+//                //或
+//                //结束时间小于等于今天
+//                //所以这里需要自定义Example的and condition expr
+//                domain.mset(IDTO.AND_CONDITION_EXPR, " (start_date >= now() or end_date < now()) ");
+//            }
+            if(domain.getIsProgressing().equals(1)) {
+                domain.setIsExpired(Yn.NO.getCode());
             }else if(domain.getIsProgressing().equals(0)){
-                //开始时间大于今天
-                //或
-                //结束时间小于等于今天
-                //所以这里需要自定义Example的and condition expr
-                domain.mset(IDTO.AND_CONDITION_EXPR, " (start_date >= now() or end_date < now()) ");
+                domain.setIsExpired(Yn.YES.getCode());
             }
         }
         return super.listEasyuiPageByExample(domain, useProvider);
@@ -83,11 +90,8 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         investment.setModifiedId(userTicket.getId());
         centToYuanIntrospection(investment);
 
-        //先新增，再记录
-        insertSelective(investment);
-
         //如果要调整余额，还要记录收支明细
-        if(investment.aget("adjustBalance").equals("1")) {
+        if("1".equals(investment.aget("adjustBalance"))) {
             //调整用户余额(减去当前投资额)
             BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), -investment.getInvestment());
             if (!balanceOutput.isSuccess()) {
@@ -97,8 +101,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             paymentRecord.setCreatedName(userTicket.getRealName());
             //设置当前余额
             paymentRecord.setBalance(balanceOutput.getData());
-            paymentRecord.setInitialAmount(0L);
-            paymentRecord.setTargetAmount(investment.getInvestment());
+            paymentRecord.setAdjustAmount(investment.getInvestment());
             paymentRecord.setName("新增投资");
             paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
             paymentRecord.setType(PaymentType.EXPENDITURE.getCode());
@@ -106,6 +109,8 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             paymentRecord.setNotes(getInsertInvestmentPaymentNotes(investment));
             paymentRecordService.insertSelective(paymentRecord);
         }
+        //先新增，再记录
+        insertSelective(investment);
         return BaseOutput.success("新增成功");
 
     }
@@ -129,7 +134,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
 
         updateExactSimple(investment);
         //如果要调整余额，还要记录收支明细
-        if(investment.aget("adjustBalance").equals("1")) {
+        if("1".equals(investment.aget("adjustBalance"))) {
             //调整用户余额
             BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), originalInvestmentAmount-investment.getInvestment());
             if(!balanceOutput.isSuccess()){
@@ -139,8 +144,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             paymentRecord.setCreatedName(userTicket.getRealName());
             //设置当前余额
             paymentRecord.setBalance(balanceOutput.getData());
-            paymentRecord.setInitialAmount(originalInvestmentAmount);
-            paymentRecord.setTargetAmount(investment.getInvestment());
+            paymentRecord.setAdjustAmount(originalInvestmentAmount - investment.getInvestment());
             paymentRecord.setName("修改投资");
             paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
             //如果调整金额小于等于调整前的金额，则是收入，否则是支出
@@ -265,14 +269,17 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             balance = userRpc.get(investment.getInvestorId()).getData().getBalance();
         }else{
             //判断如果是没过期的投资才调整用户余额
-            balance = userRpc.adjustBalance(investment.getInvestorId(), investment.getInvestment()).getData();
+            BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), investment.getInvestment());
+            if(!balanceOutput.isSuccess()){
+                throw new AppException("调整用户余额失败");
+            }
+            balance = balanceOutput.getData();
         }
         PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
         paymentRecord.setCreatedName(userTicket.getRealName());
         //设置当前余额
         paymentRecord.setBalance(balance);
-        paymentRecord.setInitialAmount(investment.getInvestment());
-        paymentRecord.setTargetAmount(0L);
+        paymentRecord.setAdjustAmount(-investment.getInvestment());
         paymentRecord.setName("删除投资");
         paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
         //删除投资算是收入
@@ -281,6 +288,120 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         paymentRecord.setNotes(getDeleteInvestmentPaymentNotes(investment));
         paymentRecordService.insertSelective(paymentRecord);
         return count;
+    }
+
+    @Override
+    public BaseOutput arrived(Long id){
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+        Investment investment = get(id);
+        BigDecimal bigDecimal = new BigDecimal((investment.getInvestment()+investment.getDeducted()) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(investment.getStartDate(), investment.getEndDate()));
+        BigDecimal bigDecimal365 = new BigDecimal(365);
+        BigDecimal bigDecimal100 = new BigDecimal(100);
+        //精确计算两位小数，并且四舍五入
+        Long profit = bigDecimal.divide(bigDecimal365, 0, BigDecimal.ROUND_HALF_DOWN).divide(bigDecimal100, 0, BigDecimal.ROUND_HALF_DOWN).longValue();
+        //本息合计
+        Long principalAndInterest = investment.getInvestment() + investment.getDeducted() + profit;
+        //调整余额量为本息合计 - 部分调整量
+        Long arrived = principalAndInterest - investment.getArrived();
+        //调整用户余额
+        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), arrived);
+        if(!balanceOutput.isSuccess()){
+            return balanceOutput;
+        }
+        PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+        paymentRecord.setCreatedName(userTicket.getRealName());
+        //设置当前余额
+        paymentRecord.setBalance(balanceOutput.getData());
+        //调整额为本息合计-当前到期额
+        paymentRecord.setAdjustAmount(principalAndInterest-investment.getArrived());
+        paymentRecord.setName("提前到帐");
+        paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
+        //到期投资算是收入
+        paymentRecord.setType(PaymentType.INCOME.getCode());
+        paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
+        paymentRecord.setNotes(getArrivedInvestmentPaymentNotes(investment, principalAndInterest));
+        paymentRecordService.insertSelective(paymentRecord);
+        investment.setIsExpired(Yn.YES.getCode());
+        investment.setBalanceDue(balanceOutput.getData());
+        //设置当前到帐余额为本息合计
+        investment.setArrived(principalAndInterest);
+        updateSelective(investment);
+        return BaseOutput.success("操作成功");
+    }
+
+    //获取投资的本息合计
+    private Long getPrincipalAndInterest(Investment investment){
+        //计算本息合计收益(分为单位)
+        //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100%
+        BigDecimal bigDecimal = new BigDecimal((investment.getInvestment()+investment.getDeducted()) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(investment.getStartDate(), investment.getEndDate()));
+        BigDecimal bigDecimal365 = new BigDecimal(365);
+        BigDecimal bigDecimal100 = new BigDecimal(100);
+        //精确计算两位小数，并且四舍五入
+        Long profit = bigDecimal.divide(bigDecimal365, 0, BigDecimal.ROUND_HALF_DOWN).divide(bigDecimal100, 0, BigDecimal.ROUND_HALF_DOWN).longValue();
+        //本息合计
+        return investment.getInvestment() + investment.getDeducted() + profit;
+    }
+
+    @Override
+    public BaseOutput adjustArrived(Long id, String arrived){
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+        //调整投资记录的到期余额
+        Investment investment = get(id);
+        //转换前台输入的还款额
+        Long arrivedLong = BigDecimal.valueOf(Double.valueOf(arrived)).setScale(2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).longValue();
+        //本息合计
+        Long principalAndInterest = getPrincipalAndInterest(investment);
+
+        //调整用户余额
+        BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), arrivedLong);
+        if(!balanceOutput.isSuccess()){
+            return balanceOutput;
+        }
+        //新增投资记录
+        PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+        paymentRecord.setCreatedName(userTicket.getRealName());
+        //设置当前余额
+        paymentRecord.setBalance(balanceOutput.getData());
+        //设置调整额
+        paymentRecord.setAdjustAmount(arrivedLong);
+        paymentRecord.setName("部分到帐");
+        paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
+        //到期投资算是收入
+        paymentRecord.setType(PaymentType.INCOME.getCode());
+        paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
+        paymentRecord.setNotes(getArrivedInvestmentPaymentNotes(investment, arrivedLong));
+        paymentRecordService.insertSelective(paymentRecord);
+        //如果调整后，当前到帐金额 >= 本息合计，则设置为过期投资
+        if((investment.getArrived() + arrivedLong) >= principalAndInterest){
+            investment.setIsExpired(Yn.YES.getCode());
+        }
+        //设置当前到期总额
+        investment.setArrived(investment.getArrived() + arrivedLong);
+        //设置到期时用户的余额
+        investment.setBalanceDue(balanceOutput.getData());
+        updateSelective(investment);
+        return BaseOutput.success("操作成功");
+    }
+
+    /**
+     * 构造提前到期投资备注
+     * @param investment
+     * @return
+     */
+    private String getArrivedInvestmentPaymentNotes(Investment investment, Long principalAndInterest){
+        StringBuilder stringBuilder = new StringBuilder("提前到帐投资:")
+                .append(investment.getProjectName())
+                .append(",")
+                .append(MoneyUtils.centToYuan(principalAndInterest))
+                .append("元, 原到期时间:")
+                .append(DateUtils.format(investment.getEndDate(), "yyyy-MM-dd"));
+        return stringBuilder.toString();
     }
 
     /**

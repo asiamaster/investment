@@ -17,7 +17,7 @@
 
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="userName" id="userName" style="width:100%" labelAlign="right" data-options="label:'用户名:', validType:'length[0,19]'" />
+                                <input class="easyui-textbox" name="userName" id="userName" style="width:100%" labelAlign="right" data-options="label:'用户名:', validType:'length[0,19]'" />
 
                             </td>
                             <td style="padding:5px;">
@@ -51,28 +51,25 @@
                    align="center" fit="true" striped="true" idField="id" data-options="onHeaderContextMenu:headerContextMenu">
                 <thead>
                     <tr>
-                        <th width="6%" data-options="field:'name',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="8%" data-options="field:'name',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             名称
                         </th>
                         <th width="5%" data-options="field:'userName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             用户
                         </th>
-                        <th width="9%" data-options="field:'platformName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="12%" data-options="field:'platformName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             资金去向
                         </th>
-                        <th width="4%" data-options="field:'type',  _provider:'paymentTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="5%" data-options="field:'type',  _provider:'paymentTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             类型
                         </th>
-                        <th width="6%" data-options="field:'initialAmount', _provider:'centToYuanProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            初始金额
-                        </th>
-                        <th width="6%" data-options="field:'targetAmount', _provider:'centToYuanProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            目标金额
+                        <th width="6%" data-options="field:'adjustAmount', _provider:'centToYuanProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            调整金额
                         </th>
                         <th width="6%" data-options="field:'balance', _provider:'centToYuanProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             余额
                         </th>
-                        <th width="41%" data-options="field:'notes',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="42%" data-options="field:'notes',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             备注信息
                         </th>
                         <th width="6%" data-options="field:'createdName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -98,9 +95,6 @@
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
                 opts.url = "${contextPath}/paymentRecord/listPage";
-            }
-            if(!$('#form').form("validate")){
-                return;
             }
             $("#grid").datagrid("load", bindGridMeta2Form("grid", "form"));
         }
