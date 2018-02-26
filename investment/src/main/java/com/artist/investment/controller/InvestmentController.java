@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.beetl.core.Template;
+import org.beetl.ext.spring.BeetlGroupUtilConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -43,6 +45,9 @@ public class InvestmentController {
     @Autowired
     BankCardService bankCardService;
 
+    @Autowired
+    BeetlGroupUtilConfiguration beetlGroupUtilConfiguration;
+
     @ApiOperation("跳转到Investment页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
@@ -61,6 +66,8 @@ public class InvestmentController {
             modelMap.put("bankCardId", bankCards.get(0).getId());
             modelMap.put("bankCardNumber", bankCards.get(0).getCardNumber());
         }
+        Template template = beetlGroupUtilConfiguration.getGroupTemplate().getTemplate("templates/investment/rowStylerBtl.html");
+        modelMap.put("beforeBlock", template.render());
         return "investment/index";
     }
 

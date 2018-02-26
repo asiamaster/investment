@@ -39,6 +39,7 @@ public interface PaymentRecord extends IBaseDomain {
     @Column(name = "`platform_name`")
     @FieldDef(label="资金去向", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like
     String getPlatformName();
 
     void setPlatformName(String platformName);
@@ -46,6 +47,7 @@ public interface PaymentRecord extends IBaseDomain {
     @Column(name = "`name`")
     @FieldDef(label="名称", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
+    @Like
     String getName();
 
     void setName(String name);

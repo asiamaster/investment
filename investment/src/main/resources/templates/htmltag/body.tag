@@ -7,9 +7,11 @@
     <meta name="description" content="overview &amp; stats" />
     <link rel="shortcut icon" href="${contextPath}/resources/images/icon/dili-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <%if(has(beforeBlock)){%>
+        ${beforeBlock}
+    <%}%>
     <#css/>
     <#js/>
-
     <script type="text/javascript">
         var contextPath = '${contextPath}';
     </script>

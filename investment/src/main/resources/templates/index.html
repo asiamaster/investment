@@ -65,8 +65,31 @@
             .layout-panel-center:nth-child(4) {
                 margin-left: 0;
             }
-
         </style>
+        <script>
+            var investmentComparisonBarChartOpts = {
+                legend:{selectedMode:false},
+                xAxis : [
+                    {
+                        type : 'category',
+                        axisLabel:{
+                            interval:0,
+                            rotate:45,
+                            margin:8,
+                            textStyle:{
+                                color:"#222"
+                            }
+                        }
+                    }
+                ],
+                grid: { // 控制图的大小，调整下面这些值就可以，
+                    x: 70,
+                    x2: 20,
+                    y: 60,
+                    y2: 70,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+                }
+            };
+        </script>
         <div class="maincontain" >
             <div id="header" class="panel-title" header="addcusHeader" style=" margin: 0; ">
                 <div id="addcusHeader" >
@@ -151,7 +174,7 @@
                             </div>
                             <div id="investmentComparisonBarChartDiv" style="width:99%;height:99%;"></div>
                             <#echarts _id="investmentComparisonBarChartDiv" _title="投资人横向对比" _type="Bar"  _url="${contextPath}/investment/selectInvestmentComparisonBarChart" _queryParams="{isProgressing:1}"
-                                    _nameField="platformName" _valueField="investment" _groupField="investorId" _options="{legend:{selectedMode:false}}"></#echarts>
+                                    _nameField="platformName" _valueField="investment" _groupField="investorId" _options="investmentComparisonBarChartOpts"></#echarts>
                         </div>
                     </div>
                     <div region="center"  height="auto" align="center"  style="width:50%; " border="false">

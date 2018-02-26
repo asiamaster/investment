@@ -1,6 +1,7 @@
  <#body>
      <#controls_user dlgId="_userSelectDialog" controlId="_investorId"/>
      <#controls_bankCard dlgId="bankCardSelectDialog" controlId="_bankCardId"/>
+
      <script>
          //根据项目期限和期限单位计算结束日期
          function computeEndDate(newValue, oldValue) {
@@ -122,17 +123,17 @@
 //             var days = Math.abs(minusDays);//取绝对值
              return minusDays;
          }
-
+         //表格行样式，过期为灰色，即将到期为绿色
          function rowStyler(index, row) {
              if (row.isExpired !=null && row.isExpired == "是"){
-                 return 'background-color:#E1E1E1;color:#000;';
+                 return "expiredRow";
              }
              if(row.endDate == null || row.endDate == ""){
                 return;
              }
              var difDates = dateDifference(ymdDateFormatter(new Date()), row.endDate);
              if (row.isExpired !=null && row.isExpired == "否" && difDates<=30){
-                 return 'background-color:#D7FFCC;color:#000;';
+                 return "expiringRow";
              }
          }
      </script>
@@ -402,6 +403,10 @@
                 $.messager.alert('警告','请选中一条数据');
                 return;
             }
+            if(selected["isExpired"] == "是"){
+                $.messager.alert('警告',"["+selected["projectName"]+']已经到期');
+                return;
+            }
             $('#arrived_dlg').dialog('open');
             $('#arrived_dlg').dialog('center');
             $('#arrived_form').form('clear');
@@ -563,6 +568,10 @@
             var selected = $("#grid").datagrid("getSelected");
             if (null == selected) {
                 $.messager.alert('警告','请选中一条数据');
+                return;
+            }
+            if(selected["isExpired"] == "是"){
+                $.messager.alert('警告',"["+selected["projectName"]+']已经到期');
                 return;
             }
             $.messager.confirm('确认','您确认想要提前到帐吗？',function(r){

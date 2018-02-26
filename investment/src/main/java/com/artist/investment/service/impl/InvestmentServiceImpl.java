@@ -297,6 +297,9 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             throw new NotLoginException();
         }
         Investment investment = get(id);
+        if(investment.getIsExpired().equals(Yn.YES.getCode())){
+            return BaseOutput.failure("["+investment.getProjectName()+"]已经到期");
+        }
         BigDecimal bigDecimal = new BigDecimal((investment.getInvestment()+investment.getDeducted()) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(investment.getStartDate(), investment.getEndDate()));
         BigDecimal bigDecimal365 = new BigDecimal(365);
         BigDecimal bigDecimal100 = new BigDecimal(100);
@@ -353,6 +356,9 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         }
         //调整投资记录的到期余额
         Investment investment = get(id);
+        if(investment.getIsExpired().equals(Yn.YES.getCode())){
+            return BaseOutput.failure("["+investment.getProjectName()+"]已经到期");
+        }
         //转换前台输入的还款额
         Long arrivedLong = BigDecimal.valueOf(Double.valueOf(arrived)).setScale(2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).longValue();
         //本息合计
