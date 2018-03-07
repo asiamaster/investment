@@ -2,15 +2,13 @@ package com.artist.sysadmin;
 
 import com.dili.ss.retrofitful.annotation.RestfulScan;
 import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
-import org.springframework.boot.autoconfigure.velocity.VelocityAutoConfiguration;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+//import org.mybatis.spring.annotation.MapperScan;
+import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -26,7 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 // @EnableAspectJAutoProxy(proxyTargetClass = true)
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableAutoConfiguration(exclude = { ThymeleafAutoConfiguration.class, VelocityAutoConfiguration.class })
+//@EnableAutoConfiguration(exclude = { ThymeleafAutoConfiguration.class, VelocityAutoConfiguration.class })
 // @ImportResource(locations = "classpath:applicationContext.xml")
 @ComponentScan(basePackages = { "com.dili.ss", "com.artist.sysadmin" })
 // @EnableEncryptableProperties

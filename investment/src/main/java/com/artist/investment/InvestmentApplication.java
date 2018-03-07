@@ -1,15 +1,14 @@
 package com.artist.investment;
 
-import com.dili.ss.datasource.aop.DynamicRoutingDataSourceRegister;
 import com.dili.ss.retrofitful.annotation.RestfulScan;
-import org.mybatis.spring.annotation.MapperScan;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
+import tk.mybatis.spring.annotation.MapperScan;
+//import org.mybatis.spring.annotation.MapperScan;
 /**
  * 由MyBatis Generator工具自动生成
  */
