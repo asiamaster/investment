@@ -221,6 +221,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         Float totalProfit = 0F;
         Float totalDeducted = 0F;
         Float totalPrincipalAndInterest = 0F;
+        Float yearEndEarn = 0F;
         for(Map data : list){
             dailyProfit += Float.parseFloat(data.get("dailyProfit").toString());
             currentProfit += Float.parseFloat(data.get("currentProfit").toString());
@@ -235,6 +236,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             totalProfit += Float.parseFloat(data.get("totalProfit").toString());
             totalDeducted += Float.parseFloat(data.get("totalDeducted").toString());
             totalPrincipalAndInterest += Float.parseFloat(data.get("totalPrincipalAndInterest").toString());
+            yearEndEarn += Float.parseFloat(data.get("yearEndEarn").toString());
         }
         summation.put("dailyProfit", dailyProfit);
         summation.put("currentProfit", currentProfit);
@@ -249,6 +251,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         summation.put("totalProfit", totalProfit);
         summation.put("totalDeducted", totalDeducted);
         summation.put("totalPrincipalAndInterest", totalPrincipalAndInterest);
+        summation.put("yearEndEarn", yearEndEarn);
         summationList.add(summation);
         easyuiPageOutput.setFooter(summationList);
         return easyuiPageOutput;

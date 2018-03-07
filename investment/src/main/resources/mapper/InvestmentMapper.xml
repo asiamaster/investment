@@ -120,6 +120,7 @@
     ,t1.principalAndInterest
     ,t1.investmentAmount
     ,t1.dailyProfit
+    ,(t1.investment+t1.deducted+t1.currentProfit)+(t1.yearEndDateDiff*t1.dailyProfit) yearEndEarn
     ,t2.totalInvestment
     ,t2.totalDeducted
     ,t2.totalCurrentProfit
@@ -135,6 +136,7 @@
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) principalAndInterest
     , COUNT(i.id) investmentAmount
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon))/365/10000, 2) dailyProfit
+    , DATEDIFF(str_to_date(CONCAT(DATE_FORMAT(NOW(), '%Y'),'-12-31 23:59:59'), '%Y-%m-%d %H:%i:%s'), now()) yearEndDateDiff
     , ip.name platformName
     , ip.id pid
     , i.investor_id investorId
@@ -173,6 +175,7 @@
     ,t1.principalAndInterest
     ,t1.investmentAmount
     ,t1.dailyProfit
+    ,(t1.investment+t1.deducted+t1.currentProfit)+(t1.yearEndDateDiff*t1.dailyProfit) yearEndEarn
     ,t2.totalInvestment
     ,t2.totalDeducted
     ,t2.totalCurrentProfit
@@ -189,6 +192,7 @@
     , COUNT(i.id) investmentAmount
     , i.investor_id investorId
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon))/365/10000, 2) dailyProfit
+    , DATEDIFF(str_to_date(CONCAT(DATE_FORMAT(NOW(), '%Y'),'-12-31 23:59:59'), '%Y-%m-%d %H:%i:%s'), now()) yearEndDateDiff
     FROM investment i
     <![CDATA[
     WHERE i.is_expired = 0
