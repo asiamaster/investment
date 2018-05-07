@@ -3,7 +3,8 @@ package com.artist.investment.rpc;
 import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.ss.util.SystemConfigUtils;
 import okhttp3.Response;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.Map;
 @Component
 public class MapRpc {
 
-    public final static Logger log = Logger.getLogger(MapRpc.class);
+    public final static Logger log = LoggerFactory.getLogger(MapRpc.class);
 
     /**
      * 正/逆地理编码服务<br/>

@@ -1,4 +1,4 @@
-package com.artist.investment.boot;
+package com.artist.sysadmin.boot;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -13,8 +13,7 @@ public class DefaultView implements WebMvcConfigurer {
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-//		registry.addViewController("/").setViewName("forward:/login/index.html");
-		registry.addViewController("/").setViewName("redirect:http://investadm.artist.com:9999/login/index.html");
+		registry.addViewController("/").setViewName("forward:/login/index.html");
 		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 	}
 }

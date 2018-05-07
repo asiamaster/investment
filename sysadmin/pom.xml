@@ -22,12 +22,24 @@
 		<version>1.0.0</version>
 	</parent>
 
+	<!-- 注意： 这里必须要添加， 否者各种依赖有问题  -->
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/libs-milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>1.4.3.RELEASE</version>
+				<version>2.0.0.RELEASE</version>
 				<executions>
 					<execution>
 						<goals>
@@ -92,19 +104,21 @@
 		</dependency>
 
 		<!-- 参数校验包 -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml</groupId>
-					<artifactId>classmate</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.hibernate</groupId>-->
+			<!--<artifactId>hibernate-validator</artifactId>-->
+			<!--<version>5.2.4.Final</version>-->
+			<!--<exclusions>-->
+				<!--<exclusion>-->
+					<!--<groupId>com.fasterxml</groupId>-->
+					<!--<artifactId>classmate</artifactId>-->
+				<!--</exclusion>-->
+			<!--</exclusions>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
 		</dependency>
 		<!--swagger -->
 		<dependency>
@@ -145,11 +159,11 @@
 		</dependency>
 
 		<!-- druid -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.0.27</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.alibaba</groupId>-->
+			<!--<artifactId>druid</artifactId>-->
+			<!--<version>1.0.27</version>-->
+		<!--</dependency>-->
 		<!-- jedis -->
 		<dependency>
 			<groupId>redis.clients</groupId>
@@ -216,6 +230,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-redis</artifactId>
+			<version>1.4.7.RELEASE</version>
 		</dependency>
 		<!-- actuator -->
 		<dependency>
@@ -228,28 +243,28 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<!-- starter-tomcat -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<!--<scope>provided</scope> -->
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+			<!--&lt;!&ndash;<scope>provided</scope> &ndash;&gt;-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-freemarker</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.github.ulisesbocchio</groupId>
-			<artifactId>jasypt-spring-boot-starter</artifactId>
-			<version>1.8</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.jasypt/jasypt-spring31 -->
-		<dependency>
-			<groupId>org.jasypt</groupId>
-			<artifactId>jasypt-spring31</artifactId>
-			<version>1.9.2</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.github.ulisesbocchio</groupId>-->
+			<!--<artifactId>jasypt-spring-boot-starter</artifactId>-->
+			<!--<version>1.12</version>-->
+		<!--</dependency>-->
+		<!--&lt;!&ndash; https://mvnrepository.com/artifact/org.jasypt/jasypt-spring31 &ndash;&gt;-->
+		<!--<dependency>-->
+			<!--<groupId>org.jasypt</groupId>-->
+			<!--<artifactId>jasypt-spring31</artifactId>-->
+			<!--<version>1.9.2</version>-->
+		<!--</dependency>-->
 
 		<!-- starter-security -->
 		<!--<dependency> -->
@@ -258,22 +273,23 @@
 		<!--</dependency> -->
 		<!-- ===========================================spring cloud=========================================== -->
 		<!-- eureka-server -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-ribbon</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-feign</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-hystrix</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.cloud</groupId>-->
+			<!--<artifactId>spring-cloud-starter-eureka</artifactId>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.cloud</groupId>-->
+			<!--<artifactId>spring-cloud-starter-ribbon</artifactId>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.cloud</groupId>-->
+			<!--<artifactId>spring-cloud-starter-feign</artifactId>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.cloud</groupId>-->
+			<!--<artifactId>spring-cloud-starter-hystrix</artifactId>-->
+		<!--</dependency>-->
+
 		<!-- admin server依赖 st -->
 		<!--<dependency>-->
 			<!--<groupId>de.codecentric</groupId>-->
@@ -326,6 +342,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>springloaded</artifactId>
+			<version>${springloaded.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -333,6 +350,7 @@
 		</dependency>
 
 	</dependencies>
+
 
 
 </project>

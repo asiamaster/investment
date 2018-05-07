@@ -85,7 +85,7 @@ public class ScanExpiredInvestmentJob implements ApplicationListener<ContextRefr
 		//查询没过期的投资记录
 		Investment investmentCondition = DTOUtils.newDTO(Investment.class);
 		investmentCondition.setIsExpired(Yn.NO.getCode());
-		investmentCondition.mset(IDTO.AND_CONDITION_EXPR, "end_date <='" + DateUtils.format(new Date())+"'");
+		investmentCondition.mset(IDTO.AND_CONDITION_EXPR, "end_date <'" + DateUtils.format(new Date())+"'");
 		List<Investment> investmentList = investmentService.listByExample(investmentCondition);
 		if(CollectionUtils.isEmpty(investmentList)){
 			return;

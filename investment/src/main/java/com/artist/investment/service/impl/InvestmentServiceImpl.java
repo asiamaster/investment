@@ -75,8 +75,26 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
                 domain.setIsExpired(Yn.YES.getCode());
             }
         }
-        return super.listEasyuiPageByExample(domain, useProvider);
+        EasyuiPageOutput easyuiPageOutput = super.listEasyuiPageByExample(domain, useProvider);
+        List<Map<String,Object>> footers = Lists.newArrayList();
+        Map<String,Object>footer = new HashMap<>(2);
+        footer.put("investorId", "合计:");
+        footer.put("investment", this.calculateTotalInvestment(domain));
+        footers.add(footer);
+        easyuiPageOutput.setFooter(footers);
+        return easyuiPageOutput;
+    }
 
+    // 计算总投资额
+    private String calculateTotalInvestment(InvestmentDto domain) {
+        Set<String> columns = new LinkedHashSet<>();
+        columns.add("sum(investment) investment");
+        domain.setSelectColumns(columns);
+        List<Investment> investments = this.listByExample(domain);
+        return investments.stream()
+                .map(m->{return MoneyUtils.centToYuan(m.getInvestment());})
+                .findFirst()
+                .orElse("0");
     }
 
     @Override
@@ -302,6 +320,10 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         Investment investment = get(id);
         if(investment.getIsExpired().equals(Yn.YES.getCode())){
             return BaseOutput.failure("["+investment.getProjectName()+"]已经到期");
+        }
+        //如果是活期理财
+        if(investment.getEndDate() == null){
+            investment.setEndDate(new Date());
         }
         BigDecimal bigDecimal = new BigDecimal((investment.getInvestment()+investment.getDeducted()) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(investment.getStartDate(), investment.getEndDate()));
         BigDecimal bigDecimal365 = new BigDecimal(365);
