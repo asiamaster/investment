@@ -485,6 +485,7 @@
             formData[orginal_key_prefix + "deducted"] = formData["deducted"];
             formData[orginal_key_prefix + "investment"] = formData["investment"];
             formData = addKeyStartWith(getOriginalData(formData),"_");
+            $('#_form').form("clear");
             $('#_form').form('load', formData);
             //由于加载表单数据会触发计算结束日期，所以这里需要再次设置结束日期
             $("#_endDate").datebox("setValue", formData["_endDate"]);

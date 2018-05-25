@@ -92,7 +92,12 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         domain.setSelectColumns(columns);
         List<Investment> investments = this.listByExample(domain);
         return investments.stream()
-                .map(m->{return MoneyUtils.centToYuan(m.getInvestment());})
+                .map(m->{
+                    if(m == null){
+                        return "0";
+                    }
+                    return MoneyUtils.centToYuan(m.getInvestment());
+                })
                 .findFirst()
                 .orElse("0");
     }
