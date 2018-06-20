@@ -19,6 +19,9 @@
     <result column="cash_coupon" jdbcType="BIGINT" property="cashCoupon" />
     <result column="investment" jdbcType="BIGINT" property="investment" />
     <result column="arrived" jdbcType="BIGINT" property="arrived" />
+    <result column="repayment_method" jdbcType="TINYINT" property="repaymentMethod" />
+    <result column="repayment_day" jdbcType="INTEGER" property="repaymentDay" />
+    <result column="month_index" jdbcType="TINYINT" property="monthIndex" />
     <result column="is_remind" jdbcType="INTEGER" property="isRemind" />
     <result column="bank_card_id" jdbcType="BIGINT" property="bankCardId" />
     <result column="balance_due" jdbcType="BIGINT" property="balanceDue" />
@@ -36,17 +39,8 @@
     id, investor_id, platform_id, project_name, start_date, end_date, project_duration,
     project_duration_unit, profit_ratio, deducted, Interest_coupon, cash_coupon,arrived,
     investment, is_remind, bank_card_id, balance_due, is_expired, notes, created_id,
-    modified_id, created, modified
+    modified_id, created, modified,repayment_method,month_index,repayment_day
   </sql>
-  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    select 
-    <include refid="Base_Column_List" />
-    from investment
-    where id = #{id,jdbcType=BIGINT}
-  </select>
 
   <!-- 查询投资分布饼图 -->
   <select id="selectInvestmentDistributionPieChart" parameterType="map" resultType="map">

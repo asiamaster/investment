@@ -1,6 +1,7 @@
 package com.artist.investment.component;
 
 import com.artist.investment.constant.PaymentType;
+import com.artist.investment.constant.RepaymentMethod;
 import com.artist.investment.constant.Yn;
 import com.artist.investment.dao.BankCardMapper;
 import com.artist.investment.domain.BankCard;
@@ -85,7 +86,13 @@ public class ScanExpiredInvestmentJob implements ApplicationListener<ContextRefr
 		//查询没过期的投资记录
 		Investment investmentCondition = DTOUtils.newDTO(Investment.class);
 		investmentCondition.setIsExpired(Yn.NO.getCode());
-		investmentCondition.mset(IDTO.AND_CONDITION_EXPR, "end_date <'" + DateUtils.format(new Date())+"'");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("end_date <'");
+		stringBuilder.append(DateUtils.format(new Date()));
+		stringBuilder.append("'");
+		stringBuilder.append(" and repayment_method =");
+		stringBuilder.append(RepaymentMethod.DUE.getCode());
+		investmentCondition.mset(IDTO.AND_CONDITION_EXPR, stringBuilder.toString());
 		List<Investment> investmentList = investmentService.listByExample(investmentCondition);
 		if(CollectionUtils.isEmpty(investmentList)){
 			return;
@@ -101,20 +108,21 @@ public class ScanExpiredInvestmentJob implements ApplicationListener<ContextRefr
 			//本息合计
 			Long principalAndInterest = investment.getInvestment() + investment.getDeducted() + profit;
 			//调整额为本息合计-当前已到帐额
-			Long ajustAmount = principalAndInterest-investment.getArrived();
+			Long adjustAmount = principalAndInterest-investment.getArrived();
 			//调整用户余额
-			BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), ajustAmount);
+			BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), adjustAmount);
 			PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
 			paymentRecord.setCreatedName("过期投资扫描器");
 			//设置当前余额
 			paymentRecord.setBalance(balanceOutput.getData());
-			paymentRecord.setAdjustAmount(ajustAmount);
+			paymentRecord.setAdjustAmount(adjustAmount);
 			paymentRecord.setName("到期投资");
-			paymentRecord.setPlatformName(investmentPlatformService.get(investment.getPlatformId()).getName());
+			String platformName = investmentPlatformService.get(investment.getPlatformId()).getName();
+			paymentRecord.setPlatformName(platformName);
 			//到期投资算是收入
 			paymentRecord.setType(PaymentType.INCOME.getCode());
 			paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
-			paymentRecord.setNotes(getExpiredInvestmentPaymentNotes(investment, principalAndInterest));
+			paymentRecord.setNotes(getExpiredInvestmentPaymentNotes(investment, principalAndInterest, platformName));
 			paymentRecordService.insertSelective(paymentRecord);
 			//设置投资已过期
 			investment.setIsExpired(Yn.YES.getCode());
@@ -130,10 +138,8 @@ public class ScanExpiredInvestmentJob implements ApplicationListener<ContextRefr
 	 * @param investment
 	 * @return
 	 */
-	private String getExpiredInvestmentPaymentNotes(Investment investment, Long principalAndInterest){
-		StringBuilder stringBuilder = new StringBuilder("到期投资:")
-				.append(investment.getProjectName())
-				.append(",")
+	private String getExpiredInvestmentPaymentNotes(Investment investment, Long principalAndInterest, String platformName){
+		StringBuilder stringBuilder = new StringBuilder("["+platformName + "]投资["+investment.getProjectName()+"]到期:")
 				.append(MoneyUtils.centToYuan(principalAndInterest))
 				.append("元, 到期时间:")
 				.append(DateUtils.format(investment.getEndDate(), "yyyy-MM-dd"));

@@ -141,6 +141,22 @@ public interface Investment extends IBaseDomain, IMybatisForceParams {
     Integer getIsExpired();
     void setIsExpired(Integer isExpired);
 
+    @Column(name = "`repayment_method`")
+    @FieldDef(label="还款方式")
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Integer getRepaymentMethod();
+    void setRepaymentMethod(Integer repaymentMethod);
+
+    @Column(name = "`repayment_day`")
+    @FieldDef(label="还款日")
+    Integer getRepaymentDay();
+    void setRepaymentDay(Integer repaymentDay);
+
+    @Column(name = "`month_index`")
+    @FieldDef(label="还款月序号")
+    Integer getMonthIndex();
+    void setMonthIndex(Integer monthIndex);
+
     @Column(name = "`notes`")
     @FieldDef(label="备注信息", maxLength = 250)
     @EditMode(editor = FieldEditor.Text, required = false)

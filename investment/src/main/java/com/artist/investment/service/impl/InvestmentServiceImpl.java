@@ -56,19 +56,6 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
     @Override
     public EasyuiPageOutput listEasyuiPageByExample(InvestmentDto domain, boolean useProvider) throws Exception {
         if(domain.getIsProgressing() != null){
-//            if(domain.getIsProgressing().equals(1)){
-//                Date now = new Date();
-//                //开始时间小于今天
-//                domain.setLtStartDate(now);
-//                //结束时间大于等于今天
-//                domain.setGteEndDate(now);
-//            }else if(domain.getIsProgressing().equals(0)){
-//                //开始时间大于今天
-//                //或
-//                //结束时间小于等于今天
-//                //所以这里需要自定义Example的and condition expr
-//                domain.mset(IDTO.AND_CONDITION_EXPR, " (start_date >= now() or end_date < now()) ");
-//            }
             if(domain.getIsProgressing().equals(1)) {
                 domain.setIsExpired(Yn.NO.getCode());
             }else if(domain.getIsProgressing().equals(0)){
@@ -77,21 +64,22 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         }
         EasyuiPageOutput easyuiPageOutput = super.listEasyuiPageByExample(domain, useProvider);
         List<Map<String,Object>> footers = Lists.newArrayList();
-        Map<String,Object>footer = new HashMap<>(2);
-        footer.put("investorId", "合计:");
-        footer.put("investment", this.calculateTotalInvestment(domain));
-        footers.add(footer);
+        footers.add(calculateFooter(domain, easyuiPageOutput.getTotal()));
         easyuiPageOutput.setFooter(footers);
         return easyuiPageOutput;
     }
 
     // 计算总投资额
-    private String calculateTotalInvestment(InvestmentDto domain) {
+    private Map<String, Object> calculateFooter(InvestmentDto domain, Integer total) {
+        Map<String,Object> footer = new HashMap<>(2);
+//      计算投资额合计
+        footer.put("investorId", "投资额合计:");
+
         Set<String> columns = new LinkedHashSet<>();
         columns.add("sum(investment) investment");
         domain.setSelectColumns(columns);
         List<Investment> investments = this.listByExample(domain);
-        return investments.stream()
+        String totalInvestment = investments.stream()
                 .map(m->{
                     if(m == null){
                         return "0";
@@ -100,6 +88,36 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
                 })
                 .findFirst()
                 .orElse("0");
+        footer.put("platformName", totalInvestment);
+//        本息合计
+        domain.setSelectColumns(null);
+        domain.setRows(total);
+        domain.setPage(1);
+        investments = this.listByExample(domain);
+        footer.put("projectName", "本息合计:");
+//        getPrincipalAndInterest(investments);
+        Long totalPrincipalAndInterest = investments.stream()
+                .mapToLong(m->{
+                    if(m == null){
+                        return 0L;
+                    }
+                    return getPrincipalAndInterest(m);
+                })
+                .sum();
+        footer.put("startDate", MoneyUtils.centToYuan(totalPrincipalAndInterest));
+//        待收合计
+        footer.put("endDate", "待收合计:");
+//        getPrincipalAndInterest(investments);
+        Long totalOutstanding = investments.stream()
+                .mapToLong(m->{
+                    if(m == null){
+                        return 0L;
+                    }
+                    return getPrincipalAndInterest(m) - m.getArrived();
+                })
+                .sum();
+        footer.put("projectDuration", MoneyUtils.centToYuan(totalOutstanding));
+        return footer;
     }
 
     @Override
@@ -368,8 +386,9 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
     //获取投资的本息合计
     private Long getPrincipalAndInterest(Investment investment){
         //计算本息合计收益(分为单位)
+        Date endDate = investment.getEndDate() == null ? new Date() : investment.getEndDate();
         //(投资额 + 抵扣额) * (年化收益率 + 利率加息券) * 收益总天数 / 365 / 100%
-        BigDecimal bigDecimal = new BigDecimal((investment.getInvestment()+investment.getDeducted()) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(investment.getStartDate(), investment.getEndDate()));
+        BigDecimal bigDecimal = new BigDecimal((investment.getInvestment()+investment.getDeducted()) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * DateUtils.differentDays(investment.getStartDate(), endDate));
         BigDecimal bigDecimal365 = new BigDecimal(365);
         BigDecimal bigDecimal100 = new BigDecimal(100);
         //精确计算两位小数，并且四舍五入

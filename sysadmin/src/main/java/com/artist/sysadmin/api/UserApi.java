@@ -65,7 +65,7 @@ public class UserApi {
 
 	/**
 	 * 调整余额(单位均为分)
-	 * @param param, id 用户id, amount 调整金额，正为加，负为减
+	 * @param param, id 用户id, amount 调整金额(单位分)，正为加，负为减
 	 * @return	返回调整后余额
 	 */
 	@ResponseBody
