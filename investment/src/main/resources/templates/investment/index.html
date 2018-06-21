@@ -277,7 +277,7 @@
     <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="投资记录" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 500,
+				height: 535,
 				width: 800,
 				buttons: [{
 					text:'确认',
@@ -352,6 +352,14 @@
                 </td>
                 <td style="padding:5px;">
                     <input name="_repaymentDay" id="_repaymentDay" style="width:100%;" class="easyui-numberbox" max="31" min="1" label="还款日:" />
+                </td>
+            </tr>
+            <tr >
+                <td style="padding:5px;">
+                    <input name="_monthIndex" id="_monthIndex" style="width:100%;" class="easyui-numberbox" max="31" min="1" labelWidth="100" label="已还款月序号:" />
+                </td>
+                <td>
+                    <span style="color: #ff9090;font-size: 12px;">(用于等额本息和每月付息方式，修改后调度器会重新计算还款额)</span>
                 </td>
             </tr>
             <tr>
