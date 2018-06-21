@@ -7,7 +7,6 @@ import com.artist.investment.constant.Yn;
 import com.artist.investment.domain.Investment;
 import com.artist.investment.domain.PaymentRecord;
 import com.artist.investment.rpc.UserRpc;
-import com.artist.investment.service.BankCardService;
 import com.artist.investment.service.InvestmentPlatformService;
 import com.artist.investment.service.InvestmentService;
 import com.artist.investment.service.PaymentRecordService;
@@ -17,6 +16,10 @@ import com.dili.ss.dto.IDTO;
 import com.dili.ss.quartz.domain.ScheduleMessage;
 import com.dili.ss.util.DateUtils;
 import com.dili.ss.util.MoneyUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -81,35 +86,32 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 			return;
 		}
 		for(Investment investment : investmentList) {
+			//不支持活期
+			if(investment.getEndDate() == null){
+				return;
+			}
 			if(investment.getRepaymentMethod().equals(RepaymentMethod.PRINCIPAL_INTEREST.getCode())){
 				principalInterest(investment);
+			}else if(investment.getRepaymentMethod().equals(RepaymentMethod.MONTHLY.getCode())){
+				monthly(investment);
 			}
 		}
 	}
 
 	/**
-	 * 计算等额本息
-	 * 等额本息还款法:
-	 * 每月月供额=贷款本金×月利率×(1＋月利率)＾还款月数〕÷〔(1＋月利率)＾还款月数-1〕
-	 * 每月应还利息=贷款本金×月利率×〔(1+月利率)^还款月数-(1+月利率)^(还款月序号-1)〕÷〔(1+月利率)^还款月数-1〕
-	 * 每月应还本金=贷款本金×月利率×(1+月利率)^(还款月序号-1)÷〔(1+月利率)^还款月数-1〕
-	 * 总利息=还款月数×每月月供额-贷款本金
+	 * 按月付息
 	 * @param investment
 	 */
-	private void principalInterest(Investment investment){
-		//还款期限单位必须是月，才支持等额本息
-		if(!investment.getProjectDurationUnit().equals(ProjectDurationUnit.MONTH.getCode())){
-			return;
-		}
-		//贷款本金 = (investment+deducted)
+	private void monthly(Investment investment){
+//		贷款本金 = (investment+deducted)
 		BigDecimal principal = new BigDecimal(investment.getInvestment() + investment.getDeducted()).divide(BigDecimal.valueOf(100));
 		//月利率 = 年利率 / 12 (精确到小数后10位，四舍五入，2.35变成2.4)
-		BigDecimal monthlyInterestRate = new BigDecimal(investment.getProfitRatio()/100).divide(BigDecimal.valueOf(12), 10, BigDecimal.ROUND_HALF_UP);
+		BigDecimal monthlyInterestRate = new BigDecimal(investment.getProfitRatio() / 100).divide(BigDecimal.valueOf(12), 10, BigDecimal.ROUND_HALF_UP);
 		//计算当前应还款的月序号 st=======================================
 		//获取还款/开始时间是当月几号
 		Calendar startCalendar = Calendar.getInstance();
 		startCalendar.setTime(investment.getStartDate());
-		//还款月天数
+		//还款月天数, 如果开始时间的月天数和还款日不一样，则应该是债转项目,第一个月可能下次还款时间少于30天，即实际税率可能高于原利率
 		int repaymentDay = investment.getRepaymentDay() == null ? startCalendar.get(Calendar.DAY_OF_MONTH) : investment.getRepaymentDay();
 		//还款起始月
 		int startMonth = startCalendar.get(Calendar.MONTH) + 1;
@@ -126,21 +128,115 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 		//获取当前时间是几月
 		int nowMonth = nowCalendar.get(Calendar.MONTH) + 1;
 		//计算当前应还款的月序号：如果当前月天数 > 还款月天数 则是当前月份减开始月份， 否则是当前月份减开始月份再减1
-		int repaymentIndex = nowDay > repaymentDay ? nowMonth - startMonth : nowMonth - startMonth - 1;
+		int repaymentIndex = nowDay >= repaymentDay ? nowMonth - startMonth : nowMonth - startMonth - 1;
 		//计算当前应还款的月序号 end=======================================
 		//如果还没到第一次还款日，则跳过
 		if(repaymentIndex <= 0){
 			return;
 		}
-		//还款月数
-		int repaymentMonth = investment.getProjectDuration();
+		//还款月数 (开始和结束日期之间相差月数)
+		int repaymentMonth = monthsBetween(investment.getStartDate(), investment.getEndDate());
 		//已还款月序号
 		int monthIndex = investment.getMonthIndex() == null ? 0 : investment.getMonthIndex();
 		//如果已还款月序号 大于等于 应该还款的月序号
 		if(monthIndex >= repaymentIndex) {
 			return;
 		}
-		//			每月月供额=贷款本金×月利率×(1＋月利率)＾还款月数〕÷〔(1＋月利率)＾还款月数-1〕
+		//每月利息=贷款本金×月利率(年利率/12)
+		BigDecimal monthlyInterest = principal.multiply(monthlyInterestRate).setScale(2, BigDecimal.ROUND_HALF_UP);
+		//单独计算加息率部分的(参考团贷网，分开作四舍五入)
+		BigDecimal interestCouponRate = new BigDecimal(investment.getInterestCoupon()/100).divide(BigDecimal.valueOf(12), 8, BigDecimal.ROUND_HALF_UP);
+
+		//循环还未还款的月份
+		//monthIndex为未还款月序号
+		for(++monthIndex; monthIndex <= repaymentIndex; monthIndex++){
+			//调整用户余额 ===================================
+			//每月基本利息
+			Long adjustAmount = monthlyInterest.multiply(BigDecimal.valueOf(100)).longValue();
+			//加息率部分利息
+			Long interestCoupon = principal.multiply(interestCouponRate).setScale(2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).longValue();
+			adjustAmount = adjustAmount + interestCoupon;
+			BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), adjustAmount);
+
+			//记录投资明细 ===================================
+			PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+			paymentRecord.setCreatedName("到帐投资扫描器");
+			//设置当前余额
+			paymentRecord.setBalance(balanceOutput.getData());
+			paymentRecord.setAdjustAmount(adjustAmount);
+			paymentRecord.setName("每月付息到帐投资");
+			String platformName = investmentPlatformService.get(investment.getPlatformId()).getName();
+			paymentRecord.setPlatformName(platformName);
+			//到期投资算是收入
+			paymentRecord.setType(PaymentType.INCOME.getCode());
+			paymentRecord.setUserName(userRpc.get(investment.getInvestorId()).getData().getRealName());
+			paymentRecord.setNotes(getArriveInvestmentPaymentNotes(investment, adjustAmount, null, platformName));
+			paymentRecordService.insertSelective(paymentRecord);
+
+			// 修改投资记录的用户余额和到帐金额 ===================================
+			//设置到期时，用户的余额
+			investment.setBalanceDue(balanceOutput.getData());
+			//设置当前到帐金额
+			investment.setArrived(investment.getArrived() + adjustAmount);
+			investment.setMonthIndex(monthIndex);
+			//如果是最后一个月投资到账
+			if(repaymentMonth == repaymentIndex && monthIndex == repaymentIndex){
+				investment.setIsExpired(Yn.YES.getCode());
+			}
+			investmentService.updateSelective(investment);
+		}
+	}
+
+	/**
+	 * 计算等额本息
+	 * 等额本息还款法:
+	 * 每月月供额=贷款本金×月利率×(1＋月利率)＾还款月数〕÷〔(1＋月利率)＾还款月数-1〕
+	 * 每月应还利息=贷款本金×月利率×〔(1+月利率)^还款月数-(1+月利率)^(还款月序号-1)〕÷〔(1+月利率)^还款月数-1〕
+	 * 每月应还本金=贷款本金×月利率×(1+月利率)^(还款月序号-1)÷〔(1+月利率)^还款月数-1〕
+	 * 总利息=还款月数×每月月供额-贷款本金
+	 * @param investment
+	 */
+	private void principalInterest(Investment investment){
+		//贷款本金 = (investment+deducted)
+		BigDecimal principal = new BigDecimal(investment.getInvestment() + investment.getDeducted()).divide(BigDecimal.valueOf(100));
+		//月利率 = 年利率 / 12 (精确到小数后10位，四舍五入，2.35变成2.4)
+		BigDecimal monthlyInterestRate = new BigDecimal((investment.getProfitRatio() + investment.getInterestCoupon())/100).divide(BigDecimal.valueOf(12), 10, BigDecimal.ROUND_HALF_UP);
+		//计算当前应还款的月序号 st=======================================
+		//获取还款/开始时间是当月几号
+		Calendar startCalendar = Calendar.getInstance();
+		startCalendar.setTime(investment.getStartDate());
+		//还款月天数, 如果开始时间的月天数和还款日不一样，则应该是债转项目,第一个月可能下次还款时间少于30天，即实际税率可能高于原利率
+		int repaymentDay = investment.getRepaymentDay() == null ? startCalendar.get(Calendar.DAY_OF_MONTH) : investment.getRepaymentDay();
+		//还款起始月
+		int startMonth = startCalendar.get(Calendar.MONTH) + 1;
+		Calendar nowCalendar = Calendar.getInstance();
+		nowCalendar.setTime(new Date());
+		//获取当月最大天数
+		int maxDayOfMonth = nowCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		//如果还款时间大于本月最大时间，则还款时间改为本月最大时间，例:还款时间是31号，本月只有30天
+		if(repaymentDay > maxDayOfMonth){
+			repaymentDay = maxDayOfMonth;
+		}
+		//获取当前时间是当月几号
+		int nowDay = nowCalendar.get(Calendar.DAY_OF_MONTH);
+		//获取当前时间是几月
+		int nowMonth = nowCalendar.get(Calendar.MONTH) + 1;
+		//计算当前应还款的月序号：如果当前月天数 > 还款月天数 则是当前月份减开始月份， 否则是当前月份减开始月份再减1
+		int repaymentIndex = nowDay >= repaymentDay ? nowMonth - startMonth : nowMonth - startMonth - 1;
+		//计算当前应还款的月序号 end=======================================
+		//如果还没到第一次还款日，则跳过
+		if(repaymentIndex <= 0){
+			return;
+		}
+		//还款月数 (开始和结束日期之间相差月数)
+		int repaymentMonth = monthsBetween(investment.getStartDate(), investment.getEndDate());
+		//已还款月序号
+		int monthIndex = investment.getMonthIndex() == null ? 0 : investment.getMonthIndex();
+		//如果已还款月序号 大于等于 应该还款的月序号
+		if(monthIndex >= repaymentIndex) {
+			return;
+		}
+		//每月月供额(元)=贷款本金×月利率×(1＋月利率)＾还款月数〕÷〔(1＋月利率)＾还款月数-1〕
 		BigDecimal monthlyPayment = principal.multiply(monthlyInterestRate).multiply(BigDecimal.ONE.add(monthlyInterestRate).pow(repaymentMonth))
 				.divide(BigDecimal.ONE.add(monthlyInterestRate).pow(repaymentMonth).subtract(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 //		循环还未还款的月份
@@ -200,6 +296,16 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 		stringBuilder.append(",到帐时间:")
 				.append(DateUtils.format(investment.getEndDate(), "yyyy-MM-dd"));
 		return stringBuilder.toString();
+	}
+
+	/**
+	 * 计算两个日期相差月数
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	private int monthsBetween(Date start, Date end) {
+		return Months.monthsBetween(new DateTime(start), new DateTime(end)).getMonths();
 	}
 
 }

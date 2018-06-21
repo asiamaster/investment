@@ -1,5 +1,6 @@
 package com.artist.investment.provider;
 
+import com.artist.investment.constant.RepaymentMethod;
 import com.artist.investment.domain.Investment;
 import com.dili.ss.metadata.*;
 import com.dili.ss.util.DateUtils;
@@ -25,6 +26,10 @@ public class CurrentProfitProvider implements ValueProvider {
     @Override
     public String getDisplayText(Object obj, Map metaMap, FieldMeta fieldMeta) {
         Investment investment = (Investment)metaMap.get(ROW_DATA_KEY);
+        //非到期还款,直接显示当前已到帐资金
+        if(!investment.getRepaymentMethod().equals(RepaymentMethod.DUE)){
+            return MoneyUtils.centToYuan(investment.getArrived());
+        }
         if(investment.getStartDate() == null){
             return "0.00";
         }
@@ -52,9 +57,13 @@ public class CurrentProfitProvider implements ValueProvider {
         BigDecimal bigDecimal = new BigDecimal((investment1+deducted) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * defDay);
         BigDecimal bigDecimalTotalDay = new BigDecimal(365);
         BigDecimal bigDecimal100 = new BigDecimal(100);
-//        Long profit = (investment1+deducted) * (investment.getProfitRatio()+ investment.getInterestCoupon()) * defDay / totalDay / 100;
-        //精确计算两位小数，并且四舍五入
-        Long profit = bigDecimal.divide(bigDecimalTotalDay, 0, BigDecimal.ROUND_HALF_DOWN).divide(bigDecimal100, 0, BigDecimal.ROUND_HALF_DOWN).longValue();
-        return MoneyUtils.centToYuan(profit);
+
+        if(investment.getRepaymentMethod().equals(RepaymentMethod.DUE.getCode())) {
+            //精确计算两位小数，并且四舍五入
+            Long profit = bigDecimal.divide(bigDecimalTotalDay, 0, BigDecimal.ROUND_HALF_DOWN).divide(bigDecimal100, 0, BigDecimal.ROUND_HALF_DOWN).longValue();
+            return MoneyUtils.centToYuan(profit);
+        }else{//非到期还款，直接取当前到帐额
+            return MoneyUtils.centToYuan(investment.getArrived());
+        }
     }
 }
