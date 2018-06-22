@@ -37,7 +37,7 @@ public class InvestmentPlatformController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="InvestmentPlatform", paramType="form", value = "InvestmentPlatform的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<InvestmentPlatform> list(InvestmentPlatform investmentPlatform) {
         return investmentPlatformService.list(investmentPlatform);
     }
@@ -46,7 +46,7 @@ public class InvestmentPlatformController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="InvestmentPlatform", paramType="form", value = "InvestmentPlatform的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(InvestmentPlatform investmentPlatform) throws Exception {
         return investmentPlatformService.listEasyuiPageByExample(investmentPlatform, true).toString();
     }
@@ -55,7 +55,7 @@ public class InvestmentPlatformController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="InvestmentPlatform", paramType="form", value = "InvestmentPlatform的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(InvestmentPlatform investmentPlatform) {
         investmentPlatformService.insertSelective(investmentPlatform);
         return BaseOutput.success("新增成功");
@@ -65,7 +65,7 @@ public class InvestmentPlatformController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="InvestmentPlatform", paramType="form", value = "InvestmentPlatform的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(InvestmentPlatform investmentPlatform) {
         investmentPlatformService.updateSelective(investmentPlatform);
         return BaseOutput.success("修改成功");
@@ -75,7 +75,7 @@ public class InvestmentPlatformController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "InvestmentPlatform的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         investmentPlatformService.delete(id);
         return BaseOutput.success("删除成功");

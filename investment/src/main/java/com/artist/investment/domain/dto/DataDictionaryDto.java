@@ -1,6 +1,6 @@
 package com.artist.investment.domain.dto;
 
-import com.artist.investment.domain.DataDictionary;
+import com.dili.uap.sdk.domain.DataDictionary;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;

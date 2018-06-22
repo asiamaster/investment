@@ -3,13 +3,13 @@
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
-        <div region="north" height="auto" align="center">
-            <div align="left">
+        <div region="north" height="auto" align="center" border="false">
+            <div style="padding-left:15px;padding-top:10px;" align="left">
                 <#nav/>
             </div>
             <!-- =========================================================表单========================================================= -->
-            <div class="easyui-panel" style="width:100%;" align="left">
-                <form id="form" class="easyui-form" method="post" fit="true">
+            <div class="easyui-panel" style="width:100%;" align="left" border="false">
+                <form id="form" class="easyui-form" method="post" fit="true" >
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
@@ -94,7 +94,7 @@
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/paymentRecord/listPage";
+                opts.url = "${contextPath}/paymentRecord/listPage.action";
             }
             $("#grid").datagrid("load", bindGridMeta2Form("grid", "form"));
         }

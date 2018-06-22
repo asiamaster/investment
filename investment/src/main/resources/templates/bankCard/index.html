@@ -5,12 +5,12 @@
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
-        <div region="north" height="auto" align="center">
-            <div align="left">
+        <div region="north" height="auto" align="center" border="false">
+            <div style="padding-left:15px;padding-top:10px;" align="left">
                 <#nav/>
             </div>
             <!-- =========================================================表单========================================================= -->
-            <div class="easyui-panel" style="width:100%;" align="left">
+            <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
                     <table style="padding:10px;">
                         <tr>
@@ -23,7 +23,7 @@
                             </td>
                             <td style="padding:5px;">
                                 <input name="bank" id="bank" style="width:100%" editable="false" data-options="labelAlign:'right', label:'开户行:'" />
-                                <#comboProvider _id="bank" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"4"}'/>
+                                <#comboProvider _id="bank" _provider='dataDictionaryValueProvider' _queryParams='{dd_code:"bank"}'/>
                             </td>
                             <td style="padding:5px;">
                                     <input name="isDefault" id="isDefault" style="width:100%;" editable="false" panelWidth="auto" labelAlign="right" panelHeight="auto" label="是否默认:"/>
@@ -75,8 +75,8 @@
                         <th width="12%" data-options="field:'cardNumber',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             银行卡号
                         </th>
-                        <th width="8%" data-options="field:'bankName', _escapeFileds:{bankName:'code'}, _relationTablePkField:'value', _relationTable:'data_dictionary_value',
-_fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_id':'4', 'yn':'1'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="8%" data-options="field:'bankName', _escapeFileds:{bankName:'code'}, _relationTablePkField:'code', _relationTable:'data_dictionary_value',
+_fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_code':'bank'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             开户行
                         </th>
                         <th width="8%" data-options="field:'isDefault',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -150,7 +150,7 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
             <tr>
                 <td style="padding:5px;">
                     <input name="_bank" id="_bank" style="width:100%" editable="false" data-options="labelAlign:'right', label:'开户行:', validType:'length[0,50]'" />
-                    <#comboProvider _id="_bank" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"4"}'/>
+                    <#comboProvider _id="_bank" _provider='dataDictionaryValueProvider' _queryParams='{dd_code:"bank"}'/>
                 </td>
             </tr>
             <tr>
@@ -215,9 +215,9 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){
-                _url = "${contextPath}/bankCard/insert";
+                _url = "${contextPath}/bankCard/insert.action";
             }else{//有id就修改
-                _url = "${contextPath}/bankCard/update";
+                _url = "${contextPath}/bankCard/update.action";
             }
             $.ajax({
                 type: "POST",
@@ -276,7 +276,7 @@ _fkField:'bank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_i
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/bankCard/listPage";
+                opts.url = "${contextPath}/bankCard/listPage.action";
             }
             if(!$('#form').form("validate")){
                 return;

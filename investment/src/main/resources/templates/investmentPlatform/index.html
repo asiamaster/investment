@@ -3,12 +3,12 @@
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
-        <div region="north" height="auto" align="center">
-            <div align="left">
+        <div region="north" height="auto" align="center" >
+            <div style="padding-left:15px;padding-top:10px;" align="left">
                 <#nav/>
             </div>
             <!-- =========================================================表单========================================================= -->
-            <div class="easyui-panel" style="width:100%;" align="left">
+            <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
                     <table style="padding:10px;">
                         <tr>
@@ -23,7 +23,7 @@
                             </td>
                             <td style="padding:5px;">
                                 <input name="securityLevel" id="securityLevel" editable="false" panelHeight="auto" style="width:100%" data-options="labelAlign:'right', label:'安全级别:'" />
-                                <#comboProvider _id="securityLevel" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"5"}'/>
+                                <#comboProvider _id="securityLevel" _provider='dataDictionaryValueProvider' _queryParams='{dd_code:"security_level"}'/>
                             </td>
                             <td style="padding-left:28px;padding-top: 10px; padding-bottom: 10px;">
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
@@ -50,15 +50,15 @@
                         <th width="6%" data-options="field:'name', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             名称
                         </th>
-                        <th width="6%" data-options="field:'securityLevelName', _escapeFileds:{securityLevelName:'code'}, _relationTablePkField:'value', _relationTable:'data_dictionary_value',
-_fkField:'securityLevel', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_id':'5', 'yn':'1'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="6%" data-options="field:'securityLevelName', _escapeFileds:{securityLevelName:'code'}, _relationTablePkField:'code', _relationTable:'data_dictionary_value',
+_fkField:'securityLevel', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_code':'security_level'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             安全级别
                         </th>
                         <th width="7%" data-options="field:'avgProfitRatio', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             平均收益(%)
                         </th>
-                        <th width="7%" data-options="field:'supervisionBank', _escapeFileds:{supervisionBank:'code'}, _relationTablePkField:'value', _relationTable:'data_dictionary_value',
-_fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_id':'4', 'yn':'1'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="7%" data-options="field:'supervisionBank', _escapeFileds:{supervisionBank:'code'}, _relationTablePkField:'code', _relationTable:'data_dictionary_value',
+_fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryParams:{'dd_code':'bank'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             资金监管银行
                         </th>
                         <th width="5%" data-options="field:'isRecord', _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -138,7 +138,7 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
                 </td>
                 <td style="padding:5px;">
                     <input name="_securityLevel" id="_securityLevel" editable="false" panelHeight="auto" style="width:100%" data-options="label:'安全级别:', validType:'length[0,8]'" />
-                    <#comboProvider _id="_securityLevel" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"5"}'/>
+                    <#comboProvider _id="_securityLevel" _provider='dataDictionaryValueProvider' _queryParams='{dd_code:"security_level"}'/>
                 </td>
             </tr>
             <tr>
@@ -152,7 +152,7 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
             <tr>
                 <td style="padding:5px;">
                     <input name="_supervisionBank" id="_supervisionBank" editable="false" style="width:100%" data-options="labelWidth:100, label:'资金监管银行:', validType:'length[0,20]'" />
-                    <#comboProvider _id="_supervisionBank" _provider='dataDictionaryValueProvider' _queryParams='{dd_id:"4"}'/>
+                    <#comboProvider _id="_supervisionBank" _provider='dataDictionaryValueProvider' _queryParams='{dd_code:"bank"}'/>
                 </td>
                 <td style="padding:5px;">
                     <input class="easyui-datebox" name="_uptime" id="_uptime" style="width:100%" editable="false" data-options="label:'上线时间:'" />
@@ -222,9 +222,9 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){
-                _url = "${contextPath}/investmentPlatform/insert";
+                _url = "${contextPath}/investmentPlatform/insert.action";
             }else{//有id就修改
-                _url = "${contextPath}/investmentPlatform/update";
+                _url = "${contextPath}/investmentPlatform/update.action";
             }
             $.ajax({
                 type: "POST",
@@ -258,7 +258,7 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
                 if (r){
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/investmentPlatform/delete",
+                        url: "${contextPath}/investmentPlatform/delete.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -283,7 +283,7 @@ _fkField:'supervisionBank', _provider:'simpleBatchDisplayTextProvider', _queryPa
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/investmentPlatform/listPage";
+                opts.url = "${contextPath}/investmentPlatform/listPage.action";
             }
             if(!$('#form').form("validate")){
                 return;

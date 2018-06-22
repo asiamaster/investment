@@ -1,8 +1,8 @@
 package com.artist.investment.service;
 
-import com.artist.investment.domain.DataDictionary;
 import com.artist.investment.domain.dto.DataDictionaryDto;
 import com.dili.ss.base.BaseService;
+import com.dili.uap.sdk.domain.DataDictionary;
 
 /**
  * 由MyBatis Generator工具自动生成

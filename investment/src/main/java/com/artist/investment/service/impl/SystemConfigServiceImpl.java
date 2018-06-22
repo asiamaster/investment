@@ -1,9 +1,9 @@
 package com.artist.investment.service.impl;
 
 import com.artist.investment.dao.SystemConfigMapper;
-import com.artist.investment.domain.SystemConfig;
 import com.artist.investment.service.SystemConfigService;
 import com.dili.ss.base.BaseServiceImpl;
+import com.dili.uap.sdk.domain.SystemConfig;
 import org.springframework.stereotype.Service;
 
 /**

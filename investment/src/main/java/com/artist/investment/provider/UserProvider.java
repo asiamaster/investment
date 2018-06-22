@@ -1,12 +1,9 @@
 package com.artist.investment.provider;
 
-import com.artist.investment.domain.User;
 import com.artist.investment.rpc.UserRpc;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.metadata.FieldMeta;
-import com.dili.ss.metadata.ValuePair;
-import com.dili.ss.metadata.ValueProvider;
 import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
+import com.dili.uap.sdk.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -15,7 +15,7 @@ import java.util.Map;
 public class DataDictionaryValueProvider extends SimpleValueProvider {
 
     //前台需要传入的参数
-    protected static final String DD_ID_KEY = "dd_id";
+    protected static final String DD_ID_KEY = "dd_code";
 
     @Override
     public String getTable() {
@@ -24,12 +24,12 @@ public class DataDictionaryValueProvider extends SimpleValueProvider {
 
     @Override
     public String getTextField() {
-        return "code";
+        return "name";
     }
 
     @Override
     public String getValueField() {
-        return "value";
+        return "code";
     }
 
     @Override
@@ -41,8 +41,7 @@ public class DataDictionaryValueProvider extends SimpleValueProvider {
     protected void buildParam(Map paramMap){
         super.buildParam(paramMap);
         Map<String, Object> params = new HashMap<>();
-        params.put("yn", 1);
-        params.put("dd_id", getDdId());
+        params.put("dd_code", getDdCode());
         setQueryParams(params);
     }
 
@@ -50,12 +49,12 @@ public class DataDictionaryValueProvider extends SimpleValueProvider {
      * 获取数据字典id
      * @return
      */
-    public String getDdId(){
+    private String getDdCode(){
         //清空缓存
-        Object ddId = getQueryParams().get(DD_ID_KEY);
-        if(ddId == null){
-            throw new RuntimeException("dd_id属性为空");
+        Object ddCode = getQueryParams().get(DD_ID_KEY);
+        if(ddCode == null){
+            throw new RuntimeException("dd_code属性为空");
         }
-        return ddId.toString();
+        return ddCode.toString();
     }
 }

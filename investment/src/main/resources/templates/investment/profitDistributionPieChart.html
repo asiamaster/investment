@@ -1,16 +1,16 @@
  <#body>
      <#impEcharts/>
      <#controls_user dlgId="userSelectDialog" controlId="_investorId"/>
-     <div>
+     <div style="padding-left:15px;padding-top:10px;" align="left">
          <#nav/>
      </div>
     <div class="easyui-layout" fit="true">
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
-        <div region="north" height="auto" align="center">
+        <div region="north" height="auto" align="center" border="false">
             <!-- =========================================================表单========================================================= -->
-            <div class="easyui-panel" style="width:100%;" align="left">
+            <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
                     <table style="padding:10px;">
                         <tr>
@@ -55,7 +55,7 @@
             //_id参数必填
             var _chartsId = 'distributionPieChartDiv';
             //_url参数必填
-            var _chartsUrl = '${contextPath}/investment/selectProfitDistributionPieChart';
+            var _chartsUrl = '${contextPath}/investment/selectProfitDistributionPieChart.action';
             //标题参数必填
             var _chartsTitle = '投资收益分布';
             //其它图表参数

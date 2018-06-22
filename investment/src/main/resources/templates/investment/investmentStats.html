@@ -25,11 +25,11 @@
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
-        <div region="north" height="245" align="center" split="true">
-            <div align="left">
+        <div region="north" height="245" align="center" split="true" border="false">
+            <div style="padding-left:15px;padding-top:10px;" align="left">
                 <#nav/>
             </div>
-            <div style="height:215px;">
+            <div style="height:215px;" border="false" >
                 <table class="easyui-datagrid" title="投资人统计" id="investorStatsGrid" fitColumns="true"
                        rownumbers="true" remoteSort="false" noHeader="true"
                        loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false"
@@ -194,7 +194,7 @@
         function queryInvestorStatsGrid() {
             var opts = $("#investorStatsGrid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/investment/selectInvestorStats";
+                opts.url = "${contextPath}/investment/selectInvestorStats.action";
             }
             $("#investorStatsGrid").datagrid("load");
         }
@@ -202,7 +202,7 @@
         function queryInvestorPlatformStatsGrid() {
             var opts = $("#investorPlatformStatsGrid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/investment/selectInvestorPlatformStats";
+                opts.url = "${contextPath}/investment/selectInvestorPlatformStats.action";
             }
             $("#investorPlatformStatsGrid").datagrid("load");
         }

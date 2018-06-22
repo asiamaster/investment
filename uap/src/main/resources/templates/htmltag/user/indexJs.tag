@@ -130,7 +130,7 @@
         $('#viewDlg input[class^=easyui-]').textbox("editable", false);
 
     }
-    
+
     //打开新增用户的窗口
     function openInsert(){
         $('#editDlg').dialog('open');
@@ -147,7 +147,7 @@
     function openUpdate(){
 
         <%if(!hasResource("updateUser")) {%>
-            return;
+        return;
         <%}%>
 
         var selected = userGrid.datagrid("getSelected");
@@ -233,7 +233,7 @@
         if(!$('#_form').form("validate")){
             return;
         }
-        var _formData = removeKeyStartWith($("#_form").serializeObject(),"_");
+        var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
         var _url = null;
         //没有id就新增
         if(_formData.id == null || _formData.id==""){
@@ -299,165 +299,165 @@
     function initUserGrid() {
         var pager = userGrid.datagrid('getPager');
         pager.pagination({
-            <#controls_paginationOpts/>,
-            buttons:[
-                <#resource code="editUserRole">
-                {
-                    iconCls:'icon-role',
-                    text:'分配角色',
-                    handler:function(){
-                        editUserRole();
-                    }
-                },
-                </#resource>
-                <#resource code="editUserData">
-                {
-                    iconCls:'icon-data',
-                    text:'数据权限',
-                    handler:function(){
-                        editUserDataAuth();
-                    }
-                },
-                </#resource>
-                <#resource code="viewUser">
-                {
-                    iconCls:'icon-detail',
-                    text:'详情',
-                    handler:function(){
-                        openDetail();
-                    }
-                },
-                </#resource>
-                <#resource code="insertUser">
-                {
-                    iconCls:'icon-add',
-                    text:'新增',
-                    handler:function(){
-                        openInsert();
-                    }
-                },
-                </#resource>
-                <#resource code="updateUser">
-                {
-                    iconCls:'icon-edit',
-                    text:'修改',
-                    handler:function(){
-                        openUpdate();
-                    }
-                },
-                </#resource>
-                <#resource code="deleteUser">
-                {
-                    iconCls:'icon-remove',
-                    text:'删除',
-                    handler:function(){
-                        del();
-                    }
-                },
-                </#resource>
-                <#resource code="resetPass">
-                {
-                    iconCls:'icon-reset',
-                    text:'密码重置',
-                    handler:function(){
-                        resetPass();
-                    }
-                },
-                </#resource>
-                <#resource code="enabledUser">
-                {
-                    iconCls:'icon-play',
-                    text:'启用',
-                    id:'play_btn',
-                    disabled:true,
-                    handler:function(){
-                        doEnable(true);
-                    }
-                },
-                </#resource>
-                <#resource code="disabledUser">
-                {
-                    iconCls:'icon-stop',
-                    text:'禁用',
-                    id:'stop_btn',
-                    disabled:true,
-                    handler:function(){
-                        doEnable(false);
-                    }
-                },
-                </#resource>
-                <#resource code="unlockUser">
-                {
-                    iconCls:'icon-unlock',
-                    text:'解锁',
-                    id:'unlock_btn',
-                    disabled:true,
-                    handler:function(){
-                        doUnlock();
-                    }
-                },
-                </#resource>
-                <#resource code="exportUser">
-                {
-                    iconCls:'icon-export',
-                    text:'导出',
-                    handler:function(){
-                        doExport('userGrid');
-                    }
+        <#controls_paginationOpts/>,
+        buttons:[
+            <#resource code="editUserRole">
+    {
+        iconCls:'icon-role',
+        text:'分配角色',
+        handler:function(){
+        editUserRole();
+    }
+    },
+    </#resource>
+    <#resource code="editUserData">
+            {
+                iconCls:'icon-data',
+                text:'数据权限',
+                handler:function(){
+                    editUserDataAuth();
                 }
-                </#resource>
-            ]
-        });
-        //表格仅显示下边框
-        userGrid.datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+            },
+    </#resource>
+        <#resource code="viewUser">
+    {
+        iconCls:'icon-detail',
+        text:'详情',
+        handler:function(){
+        openDetail();
+    }
+    },
+    </#resource>
+        <#resource code="insertUser">
+    {
+        iconCls:'icon-add',
+        text:'新增',
+        handler:function(){
+        openInsert();
+    }
+    },
+    </#resource>
+        <#resource code="updateUser">
+    {
+        iconCls:'icon-edit',
+        text:'修改',
+        handler:function(){
+        openUpdate();
+    }
+    },
+    </#resource>
+        <#resource code="deleteUser">
+    {
+        iconCls:'icon-remove',
+        text:'删除',
+        handler:function(){
+        del();
+    }
+    },
+    </#resource>
+        <#resource code="resetPass">
+    {
+        iconCls:'icon-reset',
+        text:'密码重置',
+        handler:function(){
+        resetPass();
+    }
+    },
+    </#resource>
+        <#resource code="enabledUser">
+    {
+        iconCls:'icon-play',
+        text:'启用',
+        id:'play_btn',
+        disabled:true,
+        handler:function(){
+        doEnable(true);
+    }
+    },
+    </#resource>
+        <#resource code="disabledUser">
+    {
+        iconCls:'icon-stop',
+        text:'禁用',
+        id:'stop_btn',
+        disabled:true,
+        handler:function(){
+        doEnable(false);
+    }
+    },
+    </#resource>
+        <#resource code="unlockUser">
+    {
+        iconCls:'icon-unlock',
+        text:'解锁',
+        id:'unlock_btn',
+        disabled:true,
+        handler:function(){
+        doUnlock();
+    }
+    },
+    </#resource>
+        <#resource code="exportUser">
+    {
+        iconCls:'icon-export',
+        text:'导出',
+        handler:function(){
+        doExport('userGrid');
+    }
+    }
+    </#resource>
+    ]
+    });
+    //表格仅显示下边框
+    userGrid.datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
     }
     //全局按键事件
     function getKey(e){
         e = e || window.event;
         var keycode = e.which ? e.which : e.keyCode;
         if(keycode == 46){ //如果按下删除键
-            var selected = $("#userGrid").datagrid("getSelected");
-            if(selected && selected!= null){
-                del();
-            }
-        }
+        var selected = $("#userGrid").datagrid("getSelected");
+        if(selected && selected!= null){
+        del();
+    }
+    }
     }
 
-    /**
-     * 绑定页面回车事件，以及初始化页面时的光标定位
-     * @formId
-     *          表单ID
-     * @elementName
-     *          光标定位在指点表单元素的name属性的值
-     * @submitFun
-     *          表单提交需执行的任务
-     */
+        /**
+         * 绑定页面回车事件，以及初始化页面时的光标定位
+         * @formId
+         *          表单ID
+         * @elementName
+         *          光标定位在指点表单元素的name属性的值
+         * @submitFun
+         *          表单提交需执行的任务
+         */
     $(function () {
         window.userGrid = $('#userGrid');
         /**
          * 加载部门信息
          */
         <% if (has(isGroup) && isGroup){ %>
-            var obj={code:null,name:'-- 请选择 --'};
-            //为了不改变原值，所以复制一遍数组
-            var firmData = firms.slice();
-            //动态添加'请选择'
-            firmData.unshift(obj);
-            $("#firmCode").combobox("loadData", firmData);
+        var obj={code:null,name:'-- 请选择 --'};
+        //为了不改变原值，所以复制一遍数组
+        var firmData = firms.slice();
+        //动态添加'请选择'
+        firmData.unshift(obj);
+        $("#firmCode").combobox("loadData", firmData);
         <%}else{%>
-            loadDepartments(firmCode,'departmentId');
-            loadRoles(firmCode);
+        loadDepartments(firmCode,'departmentId');
+        loadRoles(firmCode);
         <%}%>
-        
+
         bindFormEvent("form", "firmCode", queryGrid);
         bindFormEvent("_form", "_userName", saveOrUpdate, function (){$('#editDlg').dialog('close');});
         if (document.addEventListener) {
-            document.addEventListener("keyup",getKey,false);
-        } else if (document.attachEvent) {
-            document.attachEvent("onkeyup",getKey);
-        } else {
-            document.onkeyup = getKey;
-        }
+        document.addEventListener("keyup",getKey,false);
+    } else if (document.attachEvent) {
+        document.attachEvent("onkeyup",getKey);
+    } else {
+        document.onkeyup = getKey;
+    }
         initUserGrid();
         queryGrid();
     });
@@ -466,73 +466,73 @@
     function queryGrid() {
         var opts = userGrid.datagrid("options");
         if (null == opts.url || "" == opts.url) {
-            opts.url = "${contextPath}/user/listPage.action";
-        }
+        opts.url = "${contextPath}/user/listPage.action";
+    }
         if(!$('#form').form("validate")){
-            return;
-        }
+        return;
+    }
         userGrid.datagrid("load", bindGridMeta2Form("userGrid", "form"));
     }
 
-    /**
-     * 编辑用户的角色信息
-     */
+        /**
+         * 编辑用户的角色信息
+         */
     function editUserRole() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
-            return;
-        }
+        $.messager.alert('警告', '请选中一条数据');
+        return;
+    }
         $('#userRoleDlg').dialog('open');
         $('#userRoleDlg').dialog('center');
         $('#role_userName').textbox("setValue",selected.userName);
         var opts = $('#roleTree').tree("options");
         opts.url = "${contextPath}/user/getUserRolesForTree.action?id=" + selected.id;
         $('#roleTree').tree("reload");
-        
+
     }
 
-    /**
-     * 保存用户的角色信息
-     */
+        /**
+         * 保存用户的角色信息
+         */
     function saveUserRoles() {
         var nodes = $('#roleTree').tree('getChecked');
         //节点选中的ID，包括 市场，角色
         var ids = [];
         for (var i = 0; i < nodes.length; i++) {
-            ids.push(nodes[i].id);
-        }
+        ids.push(nodes[i].id);
+    }
         var selected = userGrid.datagrid("getSelected");
         $.ajax({
-            type: "POST",
-            url: "${contextPath}/user/saveUserRoles.action",
-            data: {userId: selected.id, roleIds: ids},
-            dataType: "json",
-            traditional: true,
-            async: true,
-            success: function (ret) {
-                if (ret.success) {
-                    $('#userRoleDlg').dialog('close');
-                    userGrid.datagrid("load");
-                } else {
-                    $.messager.alert('错误', ret.result);
-                }
-            },
-            error: function () {
-                $.messager.alert('错误', '远程访问失败');
-            }
-        });
+        type: "POST",
+        url: "${contextPath}/user/saveUserRoles.action",
+        data: {userId: selected.id, roleIds: ids},
+        dataType: "json",
+        traditional: true,
+        async: true,
+        success: function (ret) {
+        if (ret.success) {
+        $('#userRoleDlg').dialog('close');
+        userGrid.datagrid("load");
+    } else {
+        $.messager.alert('错误', ret.result);
+    }
+    },
+        error: function () {
+        $.messager.alert('错误', '远程访问失败');
+    }
+    });
     }
 
-    /**
-     * 编辑用户的数据权限
-     */
+        /**
+         * 编辑用户的数据权限
+         */
     function editUserDataAuth() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
-            return;
-        }
+        $.messager.alert('警告', '请选中一条数据');
+        return;
+    }
         $('#userDataDlg').dialog('open');
         $('#userDataDlg').dialog('center');
         $('#data_userName').textbox("setValue",selected.userName);
@@ -541,82 +541,82 @@
          * 获取用户的数据范围选择项
          */
         $.post('${contextPath!}/user/getUserData.action', {id: selected.id}, function (ret) {
-            if (ret && ret.success) {
-                //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
-                var data = ret.data;
-                $('#dataRange').combobox("loadData", data.dataRange);
-                $('#dataTree').tree("loadData", data.userDatas);
-                var output = [];
-                var checkedId = 1;
-                if (typeof(data.currDataAuth) != "undefined" && '' != data.currDataAuth) {
-                    checkedId = data.currDataAuth;
-                }
-                $.each(data.dataRange, function (i, item) {
-                    if (parseInt(checkedId) == parseInt(item["id"])) {
-                        output.push('<input type="radio" name="dataRange" checked value="' + item["id"] + '">' + item["name"] + '&nbsp;&nbsp;');
-                    } else {
-                        output.push('<input type="radio" name="dataRange" value="' + item["id"] + '">' + item["name"] + '&nbsp;&nbsp;');
-                    }
-                });
-                $('#dataRangeDiv').html(output.join(''));
-            }
-        }, 'json');
+        if (ret && ret.success) {
+        //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
+        var data = ret.data;
+        $('#dataRange').combobox("loadData", data.dataRange);
+        $('#dataTree').tree("loadData", data.userDatas);
+        var output = [];
+        var checkedId = 1;
+        if (typeof(data.currDataAuth) != "undefined" && '' != data.currDataAuth) {
+        checkedId = data.currDataAuth;
+    }
+        $.each(data.dataRange, function (i, item) {
+        if (parseInt(checkedId) == parseInt(item["id"])) {
+        output.push('<input type="radio" name="dataRange" checked value="' + item["id"] + '">' + item["name"] + '&nbsp;&nbsp;');
+    } else {
+        output.push('<input type="radio" name="dataRange" value="' + item["id"] + '">' + item["name"] + '&nbsp;&nbsp;');
+    }
+    });
+        $('#dataRangeDiv').html(output.join(''));
+    }
+    }, 'json');
     }
 
-    /**
-     * 保存用户的角色信息
-     */
+        /**
+         * 保存用户的角色信息
+         */
     function saveUserDatas() {
         var nodes = $('#dataTree').tree('getChecked');
         //节点选中的ID，包括 市场，角色
         var ids = [];
         for (var i = 0; i < nodes.length; i++) {
-            ids.push(nodes[i].id);
-        }
+        ids.push(nodes[i].id);
+    }
         var dataRange=$('input:radio[name="dataRange"]:checked').val();
         var selected = userGrid.datagrid("getSelected");
         $.ajax({
-            type: "POST",
-            url: "${contextPath}/user/saveUserDatas.action",
-            data: {userId: selected.id, dataIds: ids,dataRange:dataRange},
-            dataType: "json",
-            traditional: true,
-            async: true,
-            success: function (ret) {
-                if (ret.success) {
-                    $('#userDataDlg').dialog('close');
-                } else {
-                    $.messager.alert('错误', ret.result);
-                }
-            },
-            error: function () {
-                $.messager.alert('错误', '远程访问失败');
-            }
-        });
+        type: "POST",
+        url: "${contextPath}/user/saveUserDatas.action",
+        data: {userId: selected.id, dataIds: ids,dataRange:dataRange},
+        dataType: "json",
+        traditional: true,
+        async: true,
+        success: function (ret) {
+        if (ret.success) {
+        $('#userDataDlg').dialog('close');
+    } else {
+        $.messager.alert('错误', ret.result);
+    }
+    },
+        error: function () {
+        $.messager.alert('错误', '远程访问失败');
+    }
+    });
     }
 
-    /**
-     * 用户编辑，真实姓名验证时的触发事件
-     * @param v
-     */
+        /**
+         * 用户编辑，真实姓名验证时的触发事件
+         * @param v
+         */
     function realNameValidate(v) {
         if (v || 'true' == v){
-            getEmailByName();
-        }
+        getEmailByName();
+    }
     }
 
-    /**
-     * 用户数据编辑时，部门数据加载成功后的执行方法
-     */
+        /**
+         * 用户数据编辑时，部门数据加载成功后的执行方法
+         */
     function editDepartmentLoadSuccess(node,data) {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            return;
-        }
+        return;
+    }
         // 如果是修改用户，则显示用户已有的部门数据
         if (isUpdateUser || 'true' == isUpdateUser){
-            $('#_departmentId').combotree('setValue', selected.$_departmentId);
-        }
+        $('#_departmentId').combotree('setValue', selected.$_departmentId);
+    }
     }
 
 </script>

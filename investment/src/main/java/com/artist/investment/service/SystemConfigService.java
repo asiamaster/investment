@@ -1,7 +1,7 @@
 package com.artist.investment.service;
 
-import com.artist.investment.domain.SystemConfig;
 import com.dili.ss.base.BaseService;
+import com.dili.uap.sdk.domain.SystemConfig;
 
 /**
  * 由MyBatis Generator工具自动生成

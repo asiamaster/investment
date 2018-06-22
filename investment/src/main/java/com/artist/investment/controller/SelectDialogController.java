@@ -1,10 +1,10 @@
 package com.artist.investment.controller;
 
 import com.artist.investment.domain.BankCard;
-import com.artist.investment.domain.User;
 import com.artist.investment.rpc.UserRpc;
 import com.artist.investment.service.BankCardService;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.uap.sdk.domain.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

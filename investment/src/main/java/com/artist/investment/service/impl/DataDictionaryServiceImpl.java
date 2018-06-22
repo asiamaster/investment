@@ -6,13 +6,13 @@ import java.util.List;
 import com.artist.investment.dao.DataDictionaryMapper;
 import com.artist.investment.domain.dto.DataDictionaryDto;
 import com.artist.investment.domain.dto.DataDictionaryValueDto;
+import com.dili.uap.sdk.domain.DataDictionary;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.artist.investment.dao.DataDictionaryValueMapper;
-import com.artist.investment.domain.DataDictionary;
-import com.artist.investment.domain.DataDictionaryValue;
 import com.artist.investment.service.DataDictionaryService;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.dto.DTOUtils;
@@ -40,7 +40,7 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
 			return null;
 		}
 		DataDictionaryValue valueRecord = DTOUtils.newDTO(DataDictionaryValue.class);
-		valueRecord.setDdId(model.getId());
+		valueRecord.setDdCode(model.getCode());
 		List<DataDictionaryValue> values = this.valueMapper.select(valueRecord);
 		DataDictionaryDto dto = DTOUtils.cast(model, DataDictionaryDto.class);
 		if (CollectionUtils.isNotEmpty(values)) {
@@ -56,13 +56,11 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
 
 	@Override
 	public int insert(DataDictionary t) {
-		t.setYn(1);
 		return super.insert(t);
 	}
 
 	@Override
 	public int insertSelective(DataDictionary t) {
-		t.setYn(1);
 		return super.insertSelective(t);
 	}
 

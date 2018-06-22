@@ -98,7 +98,7 @@ function delDd(selected) {
 function queryDdGrid() {
 	var opts = ddGrid.datagrid("options");
 	if (null == opts.url || "" == opts.url) {
-		opts.url = "${contextPath}/dataDictionary/listPage";
+		opts.url = "${contextPath}/dataDictionary/listPage.action";
 	}
 	if (!$('#form').form("validate")) {
 		return;

@@ -142,12 +142,12 @@
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
-        <div region="north" height="auto" align="center">
-            <div align="left">
+        <div region="north" height="auto" align="center" border="false">
+            <div style="padding-left:15px;padding-top:10px;" align="left">
                 <#nav/>
             </div>
             <!-- =========================================================表单========================================================= -->
-            <div class="easyui-panel" style="width:100%;" align="left">
+            <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
                     <table style="padding:10px;">
                         <tr>
@@ -458,7 +458,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: "${contextPath}/investment/adjustArrived",
+                url: "${contextPath}/investment/adjustArrived.action",
                 data: {id:selected.id, arrived:arrived},
                 processData:true,
                 dataType: "json",
@@ -538,9 +538,9 @@
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){
-                _url = "${contextPath}/investment/insert";
+                _url = "${contextPath}/investment/insert.action";
             }else{//有id就修改
-                _url = "${contextPath}/investment/update";
+                _url = "${contextPath}/investment/update.action";
             }
             $.ajax({
                 type: "POST",
@@ -574,7 +574,7 @@
                 if (r){
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/investment/delete",
+                        url: "${contextPath}/investment/delete.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -609,7 +609,7 @@
                 if (r){
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/investment/arrived",
+                        url: "${contextPath}/investment/arrived.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -633,7 +633,7 @@
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/investment/listPage";
+                opts.url = "${contextPath}/investment/listPage.action";
             }
             if(!$('#form').form("validate")){
                 return;

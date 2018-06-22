@@ -1,9 +1,9 @@
 package com.artist.investment.rpc;
 
-import com.artist.investment.domain.User;
 import com.artist.investment.domain.Department;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.retrofitful.annotation.*;
+import com.dili.uap.sdk.domain.User;
 
 import java.util.List;
 

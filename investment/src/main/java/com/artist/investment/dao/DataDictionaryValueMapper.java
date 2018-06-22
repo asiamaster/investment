@@ -1,7 +1,7 @@
 package com.artist.investment.dao;
 
-import com.artist.investment.domain.DataDictionaryValue;
 import com.dili.ss.base.MyMapper;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
 
 public interface DataDictionaryValueMapper extends MyMapper<DataDictionaryValue> {
 }
