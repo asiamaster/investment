@@ -23,8 +23,8 @@ import tk.mybatis.spring.annotation.MapperScan;
 //@EnableAutoConfiguration(exclude = {ThymeleafAutoConfiguration.class, VelocityAutoConfiguration.class})
 @MapperScan(basePackages = {"com.artist.investment.dao", "com.dili.ss.dao", "com.dili.ss.quartz.dao"})
 //@ImportResource(locations = "classpath:applicationContext.xml")
-@ComponentScan(basePackages={"com.dili.ss","com.artist.investment","com.artist.sysadmin"})
-@RestfulScan({"com.artist.investment.rpc", "com.artist.sysadmin.sdk.rpc"})
+@ComponentScan(basePackages={"com.dili.ss","com.artist.investment","com.dili.uap"})
+@RestfulScan({"com.artist.investment.rpc", "com.dili.uap.sdk.rpc"})
 //@Import({DynamicRoutingDataSourceRegister.class})// 注册动态多数据源
 //@EnableEncryptableProperties
 //@PropertySource(name="EncryptedProperties", value = "classpath:security.properties")

@@ -36,7 +36,7 @@ public class PaymentRecordController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="PaymentRecord", paramType="form", value = "PaymentRecord的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<PaymentRecord> list(PaymentRecord paymentRecord) {
         return paymentRecordService.list(paymentRecord);
     }
@@ -45,7 +45,7 @@ public class PaymentRecordController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="PaymentRecord", paramType="form", value = "PaymentRecord的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(PaymentRecord paymentRecord) throws Exception {
         return paymentRecordService.listEasyuiPageByExample(paymentRecord, true).toString();
     }
@@ -54,7 +54,7 @@ public class PaymentRecordController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="PaymentRecord", paramType="form", value = "PaymentRecord的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(PaymentRecord paymentRecord) {
         paymentRecordService.insertSelective(paymentRecord);
         return BaseOutput.success("新增成功");
@@ -64,7 +64,7 @@ public class PaymentRecordController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="PaymentRecord", paramType="form", value = "PaymentRecord的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(PaymentRecord paymentRecord) {
         paymentRecordService.updateSelective(paymentRecord);
         return BaseOutput.success("修改成功");
@@ -74,7 +74,7 @@ public class PaymentRecordController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "PaymentRecord的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         paymentRecordService.delete(id);
         return BaseOutput.success("删除成功");

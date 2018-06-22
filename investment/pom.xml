@@ -373,8 +373,8 @@
         <!--</dependency>-->
         <!-- 内部包  -->
         <dependency>
-            <groupId>com.artist</groupId>
-            <artifactId>sysadmin-sdk</artifactId>
+            <groupId>com.dili</groupId>
+            <artifactId>uap-sdk</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>

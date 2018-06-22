@@ -11,9 +11,11 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>sysadmin-sdk</module>
-		<module>sysadmin</module>
+		<!--<module>sysadmin-sdk</module>-->
+		<!--<module>sysadmin</module>-->
 		<!--<module>investment-admin-server</module>-->
+		<module>uap-sdk</module>
+		<module>uap</module>
 		<module>investment</module>
 	</modules>
 

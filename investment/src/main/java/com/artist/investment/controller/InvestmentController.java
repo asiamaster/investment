@@ -6,21 +6,16 @@ import com.artist.investment.domain.Investment;
 import com.artist.investment.domain.dto.InvestmentDto;
 import com.artist.investment.service.BankCardService;
 import com.artist.investment.service.InvestmentService;
-import com.artist.sysadmin.sdk.domain.UserTicket;
-import com.artist.sysadmin.sdk.exception.NotLoginException;
-import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.util.DateUtils;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.exception.NotLoginException;
+import com.dili.uap.sdk.session.SessionContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.beetl.core.Template;
 import org.beetl.ext.spring.BeetlGroupUtilConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -81,7 +80,7 @@ public class InvestmentController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Investment", paramType="form", value = "Investment的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<Investment> list(Investment investment) {
         return investmentService.list(investment);
     }
@@ -90,7 +89,7 @@ public class InvestmentController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Investment", paramType="form", value = "Investment的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(InvestmentDto investment) throws Exception {
         return investmentService.listEasyuiPageByExample(investment, true).toString();
     }
@@ -99,7 +98,7 @@ public class InvestmentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name="Investment", paramType="form", value = "Investment的form信息", required = false, dataType = "string")
     })
-    @RequestMapping(value="/listComingInvestment", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listComingInvestment.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listComingInvestment(InvestmentDto investment) throws Exception {
         investment.setSort("endDate");
         investment.setOrder("asc");
@@ -117,7 +116,7 @@ public class InvestmentController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Investment", paramType="form", value = "Investment的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(Investment investment) {
         return investmentService.insertSelectiveWithOutput(investment);
     }
@@ -126,7 +125,7 @@ public class InvestmentController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Investment", paramType="form", value = "Investment的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(Investment investment) {
         return investmentService.updateSelectiveWithOutput(investment);
     }
@@ -135,7 +134,7 @@ public class InvestmentController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "Investment的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         return BaseOutput.success("删除成功").setData(investmentService.delete(id));
     }
@@ -144,7 +143,7 @@ public class InvestmentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name="id", paramType="form", value = "Investment的主键", required = true, dataType = "long")
     })
-    @RequestMapping(value="/arrived", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/arrived.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput arrived(Long id) {
         return investmentService.arrived(id);
     }
@@ -153,7 +152,7 @@ public class InvestmentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name="id", paramType="form", value = "Investment的主键", required = true, dataType = "long")
     })
-    @RequestMapping(value="/adjustArrived", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/adjustArrived.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput adjustArrived(@RequestParam("id") Long id, @RequestParam("arrived") String arrived) {
         return investmentService.adjustArrived(id, arrived);
     }
@@ -164,7 +163,7 @@ public class InvestmentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name="Investment", paramType="form", value = "查询投资分布饼图", required = false, dataType = "string")
     })
-    @RequestMapping(value="/selectInvestmentDistributionPieChart", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/selectInvestmentDistributionPieChart.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<Map> selectInvestmentDistributionPieChart(InvestmentDto investment) {
         return investmentService.selectInvestmentDistributionPieChart(investment.getIsProgressing(), investment.getInvestorId());
     }
@@ -172,7 +171,7 @@ public class InvestmentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name="Investment", paramType="form", value = "查询收益分布饼图", required = false, dataType = "string")
     })
-    @RequestMapping(value="/selectProfitDistributionPieChart", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/selectProfitDistributionPieChart.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<Map> selectProfitDistributionPieChart(InvestmentDto investment) {
         return investmentService.selectProfitDistributionPieChart(investment.getIsProgressing(), investment.getInvestorId());
     }
@@ -180,7 +179,7 @@ public class InvestmentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name="Investment", paramType="form", value = "查询投资人横向对比柱图", required = false, dataType = "string")
     })
-    @RequestMapping(value="/selectInvestmentComparisonBarChart", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/selectInvestmentComparisonBarChart.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<Map> selectInvestmentComparisonBarChart(InvestmentDto investment) {
         return investmentService.selectInvestmentComparisonBarChart(investment.getIsProgressing());
     }
@@ -190,7 +189,7 @@ public class InvestmentController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/selectInvestorPlatformStats", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/selectInvestorPlatformStats.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<Map> selectInvestorPlatformStats() {
         return investmentService.selectInvestorPlatformStats();
     }
@@ -200,7 +199,7 @@ public class InvestmentController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/selectInvestorStats", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/selectInvestorStats.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String selectInvestorStats(){
         return investmentService.selectInvestorStats().toString();
     }

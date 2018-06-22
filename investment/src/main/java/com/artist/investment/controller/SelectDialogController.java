@@ -40,7 +40,7 @@ public class SelectDialogController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/listUser", method = { RequestMethod.GET, RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/listUser.action", method = { RequestMethod.GET, RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<User> listUser(User user) {
 		BaseOutput<List<User>> output = this.userRPC.listByExample(user);
 		if (output.isSuccess()) {
@@ -58,7 +58,7 @@ public class SelectDialogController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/listBankCard", method = { RequestMethod.GET, RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/listBankCard.action", method = { RequestMethod.GET, RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String listBankCard(BankCard bankCard) throws Exception {
 		return bankCardService.listEasyuiPageByExample(bankCard, true).toString();
 	}

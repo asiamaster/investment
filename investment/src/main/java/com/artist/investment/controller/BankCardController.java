@@ -2,9 +2,6 @@ package com.artist.investment.controller;
 
 import com.artist.investment.domain.BankCard;
 import com.artist.investment.service.BankCardService;
-import com.artist.sysadmin.sdk.domain.UserTicket;
-import com.artist.sysadmin.sdk.exception.NotLoginException;
-import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -39,7 +36,7 @@ public class BankCardController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="BankCard", paramType="form", value = "BankCard的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<BankCard> list(BankCard bankCard) {
         return bankCardService.list(bankCard);
     }
@@ -48,7 +45,7 @@ public class BankCardController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="BankCard", paramType="form", value = "BankCard的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(BankCard bankCard) throws Exception {
         return bankCardService.listEasyuiPageByExample(bankCard, true).toString();
     }
@@ -57,7 +54,7 @@ public class BankCardController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="BankCard", paramType="form", value = "BankCard的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(BankCard bankCard) {
         bankCardService.insertSelective(bankCard);
         return BaseOutput.success("新增成功");
@@ -67,7 +64,7 @@ public class BankCardController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="BankCard", paramType="form", value = "BankCard的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(BankCard bankCard) {
         bankCardService.updateSelective(bankCard);
         return BaseOutput.success("修改成功");
@@ -77,7 +74,7 @@ public class BankCardController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "BankCard的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         bankCardService.delete(id);
         return BaseOutput.success("删除成功");

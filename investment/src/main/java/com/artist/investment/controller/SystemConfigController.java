@@ -37,7 +37,7 @@ public class SystemConfigController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody List<SystemConfig> list(SystemConfig systemConfig) {
         return systemConfigService.list(systemConfig);
     }
@@ -46,7 +46,7 @@ public class SystemConfigController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(SystemConfig systemConfig) throws Exception {
         return systemConfigService.listEasyuiPageByExample(systemConfig, true).toString();
     }
@@ -55,7 +55,7 @@ public class SystemConfigController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(SystemConfig systemConfig) {
 	    systemConfig.setYn(1);
         systemConfigService.insertSelective(systemConfig);
@@ -66,7 +66,7 @@ public class SystemConfigController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(SystemConfig systemConfig) {
         systemConfigService.updateSelective(systemConfig);
         return BaseOutput.success("修改成功");
@@ -76,7 +76,7 @@ public class SystemConfigController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "SystemConfig的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         systemConfigService.delete(id);
         return BaseOutput.success("删除成功");

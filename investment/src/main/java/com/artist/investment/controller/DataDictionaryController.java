@@ -31,17 +31,17 @@ public class DataDictionaryController {
 		return "dataDictionary/index";
 	}
 
-	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody List<DataDictionary> list(DataDictionary dataDictionary) {
 		return dataDictionaryService.list(dataDictionary);
 	}
 
-	@RequestMapping(value = "/listPage", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(DataDictionary dataDictionary) throws Exception {
 		return dataDictionaryService.listEasyuiPageByExample(dataDictionary, true).toString();
 	}
 
-	@RequestMapping(value = "/insert", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(DataDictionary dataDictionary) {
 		Map metadata = new HashMap();
 		JSONObject datetimeProvider = new JSONObject();
@@ -62,7 +62,7 @@ public class DataDictionaryController {
 		}
 	}
 
-	@RequestMapping(value = "/update", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput update(DataDictionary dataDictionary) {
 		Map metadata = new HashMap();
 		JSONObject datetimeProvider = new JSONObject();
@@ -79,7 +79,7 @@ public class DataDictionaryController {
 		}
 	}
 
-	@RequestMapping(value = "/delete", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {
 		dataDictionaryService.delete(id);
 		return BaseOutput.success("删除成功");

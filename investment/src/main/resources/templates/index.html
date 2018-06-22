@@ -1,4 +1,3 @@
-<#resource code="viewIndexPage">
     <#body>
         <#impEcharts/>
         <style>
@@ -153,7 +152,7 @@
                                 <a class="linkmore" href="${contextPath}/investment/investmentDistributionPieChart.html">查看更多&gt;</a>
                             </div>
                             <div id="investmentDistributionPieChartDiv" style="width:99%;height:99%;"></div>
-                            <#echarts _id="investmentDistributionPieChartDiv" _title="投资分布" _type="Pie"  _url="${contextPath}/investment/selectInvestmentDistributionPieChart" _queryParams="{isProgressing:1, investorId:${getUserTicket().id}}"
+                            <#echarts _id="investmentDistributionPieChartDiv" _title="投资分布" _type="Pie"  _url="${contextPath}/investment/selectInvestmentDistributionPieChart.action" _queryParams="{isProgressing:1, investorId:${getUserTicket().id}}"
                                     _nameField="platformName" _valueField="investment" _options="{legend:{selectedMode:false},series: [{label:{normal:{formatter: '{b}({d}%)'} } }]}"></#echarts>
                         </div>
                     </div>
@@ -173,7 +172,7 @@
                                 <a class="linkmore" href="${contextPath}/investment/investmentStats.html">查看更多&gt;</a>
                             </div>
                             <div id="investmentComparisonBarChartDiv" style="width:99%;height:99%;"></div>
-                            <#echarts _id="investmentComparisonBarChartDiv" _title="投资人横向对比" _type="Bar"  _url="${contextPath}/investment/selectInvestmentComparisonBarChart" _queryParams="{isProgressing:1}"
+                            <#echarts _id="investmentComparisonBarChartDiv" _title="投资人横向对比" _type="Bar"  _url="${contextPath}/investment/selectInvestmentComparisonBarChart.action" _queryParams="{isProgressing:1}"
                                     _nameField="platformName" _valueField="investment" _groupField="investorId" _options="investmentComparisonBarChartOpts"></#echarts>
                         </div>
                     </div>
@@ -184,7 +183,7 @@
                                 <a class="linkmore" href="${contextPath}/investment/profitDistributionPieChart.html">查看更多&gt;</a>
                             </div>
                             <div id="profitDistributionPieChartDiv" style="width:99%;height:99%;"></div>
-                            <#echarts _id="profitDistributionPieChartDiv" _title="预期收益分布" _type="Pie"  _url="${contextPath}/investment/selectProfitDistributionPieChart" _queryParams="{isProgressing:1, investorId:${getUserTicket().id}}"
+                            <#echarts _id="profitDistributionPieChartDiv" _title="预期收益分布" _type="Pie"  _url="${contextPath}/investment/selectProfitDistributionPieChart.action" _queryParams="{isProgressing:1, investorId:${getUserTicket().id}}"
                                     _nameField="platformName" _valueField="profit" _options="{legend:{selectedMode:false},series: [{label:{normal:{formatter: '{b}({d}%)'} } }]}"></#echarts>
                         </div>
                     </div>
@@ -209,7 +208,7 @@
             function queryGrid() {
                 var opts = $("#grid").datagrid("options");
                 if (null == opts.url || "" == opts.url) {
-                    opts.url = "${contextPath}/investment/listComingInvestment";
+                    opts.url = "${contextPath}/investment/listComingInvestment.action";
                 }
                 $("#grid").datagrid("load", bindGridMeta2Data("grid", {}));
             }
@@ -221,4 +220,3 @@
             });
         </script>
     </#body>
-</#resource>

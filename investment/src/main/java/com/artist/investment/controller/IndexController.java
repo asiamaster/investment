@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Api
 @Controller
+@RequestMapping
 public class IndexController {
 
     @Autowired

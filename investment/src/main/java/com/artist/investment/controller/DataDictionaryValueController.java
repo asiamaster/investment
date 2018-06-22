@@ -41,14 +41,14 @@ public class DataDictionaryValueController {
 	@ApiOperation(value = "查询DataDictionaryValue", notes = "查询DataDictionaryValue，返回列表信息")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = false, dataType = "string") })
-	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public String list(DataDictionaryValue dataDictionaryValue, ModelMap map) {
 		map.addAttribute("ddId", dataDictionaryValue.getDdId());
 		return "dataDictionaryValue/list";
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/listTree.json", method = { RequestMethod.GET,
+	@RequestMapping(value = "/listTree.action", method = { RequestMethod.GET,
 			RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<DataDictionaryValueTreeView> listTree(@RequestParam Long ddId) {
 		List<DataDictionaryValueTreeView> list = this.dataDictionaryValueService.listTree(ddId);
@@ -58,7 +58,7 @@ public class DataDictionaryValueController {
 	@ApiOperation(value = "分页查询DataDictionaryValue", notes = "分页查询DataDictionaryValue，返回easyui分页信息")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = false, dataType = "string") })
-	@RequestMapping(value = "/listPage", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(DataDictionaryValue dataDictionaryValue) throws Exception {
 		if(null != dataDictionaryValue.getParentId() && dataDictionaryValue.getParentId().equals(-1L)){
 			dataDictionaryValue.setParentId(null);
@@ -69,7 +69,7 @@ public class DataDictionaryValueController {
 	@ApiOperation("新增DataDictionaryValue")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = true, dataType = "string") })
-	@RequestMapping(value = "/insert", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(DataDictionaryValue dataDictionaryValue) {
 		dataDictionaryValueService.insertSelective(dataDictionaryValue);
 		return BaseOutput.success("新增成功").setData(dataDictionaryValue);
@@ -78,7 +78,7 @@ public class DataDictionaryValueController {
 	@ApiOperation("修改DataDictionaryValue")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = true, dataType = "string") })
-	@RequestMapping(value = "/update", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput update(DataDictionaryValue dataDictionaryValue) {
 		dataDictionaryValueService.updateSelective(dataDictionaryValue);
 		return BaseOutput.success("修改成功").setData(dataDictionaryValue);
@@ -87,7 +87,7 @@ public class DataDictionaryValueController {
 	@ApiOperation("删除DataDictionaryValue")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "id", paramType = "form", value = "DataDictionaryValue的主键", required = true, dataType = "long") })
-	@RequestMapping(value = "/delete", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {
 		dataDictionaryValueService.delete(id);
 		return BaseOutput.success("删除成功");

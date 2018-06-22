@@ -2,21 +2,19 @@ package com.artist.investment.controller;
 
 import com.artist.investment.domain.InvestmentPlatform;
 import com.artist.investment.service.InvestmentPlatformService;
-import com.artist.sysadmin.sdk.domain.UserTicket;
-import com.artist.sysadmin.sdk.exception.NotLoginException;
-import com.artist.sysadmin.sdk.session.SessionContext;
 import com.dili.ss.domain.BaseOutput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成
