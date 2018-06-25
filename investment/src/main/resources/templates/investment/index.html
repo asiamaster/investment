@@ -207,12 +207,6 @@
                         <th data-options="field:'projectDuration', _provider:'projectDurationProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             项目期限
                         </th>
-                        <th data-options="field:'repaymentMethod', _provider:'repaymentMethodProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            还款方式
-                        </th>
-                        <th data-options="field:'repaymentDay', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            还款日
-                        </th>
                         <th data-options="field:'profitRatio',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             年化利率(%)
                         </th>
@@ -226,10 +220,19 @@
                             加息率(%)
                         </th>
                         <th data-options="field:'cashCoupon', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            现金券
+                            返券
+                        </th>
+                        <th data-options="field:'repaymentMethod', _provider:'repaymentMethodProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            还款方式
+                        </th>
+                        <th data-options="field:'repaymentDay', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            还款日
+                        </th>
+                        <th data-options="field:'monthlyRepayment', _index:85,  _provider:'monthlyRepaymentProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            每月到帐
                         </th>
                         <th data-options="field:'currentProfit', _index:16, _provider:'currentProfitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            已得收益
+                            已得收益(约)
                         </th>
                         <th data-options="field:'expectProfit', _index:17, _provider:'expectProfitProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             预计收益
@@ -243,14 +246,14 @@
                         <th data-options="field:'isExpired',  _provider:'yesOrNoProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否到期
                         </th>
-                        <th data-options="field:'bankCardId', _provider:'bankCardProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            银行卡
-                        </th>
                         <th data-options="field:'arrived', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             到期金额
                         </th>
                         <th data-options="field:'balanceDue', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             到期余额
+                        </th>
+                        <th data-options="field:'bankCardId', _provider:'bankCardProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            银行卡
                         </th>
                         <th data-options="field:'notes', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             备注
@@ -342,7 +345,7 @@
                     <input class="easyui-numberbox" precision="2" min="0" name="_interestCoupon" id="_interestCoupon" style="width:100%" data-options="label:'加息率(%):'" />
                 </td>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" precision="2" min="0" name="_cashCoupon" id="_cashCoupon" style="width:100%" data-options="label:'现金券(元):'" />
+                    <input class="easyui-numberbox" precision="2" min="0" name="_cashCoupon" id="_cashCoupon" style="width:100%" data-options="label:'返券(元):'" />
                 </td>
             </tr>
             <tr>

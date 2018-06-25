@@ -237,7 +237,7 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 			return;
 		}
 		//每月月供额(元)=贷款本金×月利率×(1＋月利率)＾还款月数〕÷〔(1＋月利率)＾还款月数-1〕
-		BigDecimal monthlyPayment = principal.multiply(monthlyInterestRate).multiply(BigDecimal.ONE.add(monthlyInterestRate).pow(repaymentMonth))
+		BigDecimal monthlyRepayment = principal.multiply(monthlyInterestRate).multiply(BigDecimal.ONE.add(monthlyInterestRate).pow(repaymentMonth))
 				.divide(BigDecimal.ONE.add(monthlyInterestRate).pow(repaymentMonth).subtract(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 //		循环还未还款的月份
 		//monthIndex为未还款月序号
@@ -246,7 +246,7 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 			BigDecimal monthlyPrincipal = principal.multiply(monthlyInterestRate).multiply(BigDecimal.ONE.add(monthlyInterestRate).pow(monthIndex-1))
 					.divide(BigDecimal.ONE.add(monthlyInterestRate).pow(repaymentMonth).subtract(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 			//调整用户余额 ===================================
-			Long adjustAmount = monthlyPayment.multiply(BigDecimal.valueOf(100)).longValue();
+			Long adjustAmount = monthlyRepayment.multiply(BigDecimal.valueOf(100)).longValue();
 			BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), adjustAmount);
 
 			//记录投资明细 ===================================
