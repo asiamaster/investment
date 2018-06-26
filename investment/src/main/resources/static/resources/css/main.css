@@ -96,4 +96,8 @@ h2 {
 /*去掉地图弹出气泡*/
 .BMap_pop,.BMap_shadow{
        display:none;
-   	}
+}
+
+.datagrid .datagrid-pager {
+    background: #FFFFFF;
+}

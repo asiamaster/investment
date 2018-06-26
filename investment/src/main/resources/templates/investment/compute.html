@@ -71,8 +71,6 @@
              if (isNaN(y) || isNaN(m) || isNaN(d)){
                  return;
              }
-             //减一天
-             d-=1;
              //计算天
              if(projectDurationUnit == 1){
                  d+=parseInt(projectDuration);
@@ -100,8 +98,6 @@
              if (isNaN(y) || isNaN(m) || isNaN(d)){
                  return;
              }
-             //减一天
-             d+=1;
              //计算天
              if(projectDurationUnit == 1){
                  d-=parseInt(projectDuration);
@@ -133,7 +129,7 @@
      </script>
 
     <div class="easyui-layout" fit="true">
-        <div region="north" style="width:100%;" height="270" border="false">
+        <div region="north" style="width:100%;" height="280" border="false">
             <div style="padding-left:15px;padding-top:10px;" align="left">
                 <#nav/>
             </div>
@@ -194,7 +190,7 @@
                             <input class="easyui-numberbox" precision="2" min="0" name="currentProfit" id="currentProfit" labelWidth="90" style="width:100%"  data-options="label:'当前收益(元):'" />
                         </td>
                         <td style="padding:5px;">
-                            <input class="easyui-numberbox" name="principalAndInterest" id="principalAndInterest" labelWidth="90" style="width:100%"  data-options="label:'本息合计(元):'" />
+                            <input class="easyui-numberbox" name="principalAndInterest" id="principalAndInterest" precision="2" min="0" labelWidth="90" style="width:100%"  data-options="label:'本息合计(元):'" />
                         </td>
                     </tr>
                 </table>
@@ -203,7 +199,7 @@
         <!-- ====================================================================================================================== -->
         <!-- 中央布局 -->
         <!-- ====================================================================================================================== -->
-        <div region="center" style="width:100%;" height="auto" title="根据收益计算投资额">
+        <div region="center" style="width:100%;" height="auto" title="根据收益计算投资额" border="false">
             <form id="_form" class="easyui-form" method="post" fit="true">
                 <table width="750px" style="padding-left: 50px;padding-top: 10px;">
                     <tr>
@@ -240,7 +236,6 @@
 
                 </table>
             </form>
-            <hr/>
             <form id="_resultForm" class="easyui-form" method="post" fit="true">
                 <table width="750px" style="padding-left: 50px;padding-top:0px;">
                     <tr>
