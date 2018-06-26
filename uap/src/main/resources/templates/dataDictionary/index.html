@@ -1,0 +1,93 @@
+<#body>
+<div id="win"></div>
+<div class="easyui-layout" fit="true">
+    <!-- ====================================================================================================================== -->
+    <!-- 上方布局 -->
+    <!-- ====================================================================================================================== -->
+    <div region="north" height="auto" align="center" border="false">
+        <div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
+            <#nav/>
+        </div>
+        <!-- =========================================================表单========================================================= -->
+        <div class="easyui-panel" style="width:100%;border: 0px;" align="left">
+            <form id="form" class="easyui-form" method="post" fit="true">
+                <div style="padding: 5px;">
+                    <table>
+                        <tr>
+                            <td style="padding: 5px;">
+                                <input name="systemCode" id="systemCode" style="width: 100%" panelWidth="auto" panelHeight="auto" data-options="labelWidth:100,labelAlign:'right',label:'系统:', validType:'length[0,50]'"/>
+                                <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{}'/>
+                            </td>
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="likeName" id="likeName" style="width: 100%" data-options="labelWidth:50,labelAlign:'right',label:'名称:', validType:'length[0,50]'" /></td>
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="code" id="code" style="width: 100%" data-options="labelWidth:50,labelAlign:'right',label:'编码:', validType:'length[0,50]'" /></td>
+                            <td style="padding: 5px;">
+                                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn" onclick="queryDdGrid();">查询</a>&nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- ====================================================================================================================== -->
+    <!-- 中央布局 -->
+    <!-- ====================================================================================================================== -->
+    <!-- 表格 -->
+    <div region="center" style="width: 100%;" height="auto" align="center" border="false">
+        <div style="width: 100%;height: 100%;" align="center">
+            <!-- =========================================================表格========================================================= -->
+            <table class="easyui-datagrid" title="数据字典列表" noheader="true" id="grid" fitColumns="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false" loadMsg="数据加载中..."
+                   singleSelect="true" method="post" multiSort="false" sortName="name" align="center" fit="true" striped="true"  idField="id" border="false"
+                   data-options="toolbar: '#tb', onBeforeLoad:onBeforeLoad">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">ID</th>
+                    <th data-options="field:'systemCode',formatter :systemCodeFormatter 
+                    ,width:'20%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'combobox',options : {panelWidth:'auto'  ,panelHeight:'auto', url:'/dataDictionary/systemList.action',textField:'text',editable:false,valueField:'value',required : true}}">系统</th>
+                    <th data-options="field:'name',width:'14%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', formatter:formatName,
+						editor : {type : 'textbox',options : {required : true,validType:'length[2,20]'}}">名称</th>
+                    <th data-options="field:'code',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'textbox',options : {required : true,validType:'length[2,20]'}}">编码</th>
+                    <th data-options="field:'description',width:'20%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
+						editor : {type : 'textbox',options : {validType:'length[0,50]'}}">备注</th>
+                    <th data-options="field:'created',width:'15%',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
+                    <th data-options="field:'modified',width:'15%',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">更新时间</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+//保存grid里面combobox的数据
+var systemList=[];
+$.ajax({
+    type: "POST",
+    url: "/dataDictionary/systemList.action",
+    data: {},
+    processData:true,
+    dataType: "json",
+    async : false,
+    success: function (data) {
+    	systemList=data;
+    },
+    error: function(){
+       $.messager.alert('错误','远程访问失败');
+    }
+});
+//根据systemcode返回system name
+function systemCodeFormatter (value, row, index){
+	for(var i=0;i<systemList.length;i++){
+		var system=systemList[i];
+		if(system['value']==value){
+			return system['text'];
+		}
+	}
+	return value;
+}
+
+
+</script>
+<!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
+    <#dataDictionary_indexJs />
+</#body>

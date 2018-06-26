@@ -1,0 +1,289 @@
+<#body>
+<div class="easyui-layout" fit="true">
+    <!-- ====================================================================================================================== -->
+    <!-- 上方布局 -->
+    <!-- ====================================================================================================================== -->
+    <div region="north" height="auto" align="center" border="false">
+        <div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
+            <#nav/>
+        </div>
+        <!-- =========================================================表单========================================================= -->
+        <div class="easyui-panel" style="width:100%;border: 0px;" align="left">
+            <form id="form" class="easyui-form" method="post" fit="true">
+                <div style="padding: 5px;">
+                    <table>
+                        <tr>
+                            <td style="padding: 5px;">
+                            <input name="systemCode" id="systemCode" style="width: 100%" panelWidth="auto"  panelHeight="auto"  editable="false"  data-options="labelWidth:100,labelAlign:'right',label:'系统:', validType:'length[0,50]'"/></td>
+                             <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{}'/>
+                            </td>
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="likeName" id="likeName"
+                                                             style="width: 100%"
+                                                             data-options="labelWidth:50,labelAlign:'right',label:'名称:',"/>
+                            </td>
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="code" id="code"
+                                                             style="width: 100%"
+                                                             data-options="labelWidth:50,labelAlign:'right',label:'编码:'"/>
+                            </td>
+                            <td>
+                                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
+                                   onclick="queryGrid();">查询</a>&nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- ====================================================================================================================== -->
+    <!-- 中央布局 -->
+    <!-- ====================================================================================================================== -->
+    <!-- 表格 -->
+    <div region="center" style="width: 100%;" height="auto" align="center" border="false">
+        <!-- =========================================================表格========================================================= -->
+        <div style="width: 100%;height: 100%;" align="center">
+            <table class="easyui-datagrid"  noheader="true" title="系统配置列表"  id="grid" fitColumns="true" pagination="true"
+                   pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false"
+                   loadMsg="数据加载中..." border="false"
+                   singleSelect="true" method="post" multiSort="true" sortName="code" align="center" fit="true"
+                   striped="true" idField="id"
+                   data-options="onBeforeLoad:onBeforeLoad">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">
+                        ID
+                    </th>
+                    <th data-options="formatter :systemCodeFormatter ,editor : {type : 'combobox',options : {panelWidth:'auto'  ,panelHeight:'auto', url:'/dataDictionary/systemList.action',textField:'text',editable:false,valueField:'value',required : true}},field:'systemCode',width:'8%',sortable:'true', order:'asc', align:'center', hidden:false,resizable:'true', fixed:'false'">
+                        系统
+                    </th>
+                    <th data-options="editor : {type : 'textbox',options : {required : true,validType:'length[2,20]'}},field:'name',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        名称
+                    </th>
+                    <th data-options="editor : {type : 'textbox',options : {required : true,validType:'length[2,20]'}},field:'code',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        编码
+                    </th>
+                    <th data-options="editor : {type : 'textbox',options : {required : true,validType:'length[1,20]'}},field:'value',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        值
+                    </th>
+                    <th data-options="editor : {type : 'textbox',options : {validType:'length[0,50]'}},field:'description',  width:'28%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        描述
+                    </th>
+                    <th data-options="field:'created', width:'14%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        创建时间
+                    </th>
+                    <th data-options="field:'modified', width:'14%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        修改时间
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- 隐藏编辑框 -->
+
+
+</div>
+<!-- ====================================================================================================================== -->
+<!-- style & script 分隔线 -->
+<!-- ====================================================================================================================== -->
+<script type="text/javascript">
+	//保存grid里面combobox的数据
+	var systemList=[];
+	$.ajax({
+	    type: "POST",
+	    url: "/dataDictionary/systemList.action",
+	    data: {},
+	    processData:true,
+	    dataType: "json",
+	    async : false,
+	    success: function (data) {
+	    	systemList=data;
+	    },
+	    error: function(){
+	       $.messager.alert('错误','远程访问失败');
+	    }
+	});
+	//根据systemcode返回system name
+	function systemCodeFormatter (value, row, index){
+		for(var i=0;i<systemList.length;i++){
+			var system=systemList[i];
+			if(system['value']==value){
+				return system['text'];
+			}
+		}
+		return value;
+	}
+	function onBeforeLoad(){
+		setOptBtnDisplay(false);
+	}
+    // 是否显示编辑框的确定取消按钮
+    function setOptBtnDisplay(show) {
+        var $btnSave = $("#save_btn");
+        var $btnCancel = $("#cancel_btn");
+        if (show) {
+            $btnSave.show();
+            $btnCancel.show();
+        } else {
+            $btnSave.hide();
+            $btnCancel.hide();
+        }
+    }
+
+
+    //表格查询
+    function queryGrid() {
+        var opts = $("#grid").datagrid("options");
+        if (null == opts.url || "" == opts.url) {
+            opts.url = "${contextPath}/systemConfig/listPage.action";
+        }
+        if (!$('#form').form("validate")) {
+            return;
+        }
+        $("#grid").datagrid("load", bindGridMeta2Form("grid", "form"));
+    }
+
+
+    //清空表单
+    function clearForm() {
+        $('#form').form('clear');
+    }
+
+
+    $.messager.progress({
+        title: "提示",
+        msg: "加载中,请稍候...",
+        value: '10',
+        text: '{value}%',
+        interval: 200
+    });
+    $.parser.onComplete = function () {
+        $.messager.progress("close");
+    };
+
+    //全局按键事件
+    function getKey(e) {
+        e = e || window.event;
+        var keycode = e.which ? e.which : e.keyCode;
+        if (keycode == 46) { //如果按下删除键
+            var selected = $("#grid").datagrid("getSelected");
+            if (selected && selected != null) {
+                del();
+            }
+        }
+    }
+
+    /**
+     * 绑定页面回车事件，以及初始化页面时的光标定位
+     * @formId
+     *          表单ID
+     * @elementName
+     *          光标定位在指点表单元素的name属性的值
+     * @submitFun
+     *          表单提交需执行的任务
+     */
+    $(function () {
+        //bindFormEvent("form", "name", queryGrid);
+        if (document.addEventListener) {
+            document.addEventListener("keyup", getKey, false);
+        } else if (document.attachEvent) {
+            document.attachEvent("onkeyup", getKey);
+        } else {
+            document.onkeyup = getKey;
+        }
+        $("#grid").dataGridEditor({
+            insertUrl: "${contextPath!}/systemConfig/insert.action",
+            updateUrl: "${contextPath!}/systemConfig/update.action",
+            deleteUrl: '${contextPath!}/systemConfig/delete.action',
+            onBeforeEdit: function () {
+                setOptBtnDisplay(true)
+            },
+            onAfterEdit: function () {
+                setOptBtnDisplay(false);
+            },
+            onDblClickRow: function () {
+                that.openUpdate();
+            },canEdit: function (row) {
+             	 <#resource code="updateSystemConfig">
+             	  if(1==1){
+             		 return true;
+             	  }
+             	 </#resource>
+             	 return false;  
+           }
+            /*onSaveSuccess: function (row, data) {
+                row.created = UAP_TOOLS.getNowStr();
+                row.modified = UAP_TOOLS.getNowStr();
+                $("#grid").datagrid('updateRow', $("#grid").datagrid('getRowIndex', row), row);
+                $("#grid").datagrid('refreshRow', $("#grid").datagrid('getRowIndex', row));
+            }*/
+        });
+
+        var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
+        pager.pagination({
+            buttons: [
+                 <#resource code="insertSystemConfig">
+                {
+                    iconCls: 'icon-add',
+                    text: '新增',
+                    handler: function () {
+                        $("#grid").dataGridEditor().insert();
+                    }
+                },
+                </#resource>
+                <#resource code="updateSystemConfig">
+                {
+                    iconCls: 'icon-edit',
+                    text: '修改',
+                    handler: function () {
+                        $("#grid").dataGridEditor().update();
+                    }
+                },
+                </#resource>
+                <#resource code="deleteSystemConfig">
+                {
+                    iconCls: 'icon-remove',
+                    text: '删除',
+                    handler: function () {
+                        $("#grid").dataGridEditor().delete();
+                    }
+                },
+                </#resource>
+                {
+                    id: 'save_btn',
+                    text: '保存',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        $("#grid").dataGridEditor().save();
+                    }
+                },
+                {
+                    id: 'cancel_btn',
+                    text: '取消',
+                    iconCls: 'icon-clear',
+                    handler: function () {
+                        $("#grid").dataGridEditor().cancel();
+                    }
+                },
+                <#resource code="exportSystemConfig">
+           	   {
+                    iconCls:'icon-export',
+                    text:'导出',
+                    handler:function(){
+                        doExport('grid');
+                    }
+                }
+           	</#resource>
+            ]
+        });
+        
+
+        
+        //表格仅显示下边框
+        $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+        queryGrid();
+        setOptBtnDisplay(false);
+    })
+</script>
+</#body>

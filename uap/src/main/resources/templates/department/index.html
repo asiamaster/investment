@@ -1,0 +1,101 @@
+<#body>
+<div class="easyui-layout" fit="true">
+    <!-- ====================================================================================================================== -->
+    <div region="north" height="auto" style="padding-left:15px;padding-top:10px;padding-bottom: 10px;" align="center"
+         border="false">
+        <div id="nav" align="left">
+            <#nav/>
+        </div>
+    </div>
+    <!-- 中央布局 -->
+    <!-- ====================================================================================================================== -->
+    <!-- 表格 -->
+    <div region="center" style="width: 100%;border:0px;" height="auto" border="false" align="center">
+        <div class="easyui-panel" align="center" style="width:100%;height:100%;" border="false">
+            <!-- =========================================================表格========================================================= -->
+            <table class="easyui-treegrid" title="部门列表" noheader="true" id="grid" sortName="created" sortOrder="asc"
+                   fitColumns="true" remoteSort="false" loadMsg="数据加载中..." singleSelect="true" method="post"
+                   multiSort="true" border="false"
+                   align="center" fit="true" striped="true" toolbar="#toolbar" idField="id"
+                   treeField="name" url="${contextPath!}/department/list.action"
+                   data-options="loadFilter:treegridLoadFilter, _parentIdField:'parentId'">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true">id</th>
+                    <th data-options="field:'name',width:'20%',editor : {
+										type : 'textbox',
+										options : {
+											required : true
+											,validType:'length[2,20]'
+										}
+									}">部门名称
+                    </th>
+                    <th data-options="field:'code',width:'20%'">编码</th>
+                    <th data-options="field:'created',formatter:dateToStringFormatter,width:'20%'">创建时间</th>
+                    <th data-options="field:'modified',formatter:dateToStringFormatter,width:'20%'">修改时间</th>
+                    <th data-options="field:'description',width:'20%',editor:{type : 'textbox',options : {validType:'length[0,20]'}}">描述</th>
+                </tr>
+                </thead>
+            </table>
+            <div id="toolbar" style="padding: 2px 5px;background: #FFFFFF">
+                <%if(isGroup){%>
+                <span>市场：</span>
+                <input class="easyui-combobox" name="firm"  id="firm"  panelWidth="auto" panelHeight="auto" editable="false"style="width:8%;"
+                       labelAlign="right" data-options="onLoadSuccess:function(){
+                            var datas=$('#firm').combobox('getData');
+                       		if(datas.length>=2){
+                       		   var defaultValue=datas[1].value;
+                       		   if(defaultValue!=$('#firm').combobox('getValue')){
+                       		   	//$('#firm').combobox('select',defaultValue);
+                       		   }
+                       		}
+                       },onChange:function(newValue,oldValue){
+                            window.firmCode = newValue;
+                            setOptBtnDisplay(false);
+                            try{
+                               $('#grid').treegrid('reload', {firmCode:newValue});
+                            }catch(e){
+                            }
+                          
+                           
+                       }"/>
+                <#comboProvider _id="firm" _provider='firmCodeProvider' />
+                <%}%>
+                <#resource code="insertDepartment">
+               			<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
+                </#resource>
+                <#resource code="updateDepartment">
+    					<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
+                 </#resource>
+                
+                <!--<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>-->
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave" style="display: none" onclick="endEditing()" plain="true">保存</a>
+                <a href="#" id="btnCancel" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit()" style="display: none" plain="true">取消</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var dataAuth = {
+        addDept: true,
+        editDept: true,
+        deleteDept: true
+    };
+    window.firmCode = '${firmCode!}';
+    
+    //将日期格式化(后端不能使用provider)
+	function dateToStringFormatter(value,row,index){
+		if(typeof(value)=='undefined'){
+			return ""
+		}else{
+			try{
+				var dateValue=new Date(value);
+				return UAP_TOOLS.formatDateToString(dateValue);
+			}catch(error){
+				return value;
+			}
+		}
+	}
+</script>
+<#department_indexJs/>
+</#body>

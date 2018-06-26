@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.dao.LoginLogMapper">
+  <resultMap id="BaseResultMap" type="com.dili.uap.domain.LoginLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="host" jdbcType="VARCHAR" property="host" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="type" jdbcType="TIMESTAMP" property="type" />
+    <result column="system_code" jdbcType="VARCHAR" property="systemCode" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="success" jdbcType="INTEGER" property="success" />
+    <result column="msg" jdbcType="VARCHAR" property="msg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, user_id, ip, host, login_time, `type`, system_code,system_name,firm_code,success,msg
+  </sql>
+
+  <!--根据用户输入查询所有登录日志 -->
+  <select id="findByLoginLogDto" parameterType="com.dili.uap.domain.dto.LoginLogDto" resultMap="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    select 
+      <include refid="Base_Column_List" />
+      from login_log
+      WHERE 1=1
+    <if test="userName !=null and userName !=''">
+      AND user_id IN (SELECT id FROM user WHERE user_name LIKE '%${userName}%' or real_name LIKE '%${userName}%'  )
+    </if>
+    <if test="ip !=null and ip !=''">
+      AND ip =#{ip}
+    </if>
+    <if test="systemCode !=null">
+      AND system_code =#{systemCode}
+    </if>
+    <if test="success !=null">
+      AND success =#{success}
+    </if>
+    <if test="startLoginTime !=null">
+      AND login_time >=#{startLoginTime}
+    </if>
+    <if test="endLoginTime !=null">
+      AND #{endLoginTime}>=login_time
+    </if>
+    <if test="type !=null">
+      AND `type`=#{type}
+    </if>
+    
+     <if test="sort !=null">
+        ORDER BY `${sort}`
+        <if test="order !=null">
+          ${order}
+        </if>
+    </if>
+    
+  </select>
+</mapper>

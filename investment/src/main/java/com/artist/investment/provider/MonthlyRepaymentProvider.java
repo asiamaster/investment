@@ -63,6 +63,9 @@ public class MonthlyRepaymentProvider implements ValueProvider {
             BigDecimal monthlyInterestRate = new BigDecimal(clone.getProfitRatio()/100).divide(BigDecimal.valueOf(12), 8, BigDecimal.ROUND_HALF_UP);
             //每月利息(元) = 贷款本金×月利率(年利率/12)
             BigDecimal monthlyInterest = principal.multiply(monthlyInterestRate).setScale(2, BigDecimal.ROUND_HALF_UP);
+            if(clone.getInterestCoupon() == 0){
+                return monthlyInterest.toPlainString();
+            }
             //单独计算加息率部分的(参考团贷网，分开作四舍五入)
             BigDecimal interestCouponRate = new BigDecimal(clone.getInterestCoupon()/100).divide(BigDecimal.valueOf(12), 8, BigDecimal.ROUND_HALF_UP);
             BigDecimal interestCoupon = principal.multiply(interestCouponRate).setScale(2, BigDecimal.ROUND_HALF_UP);

@@ -1,0 +1,64 @@
+<#body>
+<div class="easyui-layout" fit="true">
+
+	<div region="north" height="auto" align="center" style="padding-bottom: 15px;"  border="false">
+		<div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
+			<#nav/>
+		</div>
+	</div>
+	<div style="width: 210px;" height="100%" align="left" headerCls="panelHeaderCls" data-options="region:'west',title:'菜单管理',split:true">
+			<ul id="menuTree" class="easyui-tree" lines="false" url="${contextPath}/menu/listSystemMenu.action"
+				data-options="onSelect:onSelectTree, loadFilter:treeLoadFilter, _idField:'id', _textField:'name', _parentIdField:'parent_id',
+				onLoadSuccess:onTreeLoadSuccess,animate:true,dnd:true,onBeforeDrop:dragMenu" />
+	</div>
+
+	<!-- 表格 -->
+	<div region="center" style="width: 100%;"  height="99%" border="false" align="center">
+		<div class="easyui-layout" fit="true">
+			<div id="panel1" region="north" border="false" split="true" style="width:100%;height:50%;">
+			<!-- =========================================================右上表格========================================================= -->
+				<table id="grid1" fitColumns="true" pagination="false" sortName="id" sortOrder="asc"
+					   loadMsg="数据加载中..." singleSelect="true" method="post" align="left"
+					   fit="true" striped="true"  idField="id" data-options=""></table>
+				<!-- 表格1的工具栏 -->
+				<div id="grid1Toolbar" style="padding: 2px 5px;background: #FFFFFF">
+					<#resource code="addMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert('grid1')" plain="true">新增</a>
+					</#resource>
+					<#resource code="updateMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate('grid1')" plain="true">修改</a>
+					</#resource>
+					<#resource code="deleteMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del('grid1')" plain="true">删除</a>
+					</#resource>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave1" style="display: none" onclick="endEditing('grid1')" plain="true">保存</a>
+					<a href="#" id="btnCancel1" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit('grid1')" style="display: none" plain="true">取消</a>
+				</div>
+			</div>
+			<div id="panel2" region="center" border="false" style="width:100%;height:49%;">
+				<!-- =========================================================右下表格========================================================= -->
+				<table id="grid2" fitColumns="true"  pagination="false" sortName="id" sortOrder="asc"
+					   loadMsg="数据加载中..." singleSelect="true" method="post" align="left"
+					   fit="true" striped="true"  idField="id" data-options=""></table>
+				<!-- 表格2的工具栏 -->
+				<div id="grid2Toolbar" style="padding: 2px 5px;background: #FFFFFF">
+					<#resource code="addMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert('grid2')" plain="true">新增</a>
+					</#resource>
+					<#resource code="updateMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate('grid2')" plain="true">修改</a>
+					</#resource>
+					<#resource code="deleteMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del('grid2')" plain="true">删除</a>
+					</#resource>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave2" style="display: none" onclick="endEditing('grid2')" plain="true">保存</a>
+					<a href="#" id="btnCancel2" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit('grid2')" style="display: none" plain="true">取消</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<#menu_js/>
+</#body>
