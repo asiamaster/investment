@@ -105,8 +105,6 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 	private void monthly(Investment investment){
 //		贷款本金 = (investment+deducted)
 		BigDecimal principal = new BigDecimal(investment.getInvestment() + investment.getDeducted()).divide(BigDecimal.valueOf(100));
-		//月利率 = 年利率 / 12 (精确到小数后10位，四舍五入，2.35变成2.4)
-		BigDecimal monthlyInterestRate = new BigDecimal(investment.getProfitRatio() / 100).divide(BigDecimal.valueOf(12), 10, BigDecimal.ROUND_HALF_UP);
 		//计算当前应还款的月序号 st=======================================
 		//获取还款/开始时间是当月几号
 		Calendar startCalendar = Calendar.getInstance();
@@ -142,8 +140,9 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 		if(monthIndex >= repaymentIndex) {
 			return;
 		}
+		//月利率 = 年利率 / 12 (精确到小数后10位，四舍五入，2.35变成2.4)
 		//每月利息=贷款本金×月利率(年利率/12)
-		BigDecimal monthlyInterest = principal.multiply(monthlyInterestRate).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal monthlyInterest = principal.multiply(new BigDecimal(investment.getProfitRatio() / 100)).divide(BigDecimal.valueOf(12), 2, BigDecimal.ROUND_HALF_UP);
 		//单独计算加息率部分的(参考团贷网，分开作四舍五入)
 		BigDecimal interestCouponRate = new BigDecimal(investment.getInterestCoupon()/100).divide(BigDecimal.valueOf(12), 8, BigDecimal.ROUND_HALF_UP);
 
