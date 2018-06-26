@@ -262,6 +262,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         Float totalDeducted = 0F;
         Float totalPrincipalAndInterest = 0F;
         Float yearEndEarn = 0F;
+        Float incomingStats = 0F;
         for(Map data : list){
             dailyProfit += Float.parseFloat(data.get("dailyProfit").toString());
             currentProfit += Float.parseFloat(data.get("currentProfit").toString());
@@ -270,6 +271,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
             investment += Float.parseFloat(data.get("investment").toString());
             deducted += Float.parseFloat(data.get("deducted").toString());
             profit += Float.parseFloat(data.get("profit").toString());
+            incomingStats += Float.parseFloat(data.get("incomingStats").toString());
             principalAndInterest += Float.parseFloat(data.get("principalAndInterest").toString());
             totalInvestment += Float.parseFloat(data.get("totalInvestment").toString());
             totalInvestmentAmount += Float.parseFloat(data.get("totalInvestmentAmount").toString());
@@ -285,6 +287,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         summation.put("investment", investment);
         summation.put("deducted", deducted);
         summation.put("profit", profit);
+        summation.put("incomingStats", incomingStats);
         summation.put("principalAndInterest", principalAndInterest);
         summation.put("totalInvestment", totalInvestment);
         summation.put("totalInvestmentAmount", totalInvestmentAmount);
@@ -593,6 +596,9 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
         JSONObject totalPrincipalAndInterestStatsProvider = new JSONObject();
         totalPrincipalAndInterestStatsProvider.put("provider", "totalPrincipalAndInterestStatsProvider");
         metadata.put("totalPrincipalAndInterest", totalPrincipalAndInterestStatsProvider);
+        JSONObject incomingStatsProvider = new JSONObject();
+        incomingStatsProvider.put("provider", "incomingStatsProvider");
+        metadata.put("incomingStats", incomingStatsProvider);
         return metadata;
     }
 

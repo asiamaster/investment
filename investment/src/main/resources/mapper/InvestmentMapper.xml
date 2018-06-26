@@ -165,6 +165,7 @@
     ,t1.investment
     ,t1.deducted
     ,t1.profit
+    ,t1.arrived
     ,t1.currentProfit
     ,t1.principalAndInterest
     ,t1.investmentAmount
@@ -181,6 +182,7 @@
     SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) profit
     , ROUND(SUM(i.investment)/100, 2) investment
     , ROUND(SUM(i.deducted)/100, 2) deducted
+    , ROUND(SUM(i.arrived)/100, 2) arrived
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(now(), i.start_date))/365/10000, 2) currentProfit
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) principalAndInterest
     , COUNT(i.id) investmentAmount

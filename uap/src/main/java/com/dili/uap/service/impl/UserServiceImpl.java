@@ -5,15 +5,21 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTO;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.exception.AppException;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
 import com.dili.uap.domain.*;
+import com.dili.uap.domain.dto.PaymentRecord;
 import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
+import com.dili.uap.rpc.PaymentRecordRpc;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.exception.NotLoginException;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -26,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +49,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
     @Autowired
     private UserManager userManager;
+
+    @Autowired
+    private PaymentRecordRpc paymentRecordRpc;
 
     public UserMapper getActualDao() {
         return (UserMapper) getDao();
@@ -450,6 +460,46 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         user.setBalance(user.getBalance()+amount);
         updateSelective(user);
         return BaseOutput.success().setData(user.getBalance());
+    }
+
+    @Override
+    @Transactional
+    public BaseOutput<String> adjustBalance(Long id, String amount, String notes) {
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+        User user = get(id);
+        //记录初始余额
+        Long oriBalance = user.getBalance();
+        //计算更新后的余额
+        Long newBalance = new BigDecimal(amount).setScale(2,BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).add(BigDecimal.valueOf(user.getBalance())).longValue();
+        user.setBalance(newBalance);
+        //更新用户余额
+        updateSelective(user);
+        PaymentRecord paymentRecord = DTOUtils.newDTO(PaymentRecord.class);
+        paymentRecord.setCreatedName(userTicket.getRealName());
+        //设置当前余额
+        paymentRecord.setBalance(newBalance);
+        //查询原始余额
+        paymentRecord.setInitialAmount(oriBalance);
+        paymentRecord.setTargetAmount(newBalance);
+        paymentRecord.setName("调整余额");
+        //调整余额为正数，则是收入1,否则为支出2
+        if(Float.parseFloat(amount) > 0) {
+            paymentRecord.setType(1);
+        }else{
+            paymentRecord.setType(2);
+        }
+        paymentRecord.setUserName(user.getRealName());
+        //资金去向
+        paymentRecord.setPlatformName("余额调整:"+amount+"元");
+        paymentRecord.setNotes(notes);
+        BaseOutput<String> output = paymentRecordRpc.insert(paymentRecord);
+        if (!output.isSuccess()){
+            throw new AppException("远程调用异常");
+        }
+        return BaseOutput.success("调整余额成功");
     }
 
     private String encryptPwd(String passwd) {

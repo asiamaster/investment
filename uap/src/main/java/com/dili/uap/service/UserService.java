@@ -125,4 +125,13 @@ public interface UserService extends BaseService<User, Long> {
      * @return
      */
     BaseOutput<Long> adjustBalance(Long id, Long amount);
+
+    /**
+     * 调整余额
+     * @param id	用户id
+     * @param amount	调整金额(前台传参，单位元，带小数)，正为加，负为减
+     * @param notes    备注
+     * @return	返回"调整余额成功"
+     */
+    BaseOutput<String> adjustBalance(Long id, String amount, String notes);
 }

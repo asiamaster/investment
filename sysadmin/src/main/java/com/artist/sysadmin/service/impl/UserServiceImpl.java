@@ -536,6 +536,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
+	@Transactional
 	public BaseOutput<String> adjustBalance(Long id, String balance, String notes) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if(userTicket == null){

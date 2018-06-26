@@ -3,6 +3,44 @@
     //是否是修改用户。目前用于判断用户编辑页面，部门数据的初始值显示问题
     var isUpdateUser = true;
 
+
+    //打开调整余额窗口
+    function openAdjusteBalance(){
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        $('#balanceDlg').dialog('open');
+        $('#balanceDlg').dialog('center');
+        $("#adjustId").val(selected.id)
+    }
+
+    /**
+     * 调整余额
+     */
+    function adjustBalance() {
+        $.ajax({
+            type : "POST",
+            url : '${contextPath}/user/adjustBalance.action',
+            data : {id:$("#adjustId").val(), balance:$("#updateBalance").numberspinner("getValue"), notes:$("#notes").textbox("getValue")},
+            dataType : "json",
+            processData : true,
+            async : true,
+            success : function(retData) {
+                if (retData.code == "200") {
+                    queryGrid();
+                    $('#balanceDlg').dialog('close');
+                } else {
+                    $.messager.alert('错误', retData.result);
+                }
+            },
+            error : function(data) {
+                $.messager.alert('错误', '远程访问失败:'+data);
+            }
+        });
+    }
+
     /**
      * datagrid行点击事件
      * 目前用于来判断 启禁用是否可点
@@ -397,7 +435,17 @@
     }
     },
     </#resource>
-        <#resource code="exportUser">
+    <#resource code="adjusteBalance">
+    {
+        iconCls:'icon-edit',
+        text:'调整余额',
+        id:'adjusteBalance_btn',
+        handler:function(){
+            openAdjusteBalance();
+        }
+    },
+    </#resource>
+    <#resource code="exportUser">
     {
         iconCls:'icon-export',
         text:'导出',

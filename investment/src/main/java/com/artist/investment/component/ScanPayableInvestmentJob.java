@@ -142,9 +142,9 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 		}
 		//月利率 = 年利率 / 12 (精确到小数后10位，四舍五入，2.35变成2.4)
 		//每月利息=贷款本金×月利率(年利率/12)
-		BigDecimal monthlyInterest = principal.multiply(new BigDecimal(investment.getProfitRatio() / 100)).divide(BigDecimal.valueOf(12), 2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal monthlyInterest = principal.multiply(new BigDecimal(investment.getProfitRatio()).divide(BigDecimal.valueOf(100))).divide(BigDecimal.valueOf(12), 2, BigDecimal.ROUND_HALF_UP);
 		//单独计算加息率部分的(参考团贷网，分开作四舍五入)
-		BigDecimal interestCouponRate = new BigDecimal(investment.getInterestCoupon()/100).divide(BigDecimal.valueOf(12), 8, BigDecimal.ROUND_HALF_UP);
+		BigDecimal interestCouponRate = new BigDecimal(investment.getInterestCoupon()).divide(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(12), 8, BigDecimal.ROUND_HALF_UP);
 
 		//循环还未还款的月份
 		//monthIndex为未还款月序号

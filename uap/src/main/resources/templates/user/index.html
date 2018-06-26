@@ -69,7 +69,10 @@
                         <th width="10%" data-options="field:'realName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             真实姓名
                         </th>
-                        <th width="15%" data-options="field:'cellphone',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="10%" data-options="field:'balance', _provider:'centToYuanProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            余额
+                        </th>
+                        <th width="10%" data-options="field:'cellphone',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             手机号码
                         </th>
                         <th width="20%" data-options="field:'userRoles',align:'center', resizable:'true', fixed:'false'">
@@ -81,10 +84,10 @@
                         <th width="10%" data-options="field:'departmentId',_provider:'departmentProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             归属部门
                         </th>
-                        <th width="10%" data-options="field:'state',_provider:'userStateProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="8%" data-options="field:'state',_provider:'userStateProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             状态
                         </th>
-                        <th width="16%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="12%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建时间
                         </th>
                     </tr>
@@ -270,6 +273,29 @@
              <ui id="dataTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:false"></ui>
          </div>
      </div>
+
+     <!-- 隐藏余额编辑框 -->
+     <div id="balanceDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true"
+          draggable="false" title="调整余额" style="padding: 10px;" modal="true" border="thin" closed="true"
+          data-options="buttons:[{text:'确认',iconCls:'icon-ok',handler:adjustBalance}]">
+         <form id="balanceForm" class="easyui-form" method="post">
+             <table style="padding: 0px; margin: 0px;">
+                 <tr>
+                     <td style="padding: 5px;">
+                         <input id="adjustId" name="id" type="hidden"/>
+                         <input class="easyui-numberspinner" value="0" precision="2" name="balance" id="updateBalance" style="width: 200px;" data-options="labelAlign:'right',label:'*余额增量:', validType:'length[0,20]',increment:1000" required="true"
+                                validateOnCreate="false" />
+                     </td>
+                 </tr>
+                 <tr>
+                     <td>
+                         <input class="easyui-textbox" name="notes" id="notes" style="width:320px;height:80px;" data-options="labelAlign:'right',label:'*备注:',multiline:true, validType:'length[0,250]'" required="true"/>
+                     </td>
+                 </tr>
+             </table>
+         </form>
+     </div>
+
     <!-- ====================================================================================================================== -->
     <!-- style & script 分隔线 -->
     <!-- ====================================================================================================================== -->

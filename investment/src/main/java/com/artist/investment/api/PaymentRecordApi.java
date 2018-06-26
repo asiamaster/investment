@@ -33,7 +33,7 @@ public class PaymentRecordApi {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="PaymentRecord", paramType="form", value = "PaymentRecord的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.api", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput<String> insert(@RequestBody PaymentRecord paymentRecord) {
         paymentRecordService.insertSelective(paymentRecord);
         return BaseOutput.success("新增成功");

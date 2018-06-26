@@ -33,6 +33,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -280,6 +281,13 @@ public class UserController {
     @RequestMapping(value = "/forcedOffline.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody BaseOutput forcedOffline(Long id) {
         return userService.forcedOffline(id);
+    }
+
+    @ApiOperation("调整余额")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = true, dataType = "string") })
+    @RequestMapping(value = "/adjustBalance.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody BaseOutput<String> adjustBalance(@RequestParam Long id, @RequestParam String balance, @RequestParam(required = false) String notes) {
+        return userService.adjustBalance(id, balance, notes);
     }
 
 }
