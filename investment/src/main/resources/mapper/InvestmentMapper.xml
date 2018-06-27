@@ -109,6 +109,7 @@
     ,t1.platformName
     ,t1.investment
     ,t1.deducted
+    ,t1.arrived
     ,t1.profit
     ,t1.currentProfit
     ,t1.principalAndInterest
@@ -126,6 +127,7 @@
     SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) profit
     , ROUND(SUM(i.investment)/100, 2) investment
     , ROUND(SUM(i.deducted)/100, 2) deducted
+    , ROUND(SUM(i.arrived)/100, 2) arrived
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(now(), i.start_date))/365/10000, 2) currentProfit
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) principalAndInterest
     , COUNT(i.id) investmentAmount
@@ -145,6 +147,7 @@
     SELECT ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000, 2) totalProfit
     , ROUND(SUM(i.investment)/100, 2) totalInvestment
     , ROUND(SUM(i.deducted)/100, 2) totalDeducted
+    , ROUND(SUM(i.arrived)/100, 2) arrived
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(case when (i.end_date is null or i.end_date > now()) then now() else i.end_date end, i.start_date))/365/10000, 2) totalCurrentProfit
     , ROUND(SUM((i.investment+i.deducted)*(i.profit_ratio+i.interest_coupon)* DATEDIFF(i.end_date, i.start_date))/365/10000 + SUM(i.investment)/100 + SUM(i.deducted)/100, 2) totalPrincipalAndInterest
     , COUNT(i.id) totalInvestmentAmount

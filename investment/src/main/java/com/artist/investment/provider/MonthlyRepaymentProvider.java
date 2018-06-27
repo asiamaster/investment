@@ -33,8 +33,10 @@ public class MonthlyRepaymentProvider implements ValueProvider {
     @Override
     public String getDisplayText(Object obj, Map metaMap, FieldMeta fieldMeta) {
         Investment investment = (Investment) metaMap.get(ROW_DATA_KEY);
+        Object repaymentMethod = investment.aget(ValueProviderUtils.ORIGINAL_KEY_PREFIX + "repaymentMethod");
+        int repaymentMethodInt = repaymentMethod == null ? investment.getRepaymentMethod() : Integer.parseInt(repaymentMethod.toString());
         //到期还款每月还款额为0
-        if(investment.getRepaymentMethod().equals(RepaymentMethod.DUE.getCode())){
+        if(repaymentMethodInt == RepaymentMethod.DUE.getCode()){
             return "0";
         }
         //计算开始投资时间到现在的收益(单位元)
@@ -54,9 +56,9 @@ public class MonthlyRepaymentProvider implements ValueProvider {
         clone.setInvestment(investmentAmount);
         clone.setDeducted(deducted);
         //等额本息
-        if(investment.getRepaymentMethod().equals(RepaymentMethod.PRINCIPAL_INTEREST.getCode())) {
+        if(repaymentMethodInt == RepaymentMethod.PRINCIPAL_INTEREST.getCode()) {
             return MoneyUtils.centToYuan(getExpectProfitByPrincipalInterest(clone));
-        }else if(investment.getRepaymentMethod().equals(RepaymentMethod.MONTHLY.getCode())) {
+        }else if(repaymentMethodInt == RepaymentMethod.MONTHLY.getCode()) {
             //贷款本金(元) = (investment+deducted)
             BigDecimal principal = new BigDecimal(clone.getInvestment() + clone.getDeducted()).divide(BigDecimal.valueOf(100));
             //月利率 = 年利率 / 12 (精确到小数后10位，四舍五入，2.35变成2.4)

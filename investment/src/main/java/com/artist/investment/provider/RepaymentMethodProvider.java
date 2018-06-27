@@ -36,11 +36,6 @@ public class RepaymentMethodProvider implements ValueProvider {
         if(obj == null || obj.equals("")) {
             return null;
         }
-        for(ValuePair<?> valuePair : buffer){
-            if(obj.equals(valuePair.getValue())){
-                return valuePair.getText();
-            }
-        }
-        return null;
+        return RepaymentMethod.getRepaymentMethodByCode((Integer) obj).getText();
     }
 }

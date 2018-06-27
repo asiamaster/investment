@@ -59,7 +59,7 @@ public class ExpectProfitProvider implements ValueProvider {
             clone.setDeducted(deducted);
             return MoneyUtils.centToYuan(getExpectProfitByPrincipalInterest(clone));
         }
-        //单独处理按月付息，可能有细微的差别(精确到分的话，每个月有四舍五入的差别)
+        //单独处理按月付息，可能和到期还款有细微的差别(精确到分的话，每个月有四舍五入的差别)
         if(investment.getRepaymentMethod().equals(RepaymentMethod.MONTHLY.getCode())){
             Investment clone = DTOUtils.clone(investment, Investment.class);
             clone.setInvestment(investmentAmount);

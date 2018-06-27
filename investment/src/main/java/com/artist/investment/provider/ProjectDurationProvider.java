@@ -1,5 +1,6 @@
 package com.artist.investment.provider;
 
+import com.artist.investment.constant.ProjectDurationUnit;
 import com.artist.investment.domain.Investment;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
@@ -39,14 +40,6 @@ public class ProjectDurationProvider implements ValueProvider {
         if(investment.getProjectDurationUnit() == null){
             return null;
         }
-        //项目期限单位
-        String unit = "";
-        for(ValuePair<?> valuePair : buffer){
-            if(investment.getProjectDurationUnit().toString().equals(valuePair.getValue())){
-                unit = valuePair.getText();
-                break;
-            }
-        }
-        return obj+unit;
+        return obj+ProjectDurationUnit.getProjectDurationUnit(investment.getProjectDurationUnit()).getText();
     }
 }
