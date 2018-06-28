@@ -19,7 +19,7 @@
 	<parent>
 		<artifactId>investment-parent</artifactId>
 		<groupId>com.artist</groupId>
-		<version>1.0.0</version>
+		<version>2.0.0</version>
 	</parent>
 
 	<profiles>
@@ -83,7 +83,7 @@
 		</dependency>
 		<!-- 内部包 -->
 		<dependency>
-			<groupId>com.dili</groupId>
+			<groupId>com.artist</groupId>
 			<artifactId>uap-sdk</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>

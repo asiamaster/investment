@@ -59,6 +59,22 @@ public class AuthenticationApi {
     @Autowired
     private ResourceMapper resourceMapper;
 
+    /**
+     * 用户登录验证
+     * @param json
+     * @return
+     */
+    @ApiOperation("登录验证")
+    @RequestMapping(value = "/validate.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput validate(@RequestBody String json){
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
+        loginDto.setUserName(jsonObject.getString("userName"));
+        loginDto.setPassword(jsonObject.getString("password"));
+        return loginService.validate(loginDto);
+    }
+
     @ApiOperation("统一授权登录")
     @RequestMapping(value = "/login.api", method = { RequestMethod.GET, RequestMethod.POST })
     @ResponseBody

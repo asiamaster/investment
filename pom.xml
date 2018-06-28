@@ -6,7 +6,7 @@
 	<groupId>com.artist</groupId>
 	<artifactId>investment-parent</artifactId>
 	<name>investment-parent</name>
-	<version>1.0.0</version>
+	<version>2.0.0</version>
 	<description>投资理财父项目</description>
 	<packaging>pom</packaging>
 
@@ -197,15 +197,15 @@
 		</dependencies>
 	</dependencyManagement>
 	<!-- 注意： 这里必须要添加， 否者各种依赖有问题  -->
-	<repositories>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/libs-milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+	<!--<repositories>-->
+		<!--<repository>-->
+			<!--<id>spring-milestones</id>-->
+			<!--<name>Spring Milestones</name>-->
+			<!--<url>https://repo.spring.io/libs-milestone</url>-->
+			<!--<snapshots>-->
+				<!--<enabled>false</enabled>-->
+			<!--</snapshots>-->
+		<!--</repository>-->
+	<!--</repositories>-->
 
 </project>
