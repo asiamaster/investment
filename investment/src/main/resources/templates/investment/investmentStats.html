@@ -33,7 +33,7 @@
                 <table class="easyui-datagrid" title="投资人统计" id="investorStatsGrid" fitColumns="true"
                        rownumbers="true" remoteSort="false" noHeader="true"
                        loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false"
-                       align="center" fit="true" striped="true" toolbar="#investorStatsGridToolbar" data-options="showFooter:true, rowStyler:investorStatsGridRowStyler, view:footerView">
+                       align="center" fit="true" striped="true" toolbar="#investorStatsGridToolbar" data-options="showFooter:true, rowStyler:investorStatsGridRowStyler, view:footerView, onLoadSuccess:gridLoadSuccess">
                     <thead>
                     <tr>
                         <th width="6%" data-options="field:'investorId', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -111,7 +111,7 @@
             <table class="easyui-datagrid" title="投资人平台统计" id="investorPlatformStatsGrid" fitColumns="true"
                    rownumbers="true" remoteSort="false" noHeader="true"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false"
-                   align="center" fit="true" striped="true" toolbar="#investorPlatformStatsGridToolbar" data-options="">
+                   align="center" fit="true" striped="true" toolbar="#investorPlatformStatsGridToolbar" data-options="onLoadSuccess:gridLoadSuccess">
                 <thead>
                     <tr>
                         <th width="5%" data-options="field:'investorId', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">

@@ -51,3 +51,9 @@ function disableEasyUiControl(controlId,isDisable) {
         $("#" + controlId).linkbutton("enable");
     }
 }
+
+
+//清空datagrid选择
+function gridLoadSuccess(data) {
+    $(this).datagrid("clearSelections");
+}

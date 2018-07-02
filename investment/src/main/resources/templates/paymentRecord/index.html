@@ -48,7 +48,7 @@
             <table class="easyui-datagrid" title="收支明细" id="grid" fitColumns="true" noheader="true" pageList="[50,100,200]"
                    pagination="true" pageSize="50" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="false" border="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc"
-                   align="center" fit="true" striped="true" idField="id" data-options="onHeaderContextMenu:headerContextMenu">
+                   align="center" fit="true" striped="true" idField="id" data-options="onHeaderContextMenu:headerContextMenu, onLoadSuccess:gridLoadSuccess">
                 <thead>
                     <tr>
                         <th width="8%" data-options="field:'name',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">

@@ -54,7 +54,7 @@
             <table class="easyui-datagrid" title="银行卡列表" id="grid" fitColumns="true" noheader="true" border="false"
                    pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="userId"
-                   align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
+                   align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu, onLoadSuccess:gridLoadSuccess">
                 <thead>
                     <tr>
                         <th width="8%" data-options="field:'userId', _provider:'userProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">

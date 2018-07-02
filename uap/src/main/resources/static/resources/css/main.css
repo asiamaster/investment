@@ -93,7 +93,7 @@ h2 {
 .datagrid-row {
     height: 38px;
 }
-
+/*datagrid分页栏背景*/
 .datagrid .datagrid-pager {
     background: #FFFFFF;
 }
