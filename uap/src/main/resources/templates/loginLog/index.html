@@ -13,30 +13,32 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="userName" id="userName" style="width:100%" data-options="label:'用户名:',labelAlign:'right', validType:'length[0,20]'" />
+                                <input class="easyui-datetimebox" name="startLoginTime" editable="false" id="startExceptionTime"
+                                       labelAlign="right" data-options="label:' 操作时间:'" style="width: 250px;"/>
+                                - <input class="easyui-datetimebox" editable="false" name="endLoginTime" id="endExceptionTime"
+                                         labelAlign="right" style="width: 150px;"/>
                             </td>
+
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="ip" id="ip" style="width:100%" data-options="label:'IP地址:',labelAlign:'right', validType:'length[0,20]'" />
+                                <input name="systemCode" id="systemCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="系统:"/>
+                                <#comboProvider _id="systemCode" _provider='systemProvider' />
                             </td>
+
+
                             <td style="padding:5px;">
-                                 <input name="systemCode" id="systemCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="系统:"/>
-                                 <#comboProvider _id="systemCode" _provider='systemProvider' />
-                            </td>
-                            <td style="padding:5px;">
-                            <input class="easyui-datetimebox" name="startLoginTime" editable="false" id="startExceptionTime"
-                                   labelAlign="right" data-options="label:' 操作时间:'" style="width: 250px;"/>
-                            - <input class="easyui-datetimebox" editable="false" name="endLoginTime" id="endExceptionTime"
-                                     labelAlign="right" style="width: 150px;"/>
-                        	</td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" labelAlign="right" />
+                                <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" labelAlign="right" value="" />
                                 <#comboProvider _id="type" _provider='loginTypeProvider'/>
                             </td>
                             <td style="padding:5px;">
-                                 <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" labelAlign="right" />
+                                <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" labelAlign="right" />
                                 <#comboProvider _id="success" _provider='ynProvider'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="ip" id="ip" style="width:250px" data-options="label:'IP地址:',labelAlign:'right', validType:'length[0,20]'" />
+                                &nbsp;&nbsp;
+                                <input class="easyui-textbox" name="userName" id="userName" style="width:150px;" data-options="prompt:'用户账号/真实姓名', label:'', labelAlign:'right', validType:'length[0,20]'" />
                             </td>
                             <td style="padding:5px;">
                                 <a href="#" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-search" id="queryBtn"
@@ -55,19 +57,19 @@
         <div region="center" style="width:100%;" height="auto" align="center" border="false">
             <div style="width: 100%;height: 100%;" align="center">
                 <!-- =========================================================表格========================================================= -->
-                 <table class="easyui-datagrid"   id="grid"  fitColumns="true"  title="登录日志列表" noheader="true"
-                   pagination="true" pageSize="50" pageList="[50,100,200]" pageNumber="1" pagePosition="top" remoteSort="true"
-                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="login_time" sortOrder="desc"
-                   align="center" fit="true" striped="true" border="false"
-                    toolbar="#toolbar" idField="id">
-                <thead>
+                <table class="easyui-datagrid"   id="grid"  fitColumns="true"  title="登录日志列表" noheader="true"
+                       pagination="true" pageSize="50" pageList="[50,100,200]" pageNumber="1" pagePosition="top" remoteSort="true"
+                       loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="login_time" sortOrder="desc"
+                       align="center" fit="true" striped="true" border="false"
+                       toolbar="#toolbar" idField="id">
+                    <thead>
                     <tr>
                         <th data-options="field:'userId',width:'10%'
                         , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'userId':'user_name','realName':'real_name'},_fkField:'userId',_relationTable:'user',_relationTablePkField:'id', _queryParams:{}
                          ,sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             用户账号
                         </th>
-              			<th data-options="field:'realName',width:'10%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'realName',width:'10%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             真实姓名
                         </th>
                         <th data-options="field:'ip',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -92,8 +94,8 @@
                             登录信息
                         </th>
                     </tr>
-                </thead>
-            </table>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
@@ -114,58 +116,58 @@
 					}
 				}]
 			">
-    <form id="_form" class="easyui-form" method="post" fit="true">
-        <input name="_id" id="_id" type="hidden">
-        <table width="360px">
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_userId" id="_userId" style="width:100%" data-options="label:'用户id:', validType:'length[0,20]'" 
-                        required="true" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_ip" id="_ip" style="width:100%" data-options="label:'编号:', validType:'length[0,20]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_host" id="_host" style="width:100%" data-options="label:'备注:', validType:'length[0,40]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_loginTime" id="_loginTime" style="width:100%" data-options="label:'登录时间:'" 
-                        required="true" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_logoutTime" id="_logoutTime" style="width:100%" data-options="label:'登出时间:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_systemId" id="_systemId" style="width:100%" data-options="label:'登录系统:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width:100%" data-options="label:'市场编码:', validType:'length[0,50]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_success" id="_success" style="width:100%" data-options="label:'是否成功:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_reason" id="_reason" style="width:100%" data-options="label:'失败原因:', validType:'length[0,511]'" />
-                </td>
-            </tr>
-        </table>
-    </form>
+        <form id="_form" class="easyui-form" method="post" fit="true">
+            <input name="_id" id="_id" type="hidden">
+            <table width="360px">
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-textbox" name="_userId" id="_userId" style="width:100%" data-options="label:'用户id:', validType:'length[0,20]'"
+                               required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-textbox" name="_ip" id="_ip" style="width:100%" data-options="label:'编号:', validType:'length[0,20]'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-textbox" name="_host" id="_host" style="width:100%" data-options="label:'备注:', validType:'length[0,40]'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-datetimebox" name="_loginTime" id="_loginTime" style="width:100%" data-options="label:'登录时间:'"
+                               required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-datetimebox" name="_logoutTime" id="_logoutTime" style="width:100%" data-options="label:'登出时间:'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-numberbox" name="_systemId" id="_systemId" style="width:100%" data-options="label:'登录系统:'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width:100%" data-options="label:'市场编码:', validType:'length[0,50]'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-numberbox" name="_success" id="_success" style="width:100%" data-options="label:'是否成功:'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px;">
+                        <input class="easyui-textbox" name="_reason" id="_reason" style="width:100%" data-options="label:'失败原因:', validType:'length[0,511]'" />
+                    </td>
+                </tr>
+            </table>
+        </form>
 
     </div>
     <!-- ====================================================================================================================== -->
@@ -313,7 +315,7 @@
          */
         $(function () {
             bindFormEvent("form", "userName", queryGrid);
-           // bindFormEvent("_form", "_userName", saveOrUpdate, function (){$('#dlg').dialog('close');});
+            // bindFormEvent("_form", "_userName", saveOrUpdate, function (){$('#dlg').dialog('close');});
             if (document.addEventListener) {
                 document.addEventListener("keyup",getKey,false);
             } else if (document.attachEvent) {
@@ -321,22 +323,22 @@
             } else {
                 document.onkeyup = getKey;
             }
-            
+
             var pager = $('#grid').treegrid('getPager');    // get the pager of treegrid
             pager.pagination({
-                <#controls_paginationOpts/>
-                ,buttons:[
-                	 <#resource code="exportLoginLog">
-                	 {
-                         iconCls:'icon-export',
-                         text:'导出',
-                         handler:function(){
-                             doExport('grid');
-                         }
-                     }
-                	 </#resource>
-                ]
-            });
+            <#controls_paginationOpts/>
+            ,buttons:[
+                <#resource code="exportLoginLog">
+            {
+                iconCls:'icon-export',
+                text:'导出',
+                handler:function(){
+                doExport('grid');
+            }
+            }
+            </#resource>
+            ]
+        });
             //表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
             //打开页面时查询

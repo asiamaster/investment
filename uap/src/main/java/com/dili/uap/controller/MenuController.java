@@ -4,8 +4,10 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.Menu;
+import com.dili.uap.domain.Resource;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.service.MenuService;
+import com.dili.uap.service.ResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -31,7 +33,10 @@ import java.util.Map;
 @RequestMapping("/menu")
 public class MenuController {
     @Autowired
-    MenuService menuService;
+    private MenuService menuService;
+
+    @Autowired
+    private ResourceService resourceService;
 
     @ApiOperation("跳转到Menu页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
@@ -106,14 +111,24 @@ public class MenuController {
     public @ResponseBody BaseOutput update(Menu menu) {
         String menuId = menu.aget("menuId").toString();
         if(menuId.startsWith("menu_")){
-            //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
+            //如果菜单树上点的节点(menuId)是菜单， 需要设置当前节点的父节点
             menu.setParentId(Long.parseLong(menuId.substring(5)));
         }
-        Menu condition = DTOUtils.newDTO(Menu.class);
-        condition.setParentId(menu.getId());
-        List children = menuService.list(condition);
-        if(!CollectionUtils.isEmpty(children)){
-            return BaseOutput.failure("菜单有子节点，不允许修改类型");
+        Menu oldMenu = menuService.get(menu.getId());
+        //如果修改了菜单类型，需要判断菜单下面不能有子菜单或资源
+        if(!oldMenu.getType().equals(menu.getType())) {
+            Menu condition = DTOUtils.newDTO(Menu.class);
+            condition.setParentId(menu.getId());
+            List children = menuService.list(condition);
+            if (!CollectionUtils.isEmpty(children)) {
+                return BaseOutput.failure("菜单有子节点，不允许修改类型");
+            }
+            Resource resouce = DTOUtils.newDTO(Resource.class);
+            resouce.setMenuId(menu.getId());
+            List<Resource> resources = resourceService.list(resouce);
+            if (!CollectionUtils.isEmpty(resources)) {
+                return BaseOutput.failure("菜单下有资源，不允许修改类型");
+            }
         }
         menuService.updateExactSimple(menu);
         return BaseOutput.success("修改成功");
@@ -145,10 +160,13 @@ public class MenuController {
         if(targetId.startsWith("sys_") && !sourceMenu.getSystemId().equals(Long.parseLong(targetId.substring(4)))){
             return BaseOutput.failure("不允许跨系统拖动");
         }
-        //如果拖到系统下面, 需要清空parentId,并且修改菜单类型为链接
+        //如果拖到系统下面, 需要清空parentId
         if(targetId.startsWith("sys_")){
             sourceMenu.setParentId(null);
-            sourceMenu.setType(MenuType.LINKS.getCode());
+//          修改内链菜单类型为链接
+            if(sourceMenu.getType().equals(MenuType.INTERNAL_LINKS.getCode())) {
+                sourceMenu.setType(MenuType.LINKS.getCode());
+            }
         }else{
             //拖动到菜单下面，判断不允许跨系统拖动，不允许将目录拖动下链接下面
             //验证通过后需要修改parentId, 并且判断目标菜单是否目录，是目录则不处理menu类型，是链接则需要改为内键
