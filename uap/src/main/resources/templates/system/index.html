@@ -48,7 +48,7 @@
                        pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
                        loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc"
                        align="center" fit="true" striped="true"
-                       idField="id"  data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
+                       idField="id"  data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu, onLoadSuccess:gridLoadSuccess">
                     <thead>
                     <tr>
 
@@ -175,6 +175,7 @@
         //打开修改窗口
         function openUpdate(){
             var selected = $("#grid").datagrid("getSelected");
+            alert(JSON.stringify(selected));
             if (null == selected) {
                 $.messager.alert('警告','请选中一条数据');
                 return;
