@@ -103,7 +103,7 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 	 * @param investment
 	 */
 	private void monthly(Investment investment){
-//		贷款本金 = (investment+deducted)
+//		贷款本金(元) = (investment+deducted)
 		BigDecimal principal = new BigDecimal(investment.getInvestment() + investment.getDeducted()).divide(BigDecimal.valueOf(100));
 		//计算当前应还款的月序号 st=======================================
 		//获取还款/开始时间是当月几号
@@ -154,7 +154,12 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 			Long adjustAmount = monthlyInterest.multiply(BigDecimal.valueOf(100)).longValue();
 			//加息率部分利息
 			Long interestCoupon = principal.multiply(interestCouponRate).setScale(2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).longValue();
-			adjustAmount = adjustAmount + interestCoupon;
+			//如果是最后一个月投资到账，需要加上本金
+			if(repaymentMonth == repaymentIndex && monthIndex == repaymentIndex){
+				adjustAmount = adjustAmount + interestCoupon + principal.multiply(BigDecimal.valueOf(100)).longValue();
+			}else {
+				adjustAmount = adjustAmount + interestCoupon;
+			}
 			BaseOutput<Long> balanceOutput = userRpc.adjustBalance(investment.getInvestorId(), adjustAmount);
 
 			//记录投资明细 ===================================

@@ -176,7 +176,7 @@ public class MenuController {
                 return BaseOutput.failure("不允许跨系统拖动");
             }
             if(sourceMenu.getType().equals(MenuType.DIRECTORY.getCode()) && !targetMenu.getType().equals(MenuType.DIRECTORY.getCode())){
-                return BaseOutput.failure("不允许将目录拖动下链接下面");
+                return BaseOutput.failure("不允许将目录拖动到链接下面");
             }
             //如果源是链接，目标是链接或内链, 修改源为内链
             if(sourceMenu.getType().equals(MenuType.LINKS.getCode())

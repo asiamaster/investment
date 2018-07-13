@@ -126,14 +126,17 @@
          //表格行样式，过期为灰色，即将到期为绿色
          function rowStyler(index, row) {
              if (row.isExpired !=null && row.isExpired == "是"){
-                 return "expiredRow";
+//                 return "expiredRow";
+                 return "background-color:#E1E1E1;color:#000;";
              }
              if(row.endDate == null || row.endDate == ""){
                 return;
              }
              var difDates = dateDifference(ymdDateFormatter(new Date()), row.endDate);
              if (row.isExpired !=null && row.isExpired == "否" && difDates<=30){
-                 return "expiringRow";
+//                 alert("index:"+index+",difDates:"+difDates);
+//                 return "expiringRow";
+                 return "background-color: #D7FFCC;color: #000;";
              }
          }
      </script>
