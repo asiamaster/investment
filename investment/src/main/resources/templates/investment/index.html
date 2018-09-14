@@ -195,7 +195,7 @@
                         <th data-options="field:'investorId',  _provider:'userProvider', _escapeFileds:{investorId:'realName', createdId:'realName', modifiedId:'realName'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             投资人
                         </th>
-                        <th data-options="field:'platformName', _provider:'platformProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'platformId', _provider:'platformProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             投资平台
                         </th>
                         <th data-options="field:'projectName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -649,8 +649,9 @@
 
         //清空表单
         function clearForm() {
-            $('#form').form('clear');
-            $("#investorId").textbox("initValue", null);
+            // $('#form').form('clear');
+            clearEasyuiForm("form");
+            // $("#investorId").textbox("initValue", null);
 
         }
 

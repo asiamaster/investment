@@ -87,7 +87,7 @@ public class InvestmentServiceImpl extends BaseServiceImpl<Investment, Long> imp
                 })
                 .findFirst()
                 .orElse("0");
-        footer.put("platformName", totalInvestment);
+        footer.put("platformId", totalInvestment);
 //        本息合计
         domain.setSelectColumns(null);
         domain.setRows(total);

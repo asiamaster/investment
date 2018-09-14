@@ -12,6 +12,7 @@ import com.dili.ss.util.DateUtils;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.session.SessionContext;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,9 +27,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -222,4 +226,34 @@ public class InvestmentController {
         return "investment/investmentStats";
     }
 
+    public static void main(String[] args) {
+
+        Stream stream = Stream.of(1, 2, 3, 4)
+                .filter(p -> p > 2);
+        List result = (List) stream.collect(() -> new ArrayList<>(),
+                (list, item) -> ((List)list).add(item),
+                (one, two) -> {
+                    System.out.println(one);
+            ((List)one).addAll((List)two );
+        });
+
+        final Integer[] integers = Lists.newArrayList(1, 2, 3, 4, 5)
+                .stream()
+                .collect(() -> new Integer[]{0},
+                        (a, x) -> a[0] += x,
+                        (a1, a2) -> {});
+        Stream<String> stringStream = Stream.of("a", "b", "c", "d");
+        String concat = stringStream.collect(() -> new StringBuilder(),
+                (list, x) -> list.append(x),
+                (r1, r2) -> r1.append(r2)).toString();
+
+        Stream<String> s1 = Stream.of("aa", "ab", "c", "ad");
+        Predicate<String> predicate = t -> t.contains("a");
+        System.out.println(s1.parallel().collect(() -> new ArrayList<String>(),
+                    (array, s) -> {if (predicate.test(s)) {
+                        array.add(s);
+                    }
+                },
+                (array1, array2) -> array1.addAll(array2)));
+    }
 }
