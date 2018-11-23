@@ -36,14 +36,33 @@ public class BizNumberServiceImpl extends BaseServiceImpl<BizNumber, Long> imple
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
     public String getCustomerVisitCode() {
-        return getCode(BIZ_NUMBER_PREFIX.CUSTOMER_VISIT_CODE);
+        return getByCode(BIZ_NUMBER_PREFIX.CUSTOMER_VISIT_CODE);
     }
 
+    private String getByCode(BIZ_NUMBER_PREFIX key) {
+        String dateStr = DateUtils.format("yyyyMMdd");
+        Long orderId = getNextSequenceId(key, null);
+        //如果不是同天
+        if (!dateStr.equals(StringUtils.substring("" + orderId, 0, 8))) {
+            orderId = getNextSequenceId(key, getBaseBizNumber(dateStr));
+        }
+        return key.getPrefix() + orderId;
+    }
+
+    /**
+     * 获取日期加每日计数量的字符串
+     * @param dateStr
+     * @return
+     */
     private Long getBaseBizNumber(String dateStr) {
-        Long baseOrderId = NumberUtils.toLong(dateStr) * DAILY_COUNT;
-        return baseOrderId;
+        return NumberUtils.toLong(dateStr) * DAILY_COUNT;
     }
 
+    /**
+     * 根据业务类型查询BizNumber对象， 无值返回null
+     * @param type
+     * @return
+     */
     private BizNumber getByType(String type){
         BizNumber bizNumber= DTOUtils.newDTO(BizNumber.class);
         bizNumber.setType(type);
@@ -61,6 +80,13 @@ public class BizNumberServiceImpl extends BaseServiceImpl<BizNumber, Long> imple
         return list.get(0);
     }
 
+    /**
+     * 获取包含当前日期的当前编码值
+     * @param idSequence
+     * @param seqIdKey
+     * @param startSeq
+     * @return
+     */
     //    @Transactional(propagation= Propagation.REQUIRES_NEW,rollbackFor=Exception.class)
     private SequenceNo getSeqNoByNewTransactional(SequenceNo idSequence, String seqIdKey, Long startSeq){
         BizNumber bizNumber = this.getByType(seqIdKey);
@@ -80,16 +106,6 @@ public class BizNumberServiceImpl extends BaseServiceImpl<BizNumber, Long> imple
         bizNumber.setValue(idSequence.getFinishSeq());
         this.update(bizNumber);
         return idSequence;
-    }
-
-    private String getCode(BIZ_NUMBER_PREFIX key) {
-        String dateStr = DateUtils.format("yyyyMMdd");
-        Long orderId = getNextSequenceId(key, null);
-        //如果不是同天
-        if (!dateStr.equals(StringUtils.substring("" + orderId, 0, 8))) {
-            orderId = getNextSequenceId(key, getBaseBizNumber(dateStr));
-        }
-        return key.getPrefix() + orderId;
     }
 
     /**

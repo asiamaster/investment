@@ -20,7 +20,6 @@ public class PaymentTypeProvider implements ValueProvider {
 
     static {
         buffer = new ArrayList<ValuePair<?>>();
-        buffer.add(new ValuePairImpl(ValueProvider.EMPTY_ITEM_TEXT, null));
         for(PaymentType paymentType : PaymentType.values()){
             buffer.add(new ValuePairImpl(paymentType.getText(), paymentType.getCode()));
         }

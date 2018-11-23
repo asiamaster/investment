@@ -16,6 +16,7 @@
 		<!--<module>investment-admin-server</module>-->
 		<module>uap-sdk</module>
 		<module>uap</module>
+		<module>commons</module>
 		<module>investment</module>
 	</modules>
 
@@ -45,7 +46,7 @@
 		<mapper.version>3.3.9</mapper.version>
 		<mysql.version>5.1.38</mysql.version>
 		<aspectj.version>1.8.10</aspectj.version>
-		<sharp-sword.version>2.0.10-SNAPSHOT</sharp-sword.version>
+		<sharp-sword.version>2.2.4-SNAPSHOT</sharp-sword.version>
 	</properties>
 
 	<!--地利 -->

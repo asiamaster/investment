@@ -20,7 +20,6 @@ public class ProjectDurationUnitProvider implements ValueProvider {
 
     static {
         buffer = new ArrayList<ValuePair<?>>();
-        buffer.add(new ValuePairImpl(ValueProvider.EMPTY_ITEM_TEXT, null));
         for(ProjectDurationUnit projectDurationUnit : ProjectDurationUnit.values()){
             buffer.add(new ValuePairImpl(projectDurationUnit.getText(), projectDurationUnit.getCode()));
         }

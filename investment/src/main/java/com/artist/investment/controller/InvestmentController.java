@@ -152,7 +152,7 @@ public class InvestmentController {
         return investmentService.arrived(id);
     }
 
-    @ApiOperation("调整提前到帐")
+    @ApiOperation("调整提前部分到帐")
     @ApiImplicitParams({
             @ApiImplicitParam(name="id", paramType="form", value = "Investment的主键", required = true, dataType = "long")
     })

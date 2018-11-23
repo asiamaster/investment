@@ -37,8 +37,8 @@
                 onClickRow: function () {
                     that.endEditing();
                 },
-                onDblClickRow: function () {
-                    that.openUpdate();
+                onDblClickRow: function (index, row) {
+                    that.openUpdate(index, row);
                 },
                 onAfterEdit: function (index, row, changes) {
                     //treegrid只有row,changes属性
@@ -128,27 +128,24 @@
             this.element[this.options.target]('cancelEdit', index);
         },
         // 开启选中行的编辑模式
-        openUpdate: function () {
-            var selected = this.element[this.options.target]("getSelected");
-            if (!selected) {
+        openUpdate: function (index, row) {
+            if (!row) {
                 $.messager.alert('警告', '请选中一条数据');
                 return;
             }
             if (this.options.canEdit) {
-                if (!this.options.canEdit(selected)) {
+                if (!this.options.canEdit(row)) {
                     return;
                 }
             }
             if (!this.isEditing()) {
                 if (this.options.target == 'datagrid') {
-                    var index = this.element.datagrid('getRowIndex', selected);
                     this.editIndex = index;
                     this.element.datagrid('selectRow', index).datagrid('beginEdit', index);
                 } else {
-                    this.element.treegrid('select', selected.id).treegrid('beginEdit', selected.id);
+                    this.element.treegrid('select', row.id).treegrid('beginEdit', row.id);
                 }
-
-                this.editId = selected.id;
+                this.editId = row.id;
             }
         },
         _onAfterEdit: function (index, row, changes) {

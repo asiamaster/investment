@@ -169,7 +169,11 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<!-- admin server依赖 end -->
-
+		<dependency>
+			<groupId>com.artist</groupId>
+			<artifactId>commons</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 
 

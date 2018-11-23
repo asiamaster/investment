@@ -109,7 +109,7 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 		//获取还款/开始时间是当月几号
 		Calendar startCalendar = Calendar.getInstance();
 		startCalendar.setTime(investment.getStartDate());
-		//还款月天数, 如果开始时间的月天数和还款日不一样，则应该是债转项目,第一个月可能下次还款时间少于30天，即实际税率可能高于原利率
+		//还款月天数（还款日）, 如果开始时间的月天数和还款日不一样，则应该是债转项目,第一个月可能下次还款时间少于30天，即实际税率可能高于原利率
 		int repaymentDay = investment.getRepaymentDay() == null ? startCalendar.get(Calendar.DAY_OF_MONTH) : investment.getRepaymentDay();
 		//还款起始月
 		int startMonth = startCalendar.get(Calendar.MONTH) + 1;
@@ -120,6 +120,12 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 		//如果还款时间大于本月最大时间，则还款时间改为本月最大时间，例:还款时间是31号，本月只有30天
 		if(repaymentDay > maxDayOfMonth){
 			repaymentDay = maxDayOfMonth;
+		}
+		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.setTime(investment.getEndDate());
+		//如果是最后一个月，还款日直接是结束日期当日
+		if(endCalendar.get(Calendar.MONTH) == nowCalendar.get(Calendar.MONTH)){
+			repaymentDay = endCalendar.get(Calendar.DAY_OF_MONTH);
 		}
 		//获取当前时间是当月几号
 		int nowDay = nowCalendar.get(Calendar.DAY_OF_MONTH);
@@ -132,9 +138,10 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 		if(repaymentIndex <= 0){
 			return;
 		}
-		//还款月数 (开始和结束日期之间相差月数)
-		int repaymentMonth = monthsBetween(investment.getStartDate(), investment.getEndDate());
-		//已还款月序号
+		//应还款月数
+		int repaymentMonth = monthsBetween(investment);
+
+		//已还款月序号(从1开始，未还款是0)
 		int monthIndex = investment.getMonthIndex() == null ? 0 : investment.getMonthIndex();
 		//如果已还款月序号 大于等于 应该还款的月序号
 		if(monthIndex >= repaymentIndex) {
@@ -221,6 +228,12 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 		if(repaymentDay > maxDayOfMonth){
 			repaymentDay = maxDayOfMonth;
 		}
+		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.setTime(investment.getEndDate());
+		//如果是最后一个月，还款日直接是结束日期当日
+		if(endCalendar.get(Calendar.MONTH) == nowCalendar.get(Calendar.MONTH)){
+			repaymentDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+		}
 		//获取当前时间是当月几号
 		int nowDay = nowCalendar.get(Calendar.DAY_OF_MONTH);
 		//获取当前时间是几月
@@ -233,7 +246,7 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 			return;
 		}
 		//还款月数 (开始和结束日期之间相差月数)
-		int repaymentMonth = monthsBetween(investment.getStartDate(), investment.getEndDate());
+		int repaymentMonth = monthsBetween(investment);
 		//已还款月序号
 		int monthIndex = investment.getMonthIndex() == null ? 0 : investment.getMonthIndex();
 		//如果已还款月序号 大于等于 应该还款的月序号
@@ -303,13 +316,25 @@ public class ScanPayableInvestmentJob implements ApplicationListener<ContextRefr
 	}
 
 	/**
-	 * 计算两个日期相差月数
-	 * @param start
-	 * @param end
+	 * 计算按月付息的投资月数
 	 * @return
 	 */
-	private int monthsBetween(Date start, Date end) {
-		return Months.monthsBetween(new DateTime(start), new DateTime(end)).getMonths();
+	private int monthsBetween(Investment investment) {
+		int repaymentMonth = 0;
+		if(investment.getProjectDurationUnit() == ProjectDurationUnit.MONTH.getCode()){
+			repaymentMonth = investment.getProjectDuration();
+		}else {
+//			如果计算单位不是月，则计算开始和结束日期之间相差月数，但有可能有按天计，类似6个月180天的情况，此时开始时间和结束时间为5，需要加1
+			int differentDays = DateUtils.differentDays(investment.getStartDate(), investment.getEndDate());
+			//如果相差天数/30 求余小于15天，则直接除30求商，否则求商+1
+			if(differentDays % 30 < 15){
+				repaymentMonth = differentDays / 30;
+			}else{
+				repaymentMonth = differentDays / 30 + 1;
+			}
+		}
+		return repaymentMonth;
+//		return Months.monthsBetween(new DateTime(start), new DateTime(end)).getMonths();
 	}
 
 }

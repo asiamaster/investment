@@ -377,6 +377,11 @@
             <artifactId>uap-sdk</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.artist</groupId>
+            <artifactId>commons</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 
 

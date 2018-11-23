@@ -20,7 +20,6 @@ public class RepaymentMethodProvider implements ValueProvider {
 
     static {
         buffer = new ArrayList<ValuePair<?>>();
-        buffer.add(new ValuePairImpl(ValueProvider.EMPTY_ITEM_TEXT, null));
         for(RepaymentMethod repaymentMethod : RepaymentMethod.values()){
             buffer.add(new ValuePairImpl(repaymentMethod.getText(), repaymentMethod.getCode()));
         }
