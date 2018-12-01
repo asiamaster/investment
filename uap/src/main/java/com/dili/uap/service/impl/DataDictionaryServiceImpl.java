@@ -77,7 +77,7 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
 			return BaseOutput.failure("相同编码已经存在");
 		}
 		this.updateSelective(t);
-		return BaseOutput.success("修改成功");
+		return BaseOutput.success("修改成功").setData(t);
 	}
     
 }
