@@ -10,43 +10,38 @@
             <!-- =========================================================表单========================================================= -->
             <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
-                    <table style="padding:10px;">
-                        <tr>
-                            <td style="padding:5px;">
+                    <div class="search-wrap">
+                            <div class="search-item long-item">
                                 <input class="easyui-datetimebox" name="startLoginTime" editable="false" id="startExceptionTime"
-                                       labelAlign="right" data-options="label:' 操作时间:'" style="width: 250px;"/>
-                                - <input class="easyui-datetimebox" editable="false" name="endLoginTime" id="endExceptionTime"
-                                         labelAlign="right" style="width: 150px;"/>
-                            </td>
-
-                            <td style="padding:5px;">
+                                       style="width: 58%;" labelAlign="right" data-options="label:' 操作时间:'"/>
+                                <span style="width: 2%">-</span>
+                                <input class="easyui-datetimebox" editable="false" name="endLoginTime" id="endExceptionTime"
+                                         labelAlign="right" style="width: 39%;"/>
+                            </div>
+                            <div class="search-item">
                                 <input name="systemCode" id="systemCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="系统:"/>
                                 <#comboProvider _id="systemCode" _provider='systemProvider' />
-                            </td>
-
-
-                            <td style="padding:5px;">
+                            </div>
+                            <div class="search-item">
                                 <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" labelAlign="right" value="" />
                                 <#comboProvider _id="type" _provider='loginTypeProvider'/>
-                            </td>
-                            <td style="padding:5px;">
+                            </div>
+                            <div class="search-item">
                                 <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" labelAlign="right" />
                                 <#comboProvider _id="success" _provider='ynProvider'/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="ip" id="ip" style="width:250px" data-options="label:'IP地址:',labelAlign:'right', validType:'length[0,20]'" />
-                                &nbsp;&nbsp;
-                                <input class="easyui-textbox" name="userName" id="userName" style="width:150px;" data-options="prompt:'用户账号/真实姓名', label:'', labelAlign:'right', validType:'length[0,20]'" />
-                            </td>
-                            <td style="padding:5px;">
-                                <a href="#" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-search" id="queryBtn"
+                            </div>
+                            <div class="search-item">
+                                <input class="easyui-textbox" name="ip" id="ip" style="width: 100%" data-options="label:'IP地址:',labelAlign:'right', validType:'length[0,20]'" />
+                            </div>
+                            <div class="search-item">
+                                <input class="easyui-textbox" name="userName" id="userName" style="width: 100%"  data-options="prompt:'用户账号/真实姓名', label:'', labelAlign:'right', validType:'length[0,20]'" />
+                            </div>
+                            <div class="search-wrap-btn">
+                                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
                                    onclick="queryGrid()">查询</a>&nbsp;&nbsp;
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80" iconCls="icon-clear" onclick="clearForm()">清除</a>
-                            </td>
-                        </tr>
-                    </table>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
+                            </div>
+                    </div>
                 </form>
             </div>
         </div>

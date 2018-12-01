@@ -11,7 +11,6 @@
             <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
                     <div class="search-wrap">
-                        <tr>
                             <%if(isGroup){%>
                             <div class="search-item">
                                     <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
@@ -22,31 +21,30 @@
                                            loadDepartments(newValue,'departmentId');
                                            loadRoles(newValue);
                                        }" panelHeight="auto" />
-                                </div>
+                            </div>
                             <%}else{%>
                             <div class="search-item">
                                     <input type="hidden"  name="firmCode" id="firmCode" value="${firmCode}" style="width:100%"/>
-                                </div>
+                            </div>
                             <%}%>
-                            <td style="padding:5px;">
-                                <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width:108%" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width:103%" data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
-                            </td>
-                            <td style="padding:5px;">
+                            <div class="search-item">
+                                <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width:100%" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
+                            </div>
+                            <div class="search-item">
+                                <input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width:100%" data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
+                            </div>
+                            <div class="search-item">
                                 <input class="easyui-combobox" name="state" id="state" style="width:92%;" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="状态:"/>
                                 <#comboProvider _id="state" _provider='userStateProvider'/>
-                            </td>
-                            <td style="padding:5px;">
+                            </div>
+                            <div class="search-item">
                                 <input class="easyui-textbox" name="keywords" id="keywords" style="width:95%" data-options="prompt:'用户账号/联系手机'" />
-                            </td>
-                            <td style="padding:5px;">
+                            </div>
+                            <div class="search-item">
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
                                    onclick="queryGrid()">查询</a> &nbsp;&nbsp;
                                 <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-clear" onclick="clearForm()">清除</a>
-                            </td>
-                        </tr>
+                            </div>
                     </div>
                 </form>
             </div>

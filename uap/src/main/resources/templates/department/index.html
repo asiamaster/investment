@@ -16,9 +16,9 @@
             <table class="easyui-treegrid" title="部门列表" noheader="true" id="grid" sortName="created" sortOrder="asc"
                    fitColumns="true" remoteSort="false" loadMsg="数据加载中..." singleSelect="true" method="post"
                    multiSort="true" border="false"
-                   align="center" fit="true" striped="true" toolbar="#toolbar" idField="id"
+                   align="center" fit="true" striped="false" toolbar="#toolbar" idField="id"
                    treeField="name" url="${contextPath!}/department/list.action"
-                   data-options="loadFilter:treegridLoadFilter, _parentIdField:'parentId'">
+                   data-options="loadFilter:treegridLoadFilter, _parentIdField:'parentId',onLoadSuccess:gridLoadSuccess">
                 <thead>
                 <tr>
                     <th data-options="field:'id',hidden:true">id</th>
@@ -37,7 +37,7 @@
                 </tr>
                 </thead>
             </table>
-            <div id="toolbar" style="padding: 2px 5px;background: #FFFFFF">
+            <div id="toolbar" style="padding: 20px 5px 0 30px;background: #FFFFFF">
                 <%if(isGroup){%>
                 <span>市场：</span>
                 <input class="easyui-combobox" name="firm"  id="firm"  panelWidth="auto" panelHeight="auto" editable="false"style="width:8%;"
@@ -56,24 +56,25 @@
                                $('#grid').treegrid('reload', {firmCode:newValue});
                             }catch(e){
                             }
-                          
-                           
                        }"/>
                 <#comboProvider _id="firm" _provider='firmCodeProvider' />
                 <%}%>
+                <br>
+                <br>
                 <#resource code="insertDepartment">
-               			<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
-                </#resource>
-                <#resource code="updateDepartment">
-    					<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
-                 </#resource>
-                
-                <!--<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>-->
-                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave" style="display: none" onclick="endEditing()" plain="true">保存</a>
-                <a href="#" id="btnCancel" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit()" style="display: none" plain="true">取消</a>
-            </div>
-        </div>
-    </div>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
+            </#resource>
+            <#resource code="updateDepartment">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
+        </#resource>
+        <#resource code="deleteDepartment">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>
+    </#resource>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave" style="display: none" onclick="endEditing()" plain="true">保存</a>
+    <a href="#" id="btnCancel" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit()" style="display: none" plain="true">取消</a>
+</div>
+</div>
+</div>
 </div>
 <script type="text/javascript">
     var dataAuth = {
@@ -82,20 +83,20 @@
         deleteDept: true
     };
     window.firmCode = '${firmCode!}';
-    
+
     //将日期格式化(后端不能使用provider)
-	function dateToStringFormatter(value,row,index){
-		if(typeof(value)=='undefined'){
-			return ""
-		}else{
-			try{
-				var dateValue=new Date(value);
-				return UAP_TOOLS.formatDateToString(dateValue);
-			}catch(error){
-				return value;
-			}
-		}
-	}
+    function dateToStringFormatter(value,row,index){
+        if(typeof(value)=='undefined'){
+            return ""
+        }else{
+            try{
+                var dateValue=new Date(value);
+                return UAP_TOOLS.formatDateToString(dateValue);
+            }catch(error){
+                return value;
+            }
+        }
+    }
 </script>
 <#department_indexJs/>
 </#body>

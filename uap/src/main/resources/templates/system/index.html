@@ -10,30 +10,23 @@
             <!-- =========================================================表单========================================================= -->
             <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
-                    <table style="padding:10px;">
-                        <tr>
-
-                            <td style="padding:5px;">
-
-                                <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" value=""  labelAlign="right"/>
-                                <#comboProvider _id="type" _provider='systemTypeProvider' _queryParams='{}'/>
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="likeName" id="name" style="width:100%" data-options="label:'系统名称:', labelAlign:'right', validType:'length[0,50]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="code" id="code" style="width:100%" data-options="label:'系统编码:', labelAlign:'right', validType:'length[0,50]'" />
-
-                            </td>
-
-                            <td>
-                                <a href="#" class="easyui-linkbutton" data-options="width:80"   iconCls="icon-search" id="queryBtn"
-                                   onclick="queryGrid()">查询</a>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-clear" onclick="clearForm()">清除</a>
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="search-wrap">
+                        <div class="search-item">
+                            <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" value=""  labelAlign="right"/>
+                            <#comboProvider _id="type" _provider='systemTypeProvider' _queryParams='{}'/>
+                        </div>
+                        <div class="search-item">
+                            <input class="easyui-textbox" name="likeName" id="name" style="width:100%" data-options="label:'系统名称:', labelAlign:'right', validType:'length[0,50]'" />
+                        </div>
+                        <div class="search-item">
+                            <input class="easyui-textbox" name="code" id="code" style="width:100%" data-options="label:'系统编码:', labelAlign:'right', validType:'length[0,50]'" />
+                        </div>
+                        <div class="search-wrap-btn">
+                            <a href="#" class="easyui-linkbutton" data-options="width:80"   iconCls="icon-search" id="queryBtn"
+                               onclick="queryGrid()">查询</a>&nbsp;&nbsp;
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-clear" onclick="clearForm()">清除</a>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -44,7 +37,7 @@
         <div region="center" style="width:100%;" height="auto" align="center" border="false">
             <div style="width: 100%;height: 100%;" align="center">
                 <!-- =========================================================表格========================================================= -->
-                <table class="easyui-datagrid" title="系统信息列表" id="grid" fitColumns="true" noheader="true"  border="false"
+                <table class="easyui-datagrid" title="系统信息列表" id="grid" fitColumns="true" noheader="true"  border="true"
                        pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
                        loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc"
                        align="center" fit="true" striped="true"

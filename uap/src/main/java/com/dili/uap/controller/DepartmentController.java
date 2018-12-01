@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -124,8 +125,20 @@ public class DepartmentController {
     })
     @RequestMapping(value = "/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
-    BaseOutput delete(Long id) {
-        departmentService.delete(id);
+    BaseOutput delete(String id) {
+        if(id.startsWith("firm_")){
+            return BaseOutput.failure("不允许删除市场");
+        }
+        if (id.startsWith("department_")) {
+            id = id.replace("department_", "");
+        }
+        Department department = DTOUtils.newDTO(Department.class);
+        department.setParentId(Long.valueOf(id));
+        List<Department> departments = departmentService.list(department);
+        if(!CollectionUtils.isEmpty(departments)){
+            return BaseOutput.failure("当前部门有下级部门，无法删除");
+        }
+        departmentService.delete(Long.valueOf(id));
         return BaseOutput.success("删除成功");
     }
 
@@ -175,7 +188,7 @@ public class DepartmentController {
         	if(department.getParentId()!=null) {
                 department.aset("parentId", "department_"+department.getParentId());
         	}else {
-        		department.aset("parentId", "firm"+department.getFirmCode());
+        		department.aset("parentId", "firm_"+department.getFirmCode());
         	}
         	Object obj=DTOUtils.go(department);
         	 return BaseOutput.success().setData(obj);

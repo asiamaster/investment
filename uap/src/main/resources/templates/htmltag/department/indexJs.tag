@@ -1,21 +1,21 @@
 <script type="text/javascript">
 
     function openInsert() {
-    	 <#resource code="insertDepartment">
-        $("#grid").dataGridEditor().insert();
-        </#resource>
+        <#resource code="insertDepartment">
+    $("#grid").dataGridEditor().insert();
+    </#resource>
     }
 
     function openUpdate() {
-    	 <#resource code="updateDepartment">
-        $("#grid").dataGridEditor().update();
-        </#resource>
+        <#resource code="updateDepartment">
+    $("#grid").dataGridEditor().update();
+    </#resource>
     }
 
     function del() {
-    	<#resource code="deleteDepartment">
-        	$("#grid").dataGridEditor().delete();
-        </#resource>
+        <#resource code="deleteDepartment">
+    $("#grid").dataGridEditor().delete();
+    </#resource>
     }
 
     function endEditing() {
@@ -25,7 +25,7 @@
     function cancelEdit() {
         $("#grid").dataGridEditor().cancel();
     }
- // 是否显示编辑框的确定取消按钮
+    // 是否显示编辑框的确定取消按钮
     function setOptBtnDisplay(show){
         var $btnSave = $("#btnSave");
         var $btnCancel = $("#btnCancel");
@@ -45,7 +45,6 @@
      * @submitFun 表单提交需执行的任务
      */
     $(function () {
-
         $("#grid").dataGridEditor({
             insertUrl: "${contextPath!}/department/insert.action",
             updateUrl: "${contextPath!}/department/update.action",
@@ -66,13 +65,14 @@
                 }
             },
             canEdit: function (row) {
-              	 <#resource code="updateDepartment">
-              	  if(1==1){
-              		 return row.id.indexOf('firm_')<0;
-              	  }
-              	 </#resource>
-              	 return false;  
+                <#resource code="updateDepartment">
+            if(1==1){
+                return row.id.indexOf('firm_')<0;
+            }
+            </#resource>
+                return false;
             }
         });
+        $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
     });
 </script>
