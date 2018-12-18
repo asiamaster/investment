@@ -1,0 +1,89 @@
+<#body>
+
+<div class="easyui-layout" fit="true">
+    <div region="center" align="left" border="true">
+        <input class="easyui-textbox" id="source" labelAlign="right" labelWidth="38" label="源码" multiline="true" data-options="" style="width:99%;height:95%;">
+        <input class="easyui-textbox" id="className" labelAlign="right" labelWidth="38" label="类名" style="width:600px;">
+        <input class="easyui-textbox" id="name" labelAlign="right" labelWidth="60" label="获取名" style="width:220px;">
+        <a class="easyui-linkbutton" onClick="generate()">生成</a><a class="easyui-linkbutton" onClick="execute()">执行</a>
+    </div>
+    <div region="south" height="auto" align="left" >
+        <input class="easyui-textbox" id="result" labelAlign="right" labelWidth="80" label="加密结果" style="width:99.8%">
+        <input class="easyui-textbox" id="decryptedResult" labelAlign="right" labelWidth="80" label="执行结果" style="width:99.8%">
+    </div>
+</div>
+<!-- ====================================================================================================================== -->
+<!-- style & script 分隔线 -->
+<!-- ====================================================================================================================== -->
+<script type="text/javascript">
+
+    $(function () {
+        $("#source").textbox('textbox').css("font-size", "16pt");
+    });
+
+    /**
+     * 执行加密代码
+     */
+    function execute() {
+        var name = $("#name").textbox("getValue");
+        if(name == null || name == ""){
+            name = "clazz";
+        }
+        var encryptedCode = $("#result").textbox("getValue");
+        if(encryptedCode == null || encryptedCode == ""){
+            alert("请先根据源码生成加密结果");
+            return;
+        }
+        $.ajax({
+            type : "POST",
+            url : "${contextPath!}/bu/execute.action",
+            data : {encryptedCode: encryptedCode, name: name},
+            processData : true,
+            async : true,
+            success : function(output) {
+                if(output.success){
+                    $("#decryptedResult").textbox("setValue", output.data);
+                }else{
+                    $("#decryptedResult").textbox("setValue", "加密失败:"+output.result);
+                }
+            },
+            error : function() {
+                $.messager.alert('错误', '远程访问失败');
+            }
+        });
+    }
+
+    /**
+     * 根据源码生成加密代码
+     */
+    function generate(){
+        var name = $("#name").textbox("getValue");
+        if(name == ""){
+            name = "clazz";
+        }
+        var className = $("#className").textbox("getValue");
+        if(className == ""){
+            alert("请输入类名");
+            return;
+        }
+        var source = $("#source").textbox("getValue");
+        if(source == ""){
+            alert("请输入源码");
+            return;
+        }
+        $.ajax({
+            type : "POST",
+            url : "${contextPath!}/bu/generate.action",
+            data : {source: source, name:name, className: className},
+            processData : true,
+            async : true,
+            success : function(data) {
+                $("#result").textbox("setValue", data);
+            },
+            error : function() {
+                $.messager.alert('错误', '远程访问失败');
+            }
+        });
+    }
+</script>
+</#body>

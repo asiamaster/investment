@@ -1,0 +1,46 @@
+<#body>
+
+<div class="easyui-layout" fit="true">
+    <div region="center" align="left" border="true">
+        <input class="easyui-textbox" id="source" labelAlign="right" labelWidth="38" label="源码" multiline="true" data-options="" style="width:99%;height:95%;">
+        <a class="easyui-linkbutton" onClick="generate()">生成</a>
+    </div>
+    <div region="south" height="auto" align="left" >
+        <input class="easyui-textbox" id="result" labelAlign="right" labelWidth="80" label="加密结果" style="width:99.8%">
+    </div>
+</div>
+<!-- ====================================================================================================================== -->
+<!-- style & script 分隔线 -->
+<!-- ====================================================================================================================== -->
+<script type="text/javascript">
+
+    $(function () {
+        $("#source").textbox('textbox').css("font-size", "16pt");
+    });
+
+    /**
+     * 根据源码生成加密代码
+     */
+    function generate(){
+
+        var source = $("#source").textbox("getValue");
+        if(source == ""){
+            alert("请输入源码");
+            return;
+        }
+        $.ajax({
+            type : "POST",
+            url : "${contextPath!}/bu/encrypt.action",
+            data : {source: source},
+            processData : true,
+            async : true,
+            success : function(data) {
+                $("#result").textbox("setValue", data);
+            },
+            error : function() {
+                $.messager.alert('错误', '远程访问失败');
+            }
+        });
+    }
+</script>
+</#body>

@@ -174,10 +174,10 @@ public class DepartmentController {
     }
     /**
      * 在返回数据前加上id以及parentId的前辍
-     * @param department
+     * @param out
      * @return
      */
-    private BaseOutput<?> resetIdAndParentId(BaseOutput<Department>out) {
+    private BaseOutput<?> resetIdAndParentId(BaseOutput<Department> out) {
     	if(!out.isSuccess()) {
     		return out;
     	}
