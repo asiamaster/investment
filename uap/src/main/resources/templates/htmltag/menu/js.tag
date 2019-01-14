@@ -414,13 +414,13 @@
             },
             onSaveSuccess: function (index, row, data) {
                 //data就是新增后返回的id，没有返回id就是修改
-                if(data) {
-                    row.id=data;
-                    $("#grid1").datagrid("updateRow",{
-                        index: index,
-                        row:row
-                    });
-                }
+                // if(data) {
+                //     row.id=data;
+                //     $("#grid1").datagrid("updateRow",{
+                //         index: index,
+                //         row:row
+                //     });
+                // }
             },
             extendParams: function (row) {
                 return {
@@ -460,11 +460,11 @@
             onSaveSuccess: function (index, row, data) {
                 //data就是新增后返回的id，没有返回id就是修改
                 if(data) {
-                    row.id=data;
-                    $("#grid2").datagrid("updateRow",{
-                        index: index,
-                        row:row
-                    });
+                    // row.id=data;
+                    // $("#grid2").datagrid("updateRow",{
+                    //     index: index,
+                    //     row:row
+                    // });
                     //为菜单添加相应的节点
                     addMenuNode(row, 2);
                 }else{
